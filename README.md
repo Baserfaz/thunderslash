@@ -1,12 +1,12 @@
 # Thunderslash
-2D sidescroller game using Java and my custom 2D engine.
+2D sidescroller game using Java and custom 2D engine.
 
 ## Introduction
 This is a 2D action sidescroller project, that is mainly developed as a programming excersice. 
 The aim is to create a slower paced sidescrolling action game (e.g. Castlevania). 
 
 ## Background 
-The name of the game comes from my initial idea, in which the
+The name of the game comes from an initial idea, in which the
 player can call lightning strikes (main attack) from sky in front of him, but leaving a small gap between the hit area and player.
 This means that the player can't damage enemies that are next to him. Therefore the player has another action: push. 
 With this action the player can push enemies next to him further away and then use main attack to damage them.
