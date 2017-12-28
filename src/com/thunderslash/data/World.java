@@ -12,15 +12,20 @@ import com.thunderslash.utilities.LevelCreator;
 
 public class World {
 
-    private List<Block> roomBlocks;
+    private List<Block> currentRoomBlocks;
     private List<Room> rooms;
     
     public World() {
         this.rooms = new ArrayList<Room>();
-        this.roomBlocks = new ArrayList<Block>();
+        this.currentRoomBlocks = new ArrayList<Block>();
         
         for(int i = 0; i < Game.WORLD_ROOM_COUNT; i++) {
-            Room room = new Room(i, LevelCreator.createLevel("testlevel.png"));
+            
+            LevelData data = LevelCreator.createLevel("testlevel.png");
+            
+            Room room = new Room(i, data.getWidth(), data.getHeight(), data.getBlocks());
+            room.setBackGroundTiles(LevelCreator.createBackground(data.getWidth(), data.getHeight()));
+            
             this.rooms.add(room);
             
             System.out.println("created room \'" + room.toString() +
@@ -29,16 +34,20 @@ public class World {
     }
 
     public void initRoom(int index) {
-        try { this.setRoomBlocks(LevelCreator.calculateSprites(this.rooms.get(index).getBlocks())); }
+        try { this.setCurrentRoomBlocks(LevelCreator.calculateSprites(this.rooms.get(index).getBlocks())); }
         catch (IndexOutOfBoundsException e) { System.out.println(e); }
     }
 
-    public List<Block> getRoomBlocks() {
-        return roomBlocks;
+    public List<Block> getCurrentRoomBlocks() {
+        return currentRoomBlocks;
     }
 
-    public void setRoomBlocks(List<Block> roomBlocks) {
-        this.roomBlocks = roomBlocks;
+    public void setCurrentRoomBlocks(List<Block> roomBlocks) {
+        this.currentRoomBlocks = roomBlocks;
+    }
+    
+    public Room getCurrentRoom() {
+        return rooms.get(Game.instance.getCurrentRoomIndex());
     }
     
     public Room getRoom(int index) {
@@ -53,26 +62,38 @@ public class World {
         this.rooms = rooms;
     }
     
-    public NeighborData getNeighbors(Block block) {
+    public NeighborData getNeighboringPlayArea(Block block) {
         
         NeighborData data = new NeighborData(block);
         Coordinate p1 = block.getGridPosition();
         
         for(Block b : this.getRoom(Game.instance.getCurrentRoomIndex()).getBlocks()) {
             
-            if(b.getBlocktype() == BlockType.WATER) continue;
             if(b.getIsEnabled() == false) continue;
             
-            Coordinate p2 = b.getGridPosition();
-            
-            if(p1.x == p2.x && (p1.y - 1) == p2.y) {
-                data.setNeighbor(Direction.NORTH, b);
-            } else if(p1.x == p2.x && (p1.y + 1) == p2.y) {
-                data.setNeighbor(Direction.SOUTH, b);
-            } else if((p1.x - 1) == p2.x && p1.y == p2.y) {
-                data.setNeighbor(Direction.WEST, b);
-            } else if((p1.x + 1) == p2.x && p1.y == p2.y) {
-                data.setNeighbor(Direction.EAST, b);
+            if(b.getBlocktype() == BlockType.PLAY_AREA || 
+                    b.getBlocktype() == BlockType.PLAYER_SPAWN ||
+                    b.getBlocktype() == BlockType.PLATFORM) {
+                
+                Coordinate p2 = b.getGridPosition();
+                
+                if(p1.x == p2.x && (p1.y - 1) == p2.y) {
+                    data.setNeighbor(Direction.NORTH, b);
+                } else if(p1.x == p2.x && (p1.y + 1) == p2.y) {
+                    data.setNeighbor(Direction.SOUTH, b);
+                } else if((p1.x - 1) == p2.x && p1.y == p2.y) {
+                    data.setNeighbor(Direction.WEST, b);
+                } else if((p1.x + 1) == p2.x && p1.y == p2.y) {
+                    data.setNeighbor(Direction.EAST, b);
+                } else if((p1.x - 1) == p2.x && (p1.y - 1) == p2.y) {
+                    data.setNeighbor(Direction.NORTH_WEST, b);
+                } else if((p1.x + 1) == p2.x && (p1.y - 1) == p2.y) {
+                    data.setNeighbor(Direction.NORTH_EAST, b);
+                } else if((p1.x - 1) == p2.x && (p1.y + 1) == p2.y) {
+                    data.setNeighbor(Direction.SOUTH_WEST, b);
+                } else if((p1.x + 1) == p2.x && (p1.y + 1) == p2.y) {
+                    data.setNeighbor(Direction.SOUTH_EAST, b);
+                }
             }
         }
         return data;

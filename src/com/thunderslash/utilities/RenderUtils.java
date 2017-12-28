@@ -208,6 +208,30 @@ public class RenderUtils {
         g2d.rotate(-rot, xpivot, ypivot);
     }
     
+    public static BufferedImage rotateImageClockwise(BufferedImage img, int times) {
+        
+        BufferedImage temp = RenderUtils.deepCopy(img);
+        
+        for(int a = 0; a < times; a++) {
+            temp = RenderUtils.rotateImg(temp);
+        }
+            
+        return temp;
+    }
+    
+    private static BufferedImage rotateImg(BufferedImage img) {
+        int width = img.getWidth();
+        int height = img.getHeight();
+        BufferedImage newImage = new BufferedImage(height, width, img.getType());
+    
+        for(int i = 0; i < width; i++) {
+            for(int j = 0; j < height; j++) {
+                newImage.setRGB(height - 1 - j, i, img.getRGB(i, j));
+            }
+        }
+        return newImage;
+    }
+    
     public static void renderSpriteFlippedHorizontally(BufferedImage sprite, Coordinate pos, Graphics g) {
         g.drawImage(RenderUtils.flipSpriteHorizontally(sprite), pos.x, pos.y, null);
     }

@@ -6,8 +6,11 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
+import com.thunderslash.data.Room;
 import com.thunderslash.gameobjects.Actor;
+import com.thunderslash.gameobjects.Block;
 
 public class Renderer {
 
@@ -17,6 +20,7 @@ public class Renderer {
         Handler handler = Game.instance.getHandler();
         GuiRenderer guirenderer = Game.instance.getGuiRenderer();
         Camera cam = Game.instance.getCamera();
+        Rectangle r = cam.getCameraBounds();
         Graphics2D g2d = (Graphics2D) g;
 
         // set rendering hints
@@ -31,22 +35,44 @@ public class Renderer {
         g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);   
 
         // set background
-        Renderer.fillScreen(g, Color.white);
-
+        Renderer.fillScreen(g, new Color(51, 20, 82, 255));
+        
+        guirenderer.render(g);
+        
         // set zoom level
         g2d.scale(1, 1);
 
         // move the camera
-        Rectangle r = cam.getCameraBounds();
         g.translate(r.x, r.y);
         
-        // render game objects
+        // render everything
+        //Renderer.renderBackground(g);
         handler.render(g);
+        Renderer.renderDebug(g);
         
-        renderDebug(g);
+    }
+    
+    private static void renderBackground(Graphics g) {
         
-        // render GUI
-        guirenderer.render(g);
+        Room room = Game.instance.getWorld().getCurrentRoom();
+        
+        int increment = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
+        int i = 0;
+        
+        int x = 0;
+        int y = 0;
+        
+        for(BufferedImage img : room.getBackGroundTiles()) {
+            g.drawImage(img, x, y, null);
+            
+            x += increment;
+            i += 1;
+            
+            if(i != 0 && i % room.getWidth() == 0) {
+                y += increment;
+                x = 0;
+            }
+        }
     }
     
     private static void renderDebug(Graphics g) {

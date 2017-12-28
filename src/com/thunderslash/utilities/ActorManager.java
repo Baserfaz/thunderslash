@@ -36,14 +36,14 @@ public class ActorManager {
             
             World world = Game.instance.getWorld();
             
-            if(world.getRoomBlocks() == null) {
+            if(world.getCurrentRoomBlocks() == null) {
                 System.out.println("room not yet loaded!");
                 return null;
             }
             
             // get the current room's spawnpoint coordinates.
             Coordinate spawnpos = new Coordinate(0, 0);
-            for(Block block : world.getRoomBlocks()) {
+            for(Block block : world.getCurrentRoomBlocks()) {
                 if(block.getBlocktype() == BlockType.PLAYER_SPAWN) {
                     spawnpos = block.getWorldPosition();
                     break;

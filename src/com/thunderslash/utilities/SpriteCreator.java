@@ -162,6 +162,11 @@ public class SpriteCreator {
 
         switch(type) {
             
+            case BACKGROUND_TILE_01:
+                pos.x = 2;
+                pos.y = 3;
+                break;
+            
             case NONE:
                 pos.x = 15;
                 pos.y = 15;
@@ -182,88 +187,44 @@ public class SpriteCreator {
                 pos.y = 0;
                 break;
                 
+            case WALL_90_DEGREE:
+                pos.x = 0;
+                pos.y = 2;
+                break;
+                
             case WALL_SINGLE:
-                pos.x = 3;
-                pos.y = 2;
-                break;
-                
-            case WALL_HORIZONTAL:
-                pos.x = 3;
-                pos.y = 4;
-                break;
-                
-            case WALL_VERTICAL:
-                pos.x = 3;
-                pos.y = 3;
-                break;
-                
-            case WALL_TOP:
-                pos.x = 5;
-                pos.y = 2;
-                break;
-                
-            case WALL_CENTER:
-                pos.x = 5;
-                pos.y = 3;
-                break;
-                
-            case WALL_BOTTOM:
-                pos.x = 5;
-                pos.y = 4;
-                break;
-                
-            case WALL_LEFT:
-                pos.x = 4;
-                pos.y = 3;
-                break;
-                
-            case WALL_RIGHT:
-                pos.x = 6;
-                pos.y = 3;
-                break;
-
-            case WALL_NW:
-                pos.x = 0;
-                pos.y = 2;
-                break;
-            case WALL_N:
                 pos.x = 1;
                 pos.y = 2;
                 break;
-            case WALL_NE:
+                
+            case PLATFORM:
+                pos.x = 3;
+                pos.y = 2;
+                break;
+                
+            case WALL_ONE_SIDED:
+                pos.x = 0;
+                pos.y = 3;
+                break;
+                
+            case WALL_TWO_SIDED:
                 pos.x = 2;
                 pos.y = 2;
                 break;
                 
-            case WALL_W:
+            case WALL_THREE_SIDED:
                 pos.x = 0;
-                pos.y = 3;
+                pos.y = 4;
                 break;
-            case WALL_C:
+                
+            case WALL_TWO_CORNER:
                 pos.x = 1;
-                pos.y = 3;
-                break;
-            case WALL_E:
-                pos.x = 2;
-                pos.y = 3;
+                pos.y = 4;
                 break;
                
-            case WALL_SW:
-                pos.x = 0;
-                pos.y = 4;
-                break;
-            case WALL_S:
+            case WALL_CORNER:
                 pos.x = 1;
-                pos.y = 4;
-                break;
-            case WALL_SE:
-                pos.x = 2;
-                pos.y = 4;
-                break;
-  
-            case PLATFORM:
-                pos.x = 7;
-                pos.y = 2;
+                pos.y = 3;
                 break;
                 
             default:

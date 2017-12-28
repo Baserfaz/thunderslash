@@ -60,23 +60,13 @@ public class GuiRenderer {
         
         Graphics2D g2d = (Graphics2D) g;
         
-        Camera cam = Game.instance.getCamera();
-        if(cam == null) return;
-        
-        Rectangle camr = cam.getCameraBounds();
-        
-        // calculate string position 
-        // using camera position
-        int xx = camr.x + x;
-        int yy = camr.y + y;
-        
         Font font = Game.instance.getCustomFont().deriveFont(Font.PLAIN, size);
         g2d.setColor(color);
         g2d.setFont(font);
         
         for (String line : msg.split("\n")) {
-            g2d.drawString(line, xx, yy);
-            yy += g.getFontMetrics().getHeight() + Game.LINEHEIGHT;
+            g2d.drawString(line, x, y);
+            y += g.getFontMetrics().getHeight() + Game.LINEHEIGHT;
         }
     }
 

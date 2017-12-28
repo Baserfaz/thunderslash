@@ -1,6 +1,5 @@
 package com.thunderslash.utilities;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +18,21 @@ import com.thunderslash.gameobjects.Block;
 
 public class LevelCreator {
     
-    public static List<Block> createLevel(String path) {
+    public static List<BufferedImage> createBackground(int x, int y) {
+        List<BufferedImage> imgs = new ArrayList<BufferedImage>();
+        
+        SpriteCreator spriteCreator = Game.instance.getSpriteCreator();
+        
+        BufferedImage bgwall01 = spriteCreator.CreateSprite(SpriteType.BACKGROUND_TILE_01);
+        
+        for(int i = 0; i < x * y; i++) {
+            imgs.add(bgwall01);
+        }
+        
+        return imgs;
+    }
+    
+    public static LevelData createLevel(String path) {
         
         List<Block> blocks = new ArrayList<Block>();
         
@@ -37,7 +50,7 @@ public class LevelCreator {
             int blue = current & 0xff;
             int green = (current & 0xff00) >> 8;
             int red = (current & 0xff0000) >> 16;
-            //int alpha = (current & 0xff000000) >>> 24;
+            int alpha = (current & 0xff000000) >>> 24;
             
             // vars
             Coordinate pos = new Coordinate(0, 0);
@@ -51,32 +64,42 @@ public class LevelCreator {
             boolean found = false;
             
             // wall = black
-            if(red == 0 && green == 0 && blue == 0) {
+            if(red == 0 && green == 0 && blue == 0 && alpha == 255) {
                
                 found = true;
                 blockType = BlockType.SOLID;
+                spriteType = SpriteType.ERROR;
              
             // gray = platform
-            } else if(red == 100 && green == 100 && blue == 100) { 
+            } else if(red == 100 && green == 100 && blue == 100 && alpha == 255) { 
                 
                 found = true;
                 blockType = BlockType.PLATFORM;
                 
             // green = player spawn
-            } else if(red == 0 && green == 255 && blue == 0) {
+            } else if(red == 0 && green == 255 && blue == 0 && alpha == 255) {
                 
                 // no sprite
                 found = true;
-                isEnabled = false;
+                isEnabled = true;
                 isVisible = false;
                 blockType = BlockType.PLAYER_SPAWN;
             
             // blue = water
-            } else if(red == 0 && green == 0 && blue == 255) {
+            } else if(red == 0 && green == 0 && blue == 255 && alpha == 255) {
                 
                 found = true;
                 blockType = BlockType.WATER;
                 spriteType = SpriteType.WATER;
+                
+            // white = play area
+            } else if(red == 255 && green == 255 && blue == 255 && alpha == 255) {
+                
+                found = true;
+                blockType = BlockType.PLAY_AREA;
+                spriteType = SpriteType.NONE;
+                isEnabled = true;
+                isVisible = true;
                 
             }
             
@@ -107,10 +130,11 @@ public class LevelCreator {
             }
         }
         
-        return blocks;
+        return new LevelData(levelWidth, levelHeight, blocks);
     }
 
     public static List<Block> calculateSprites(List<Block> blocks) {
+        
         List<Block> calcBlocks = new ArrayList<Block>(blocks);
         World world = Game.instance.getWorld();
         SpriteCreator spriteCreator = Game.instance.getSpriteCreator();
@@ -120,223 +144,91 @@ public class LevelCreator {
          
             if(block.getIsEnabled() == false) continue;
             
-            if(block.getBlocktype() == BlockType.WATER) continue;
             if(block.getBlocktype() == BlockType.PLATFORM) {
                 block.setSprite(spriteCreator.CreateSprite(SpriteType.PLATFORM));
+                block.recalculateBoundingBox();
                 continue;
             }
             
+            // only support solid blocks for now.
+            if(block.getBlocktype() != BlockType.SOLID) continue;
+            
             // -------------------------------------------------
             
-            NeighborData data = world.getNeighbors(block);
+            NeighborData data = world.getNeighboringPlayArea(block);
             
-            boolean hasNorth = data.getNeighbors().containsKey(Direction.NORTH);
-            boolean hasSouth = data.getNeighbors().containsKey(Direction.SOUTH);
-            boolean hasWest  = data.getNeighbors().containsKey(Direction.WEST);
-            boolean hasEast  = data.getNeighbors().containsKey(Direction.EAST);
+            boolean n = data.getNeighbors().containsKey(Direction.NORTH);
+            boolean s = data.getNeighbors().containsKey(Direction.SOUTH);
+            boolean w  = data.getNeighbors().containsKey(Direction.WEST);
+            boolean e  = data.getNeighbors().containsKey(Direction.EAST);
+
+            boolean ne  = data.getNeighbors().containsKey(Direction.NORTH_EAST);
+            boolean nw  = data.getNeighbors().containsKey(Direction.NORTH_WEST);
+            boolean se  = data.getNeighbors().containsKey(Direction.SOUTH_EAST);
+            boolean sw  = data.getNeighbors().containsKey(Direction.SOUTH_WEST);
             
-//            Block northNeighbor = null;
-//            Block southNeighbor = null;
-//            Block westNeighbor  = null;
-//            Block eastNeighbor  = null;
-//            
-//            if(hasNorth) northNeighbor = data.getNeighbors().get(Direction.NORTH);
-//            if(hasSouth) southNeighbor = data.getNeighbors().get(Direction.SOUTH);
-//            if(hasWest)  westNeighbor  = data.getNeighbors().get(Direction.WEST);
-//            if(hasEast)  eastNeighbor  = data.getNeighbors().get(Direction.EAST);
-            
-            if(hasNorth && hasSouth && hasWest && hasEast) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_C));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasWest && hasSouth && hasEast) {
-            
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_N));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-            
-            } else if(hasWest && hasNorth && hasEast) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_S));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasWest && hasNorth && hasSouth) { 
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_E));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasEast && hasNorth && hasSouth) { 
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_W));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasNorth && hasWest) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_SE));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasNorth && hasEast) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_SW));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasNorth && hasSouth) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_VERTICAL));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasEast && hasWest) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_HORIZONTAL));
-                        break;
-                    default:
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasSouth && hasWest) {
-            
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_NE));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasSouth && hasEast) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_NW));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasNorth) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_BOTTOM));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasSouth) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_TOP));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasWest) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_RIGHT));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(hasEast) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_LEFT));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
-            } else if(!hasNorth && !hasSouth && !hasWest && !hasEast) {
-                
-                switch(block.getBlocktype()) {
-                    case SOLID:
-                        block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_SINGLE));
-                        break;
-                    default: 
-                        System.out.println("LevelCreator.calculateSprites: "
-                                + "Unsupported blocktype " + block.getBlocktype());
-                        break;
-                }
-                
+            if(n && s && w && e) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_SINGLE));
+            } else if(w && n && e) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_THREE_SIDED));
+            } else if(n && e && s) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_THREE_SIDED), 1));
+            } else if(w && s && e) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_THREE_SIDED), 2));
+            } else if(w && n && s) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_THREE_SIDED), 3));
+            } else if(n && e) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE), 1));
+            } else if(n && w) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE));
+            } else if(s && e) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE), 2));
+            } else if(s && w) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE), 3));
+            } else if(n && s) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_TWO_SIDED), 1));
+            } else if(w && e) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_TWO_SIDED));  
+            } else if(n) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED));
+            } else if(s) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED), 2));
+            } else if(w) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED), 3));
+            } else if(e) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED), 1));
+            } else if(nw && ne) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_TWO_CORNER), 3));
+            } else if(ne && se) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_TWO_CORNER));
+            } else if(se && sw) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_TWO_CORNER), 1));
+            } else if(sw && nw) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_TWO_CORNER), 2));
+            } else if(nw) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_CORNER), 2));
+            } else if(ne) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_CORNER), 3));
+            } else if(se) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_CORNER));
+            } else if(sw) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_CORNER), 1));
             }
             
             // we changed sprite, so

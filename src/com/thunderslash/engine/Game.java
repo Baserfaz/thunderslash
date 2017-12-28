@@ -51,7 +51,6 @@ public class Game extends Canvas implements Runnable {
     public static final String CUSTOMFONTEXTENSION = ".ttf";			               
     public static final String CUSTOMFONTFOLDER    = "coders_crux";		               
     
-    public static final int BASEFONTSIZE 		   = 8;						           
     public static final int LINEHEIGHT			   = 2;						           
 
     public static final int WORLD_ROOM_COUNT       = 1;

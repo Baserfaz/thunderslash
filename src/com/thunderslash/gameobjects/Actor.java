@@ -160,18 +160,18 @@ public class Actor extends GameObject {
     
     private void updateCollisions() {
         
-        int margin = 20;
-        int yMargin = 10;
+        int margin = 10 * Game.SPRITESIZEMULT;
+        int yMargin = 5 * Game.SPRITESIZEMULT;
         
         // y-axis
         int top    = this.worldPosition.y + yMargin;
-        int center = this.worldPosition.y + Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT / 2;
+        int center = this.worldPosition.y + (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) / 2;
         int bottom = this.worldPosition.y + Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
         
         // x-axis
         int left   = this.worldPosition.x + margin;
-        int right  = (this.worldPosition.x - margin) + Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
-        int middle = this.worldPosition.x + Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT / 2;
+        int right  = this.worldPosition.x - margin + Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
+        int middle = this.worldPosition.x + (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) / 2;
         
         // left collisions
         Point lc = new Point(left, center);
@@ -277,7 +277,7 @@ public class Actor extends GameObject {
         
         Vector2 me = new Vector2(this.getBounds().x, this.getBounds().y);
         
-        for(Block block : Game.instance.getWorld().getRoomBlocks()) {
+        for(Block block : Game.instance.getWorld().getCurrentRoomBlocks()) {
             
             Vector2 them = new Vector2(block.getBounds().x, block.getBounds().y);
             float distance = me.distance(them);
