@@ -18,20 +18,6 @@ import com.thunderslash.gameobjects.Block;
 
 public class LevelCreator {
     
-    public static List<BufferedImage> createBackground(int x, int y) {
-        List<BufferedImage> imgs = new ArrayList<BufferedImage>();
-        
-        SpriteCreator spriteCreator = Game.instance.getSpriteCreator();
-        
-        BufferedImage bgwall01 = spriteCreator.CreateSprite(SpriteType.BACKGROUND_TILE_01);
-        
-        for(int i = 0; i < x * y; i++) {
-            imgs.add(bgwall01);
-        }
-        
-        return imgs;
-    }
-    
     public static LevelData createLevel(String path) {
         
         List<Block> blocks = new ArrayList<Block>();
@@ -57,7 +43,7 @@ public class LevelCreator {
             Coordinate gridPos = new Coordinate(0, 0);
             boolean isEnabled = true;
             boolean isVisible = true;
-            BlockType blockType = BlockType.OTHER;
+            BlockType blockType = BlockType.NOT_ASSIGNED;
             SpriteType spriteType = SpriteType.NONE;
             
             // flag

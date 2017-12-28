@@ -9,8 +9,11 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.data.Room;
+import com.thunderslash.enumerations.BlockType;
+import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
+import com.thunderslash.utilities.SpriteCreator;
 
 public class Renderer {
 
@@ -46,7 +49,7 @@ public class Renderer {
         g.translate(r.x, r.y);
         
         // render everything
-        //Renderer.renderBackground(g);
+        Renderer.renderBackground(g);
         handler.render(g);
         Renderer.renderDebug(g);
         
@@ -55,22 +58,12 @@ public class Renderer {
     private static void renderBackground(Graphics g) {
         
         Room room = Game.instance.getWorld().getCurrentRoom();
+        SpriteCreator spriteCreator = Game.instance.getSpriteCreator();
         
-        int increment = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
-        int i = 0;
-        
-        int x = 0;
-        int y = 0;
-        
-        for(BufferedImage img : room.getBackGroundTiles()) {
-            g.drawImage(img, x, y, null);
-            
-            x += increment;
-            i += 1;
-            
-            if(i != 0 && i % room.getWidth() == 0) {
-                y += increment;
-                x = 0;
+        for(Block block : room.getBlocks()) {
+            if(block.getBlocktype() != BlockType.NOT_ASSIGNED) {
+                g.drawImage(spriteCreator.CreateSprite(SpriteType.BACKGROUND_TILE_01), 
+                        block.getWorldPosition().x, block.getWorldPosition().y, null);
             }
         }
     }

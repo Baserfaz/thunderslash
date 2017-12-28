@@ -24,7 +24,6 @@ public class World {
             LevelData data = LevelCreator.createLevel("testlevel.png");
             
             Room room = new Room(i, data.getWidth(), data.getHeight(), data.getBlocks());
-            room.setBackGroundTiles(LevelCreator.createBackground(data.getWidth(), data.getHeight()));
             
             this.rooms.add(room);
             

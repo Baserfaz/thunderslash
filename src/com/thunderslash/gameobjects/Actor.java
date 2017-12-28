@@ -23,14 +23,14 @@ public class Actor extends GameObject {
     private Health HP;
     
     // actor settings
-    private float maxVerticalSpeed = 20f;
-    private float maxHorizontalSpeed = 5f;
-    private float maxVerticalAccel = 0.5f;
+    private float maxVerticalSpeed = 15f;
+    private float maxHorizontalSpeed = 3f;
+    private float maxVerticalAccel = 0.58f;
     private float maxHorizontalAccel = 0.5f;
     private float horizontalAccelMult = 0.7f;
-    private float jumpForce = -1f;
+    private float jumpForce = -5f;
     private float friction = 0.3f;
-    private float collisionDistance = 80f;
+    private float collisionDistance = 40f * Game.SPRITESIZEMULT;
     
     // inputs
     private Vector2 direction = new Vector2();
@@ -161,7 +161,7 @@ public class Actor extends GameObject {
     private void updateCollisions() {
         
         int margin = 10 * Game.SPRITESIZEMULT;
-        int yMargin = 5 * Game.SPRITESIZEMULT;
+        int yMargin = 10 * Game.SPRITESIZEMULT;
         
         // y-axis
         int top    = this.worldPosition.y + yMargin;
