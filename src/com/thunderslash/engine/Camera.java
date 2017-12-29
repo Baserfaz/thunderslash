@@ -1,5 +1,7 @@
 package com.thunderslash.engine;
 
+import com.thunderslash.data.Room;
+import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.utilities.Coordinate;
 import com.thunderslash.utilities.Util;
@@ -24,28 +26,39 @@ public class Camera {
     }
 
     public void tick() {
-        if(this.isFollowing()) {
+        if(this.isFollowing() && this.followTarget != null) {
+            
+            Actor actor = null;
+            
+            if(this.followTarget instanceof Actor) {
+                actor = (Actor) this.followTarget;
+            }
+            
             // current position
             int camX = this.getCameraBounds().x;
             int camY = this.getCameraBounds().y;
           
             // calculate new camera position
+            // centers cam pos to the target.
             Coordinate target = Util.calculateCameraPos();
-          
-            // apply smoothing
-            camX += (target.x - camX) * Game.CAMERA_SMOOTH_MULT;
-            camY += (target.y - camY) * Game.CAMERA_SMOOTH_MULT;
+            
+            // apply camera smoothing
+            camX -= (target.x + camX) * Game.CAMERA_SMOOTH_MULT;
+                
+            if(actor != null) {
+                if(actor.isGrounded()) {
+                    camY -= (target.y + camY) * Game.CAMERA_SMOOTH_MULT;
+                }
+            }
           
             // on first pass instantly 
             // focus on player, after that
             // use smoothing.
             if(this.firstPass) {
                 firstPass = false;
-                // no smoothing
-                this.Update(target.x, target.y);
+                this.Update(-target.x, -target.y); // no smoothing
             } else {
-                // smoothing
-                this.Update((int)camX, (int)camY);
+                this.Update((int)camX, (int)camY); // smoothing
             }
         }
     }

@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
-import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.Coordinate;
 
@@ -42,61 +41,55 @@ public abstract class GameObject {
 
     public abstract void tick();
     public abstract void render(Graphics g);
-    public abstract Rectangle getBounds();
-
+    public Rectangle getBounds() { return this.hitbox; }
     
     public void recalculateBoundingBox() {
+                
+        int[] pixels = sprite.getRGB(0, 0, sprite.getWidth(),
+                sprite.getHeight(), null, 0, sprite.getWidth());
         
-        if(this instanceof Block) {
-            Block block = (Block)this;
-            if(block.getBlocktype() == BlockType.PLATFORM) {
+        int x = this.worldPosition.x, y = this.worldPosition.y;
+        int w = sprite.getWidth(), h = sprite.getHeight();
+        
+        int largestX = 0;
+        int smallestX = w;
+        int largestY = 0;
+        int smallestY = h;
+        
+        for(int i = 0; i < pixels.length; i++) {
+         
+            int current = pixels[i];
+            int alpha = (current & 0xff000000) >>> 24;
+            
+            if(alpha == 255) {
                 
-                int[] pixels = sprite.getRGB(0, 0, sprite.getWidth(),
-                        sprite.getHeight(), null, 0, sprite.getWidth());
+                // pixel position in the sprite
+                int yy = i / w;
+                int xx = i % w;
                 
-                int x = this.worldPosition.x, y = this.worldPosition.y;
-                int w = sprite.getWidth(), h = sprite.getHeight();
-                
-                int largestX = 0;
-                int smallestX = w;
-                int largestY = 0;
-                int smallestY = h;
-                
-                for(int i = 0; i < pixels.length; i++) {
-                 
-                    int current = pixels[i];
-                    int alpha = (current & 0xff000000) >>> 24;
-                    
-                    if(alpha == 255) {
-                        
-                        // pixel position in the sprite
-                        int yy = i / w;
-                        int xx = i % w;
-                        
-                        if(yy < smallestY) {
-                            smallestY = yy;
-                        } else if(yy > largestY) {
-                            largestY = yy;
-                        }
-                        
-                        if(xx > largestX) {
-                            largestX = xx;
-                        } else if(xx < smallestX) {
-                            smallestX = xx;
-                        }
-                        
-                    }
+                if(yy < smallestY) {
+                    smallestY = yy;
+                } else if(yy > largestY) {
+                    largestY = yy;
                 }
                 
-                y += smallestY;
-                x += smallestX;
-                w = largestX - smallestX;
-                h = largestY - smallestY;
+                if(xx > largestX) {
+                    largestX = xx;
+                } else if(xx < smallestX) {
+                    smallestX = xx;
+                }
                 
-                // update hitbox 
-                this.setBoundingBoxSize(x, y, w, h);
             }
         }
+        
+        y += smallestY;
+        x += smallestX;
+        w = largestX - smallestX;
+        h = largestY - smallestY;
+        
+        // update hitbox 
+        this.setBoundingBoxSize(x, y, w, h);
+        
     }
     
     public void setBoundingBoxSize(int x, int y, int w, int h) {

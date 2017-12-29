@@ -1,6 +1,7 @@
 package com.thunderslash.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.thunderslash.engine.Game;
@@ -20,19 +21,15 @@ public class World {
         this.currentRoomBlocks = new ArrayList<Block>();
         
         for(int i = 0; i < Game.WORLD_ROOM_COUNT; i++) {
-            
             LevelData data = LevelCreator.createLevel("testlevel.png");
-            
             Room room = new Room(i, data.getWidth(), data.getHeight(), data.getBlocks());
-            
             this.rooms.add(room);
-            
             System.out.println("created room \'" + room.toString() +
                     "\', block count: " + room.getBlocks().size());
         }
     }
 
-    public void initRoom(int index) {
+    public void initializeRoom(int index) {
         try { this.setCurrentRoomBlocks(LevelCreator.calculateSprites(this.rooms.get(index).getBlocks())); }
         catch (IndexOutOfBoundsException e) { System.out.println(e); }
     }
@@ -66,13 +63,16 @@ public class World {
         NeighborData data = new NeighborData(block);
         Coordinate p1 = block.getGridPosition();
         
+        List<BlockType> allowedTypes = new ArrayList<BlockType>(
+                Arrays.asList(
+                        BlockType.PLAY_AREA, BlockType.PLAYER_SPAWN,
+                        BlockType.PLATFORM, BlockType.EXIT, BlockType.HURT));
+        
         for(Block b : this.getRoom(Game.instance.getCurrentRoomIndex()).getBlocks()) {
             
             if(b.getIsEnabled() == false) continue;
             
-            if(b.getBlocktype() == BlockType.PLAY_AREA || 
-                    b.getBlocktype() == BlockType.PLAYER_SPAWN ||
-                    b.getBlocktype() == BlockType.PLATFORM) {
+            if(allowedTypes.contains(b.getBlocktype())) {
                 
                 Coordinate p2 = b.getGridPosition();
                 

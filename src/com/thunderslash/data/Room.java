@@ -1,7 +1,5 @@
 package com.thunderslash.data;
 
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.thunderslash.gameobjects.Block;

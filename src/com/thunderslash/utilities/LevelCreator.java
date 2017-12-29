@@ -61,6 +61,7 @@ public class LevelCreator {
                 
                 found = true;
                 blockType = BlockType.PLATFORM;
+                spriteType = SpriteType.PLATFORM;
                 
             // green = player spawn
             } else if(red == 0 && green == 255 && blue == 0 && alpha == 255) {
@@ -68,8 +69,9 @@ public class LevelCreator {
                 // no sprite
                 found = true;
                 isEnabled = true;
-                isVisible = false;
+                isVisible = true;
                 blockType = BlockType.PLAYER_SPAWN;
+                spriteType = SpriteType.DOOR_CLOSED;
             
             // blue = water
             } else if(red == 0 && green == 0 && blue == 255 && alpha == 255) {
@@ -84,8 +86,20 @@ public class LevelCreator {
                 found = true;
                 blockType = BlockType.PLAY_AREA;
                 spriteType = SpriteType.NONE;
-                isEnabled = true;
-                isVisible = true;
+                
+            // purple = exit
+            } else if(red == 233 && green == 0 && blue == 187 && alpha == 255) {
+                
+                found = true;
+                blockType = BlockType.EXIT;
+                spriteType = SpriteType.DOOR_OPEN;
+                
+            // teal = trap
+            } else if(red == 16 && green == 221 && blue == 219 && alpha == 255) {
+                
+                found = true;
+                blockType = BlockType.HURT;
+                spriteType = SpriteType.SPIKES;
                 
             }
             
@@ -106,6 +120,8 @@ public class LevelCreator {
                 
                 // sprite types are calculated after blocks are created.
                 Block block = new Block(pos, gridPos, blockType, spriteType);
+                
+                block.recalculateBoundingBox();
                 
                 // set block settings
                 block.setIsEnabled(isEnabled);
@@ -129,12 +145,6 @@ public class LevelCreator {
         for(Block block : calcBlocks) {
          
             if(block.getIsEnabled() == false) continue;
-            
-            if(block.getBlocktype() == BlockType.PLATFORM) {
-                block.setSprite(spriteCreator.CreateSprite(SpriteType.PLATFORM));
-                block.recalculateBoundingBox();
-                continue;
-            }
             
             // only support solid blocks for now.
             if(block.getBlocktype() != BlockType.SOLID) continue;

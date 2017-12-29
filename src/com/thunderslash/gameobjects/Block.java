@@ -24,10 +24,6 @@ public class Block extends GameObject {
     public void render(Graphics g) {
         g.drawImage(sprite, worldPosition.x, worldPosition.y, null);
     }
-    
-    public Rectangle getBounds() {
-        return this.hitbox;
-    }
 
     public BlockType getBlocktype() {
         return blockType;

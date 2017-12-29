@@ -4,12 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 import com.thunderslash.gameobjects.Actor;
-import com.thunderslash.gameobjects.Item;
 
 public class GuiRenderer {
 
@@ -19,10 +16,10 @@ public class GuiRenderer {
         if(cam == null) return;
         
         this.renderVersion(g, cam);
-        this.renderDebugInfo(g, cam);
+        this.renderDebugInfo(g);
     }   
 
-    private void renderDebugInfo(Graphics g, Camera cam) {
+    private void renderDebugInfo(Graphics g) {
         if(Game.drawDebugInfo) {
             
             Actor player = Game.instance.getActorManager().getPlayerInstance();
@@ -35,38 +32,32 @@ public class GuiRenderer {
             info += "velocity: " + player.getVelocity().toString() + "\n";
             info += "isGrounded: " + player.isGrounded() + "\n";
             
-            this.renderString(info, 20, 35, Game.debugInfoColor, 30f, g);
+            this.renderString(info, 20, 40, Game.debugInfoColor, 30f, g);
         }
     }
     
     private void renderVersion(Graphics g, Camera cam) {
         Rectangle r = cam.getCameraBounds();
-        this.renderString("Version 0.1", r.width - 90, r.height - 10, Color.black, 20f, g);
-    }
-    
-    public void renderHoverText(Graphics g) {
-        
-        Item hoverItem = Game.instance.getDynamicGuiManager().getMouseHoverItem();
-        if(hoverItem == null) return;
-        Point mousePos = Game.instance.getMousePos();
-        
-        int x = mousePos.x + 40;
-        int y = mousePos.y + 40;
-        
-        this.renderString(hoverItem.getInfo(), x, y, Color.black, 30f, g);
+        this.renderString("v0.1", r.width - 50, 20, Color.white, 20f, g);
     }
     
     public void renderString(String msg, int x, int y, Color color, float size, Graphics g) {
         
         Graphics2D g2d = (Graphics2D) g;
         
+        Camera cam = Game.instance.getCamera();
+        Rectangle r = cam.getCameraBounds();
+        
         Font font = Game.instance.getCustomFont().deriveFont(Font.PLAIN, size);
         g2d.setColor(color);
         g2d.setFont(font);
         
+        int xx = r.x + x;
+        int yy = r.y + y;
+        
         for (String line : msg.split("\n")) {
-            g2d.drawString(line, x, y);
-            y += g.getFontMetrics().getHeight() + Game.LINEHEIGHT;
+            g2d.drawString(line, xx, yy);
+            yy += g.getFontMetrics().getHeight() + Game.LINEHEIGHT;
         }
     }
 

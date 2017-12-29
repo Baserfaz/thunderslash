@@ -227,6 +227,26 @@ public class SpriteCreator {
                 pos.y = 3;
                 break;
                 
+            case DOOR_CLOSED:
+                pos.x = 2;
+                pos.y = 4;
+                break;
+                
+            case DOOR_OPEN:
+                pos.x = 3;
+                pos.y = 4;
+                break;
+                
+            case SPIKES:
+                pos.x = 3;
+                pos.y = 3;
+                break;
+                
+            case LIGHT_CIRCLE:
+                pos.x = 2;
+                pos.y = 1;
+                break;
+                
             default:
                 System.out.println("Could not find a sprite of spritetype:" + type);
                 break;

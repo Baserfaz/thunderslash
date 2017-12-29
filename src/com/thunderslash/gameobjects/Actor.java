@@ -23,13 +23,13 @@ public class Actor extends GameObject {
     private Health HP;
     
     // actor settings
-    private float maxVerticalSpeed = 15f;
-    private float maxHorizontalSpeed = 3f;
-    private float maxVerticalAccel = 0.58f;
-    private float maxHorizontalAccel = 0.5f;
-    private float horizontalAccelMult = 0.7f;
-    private float jumpForce = -5f;
-    private float friction = 0.3f;
+    private float maxVerticalSpeed = 7.5f * Game.SPRITESIZEMULT;
+    private float maxHorizontalSpeed = 1f * Game.SPRITESIZEMULT;
+    private float maxVerticalAccel = 0.27f * Game.SPRITESIZEMULT;
+    private float maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
+    private float horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
+    private float jumpForce = -0.24f * Game.SPRITESIZEMULT;
+    private float friction = 0.10f * Game.SPRITESIZEMULT;
     private float collisionDistance = 40f * Game.SPRITESIZEMULT;
     
     // inputs
@@ -57,6 +57,8 @@ public class Actor extends GameObject {
         
         this.name = name;
         this.HP = new Health(hp);
+        
+        this.recalculateBoundingBox();
     }
     
     public void tick() {
@@ -297,10 +299,6 @@ public class Actor extends GameObject {
         } else if(this.facingDirection == Direction.WEST) {
             RenderUtils.renderSpriteFlippedHorizontally(sprite, this.worldPosition, g);
         }
-    }
-
-    public Rectangle getBounds() {
-        return this.hitbox;
     }
     
     public Health getHP() {

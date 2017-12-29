@@ -55,7 +55,7 @@ public class Game extends Canvas implements Runnable {
 
     public static final int WORLD_ROOM_COUNT       = 1;
     
-    public static final float GRAVITY              = 0.03f;
+    public static final float GRAVITY              = 0.015f * Game.SPRITESIZEMULT;
     
     // ------------------------------
     // DEBUG
@@ -136,7 +136,7 @@ public class Game extends Canvas implements Runnable {
         this.world = new World();
         
         // initiate first level
-        this.world.initRoom(Game.instance.currentRoomIndex);
+        this.world.initializeRoom(Game.instance.currentRoomIndex);
         
         // create mock up player actor
         actorManager.createActorInstance("myplayer", ActorType.Player,

@@ -40,18 +40,19 @@ public class Renderer {
         // set background
         Renderer.fillScreen(g, new Color(51, 20, 82, 255));
         
-        guirenderer.render(g);
+        //guirenderer.render(g);
         
         // set zoom level
         g2d.scale(1, 1);
 
         // move the camera
-        g.translate(r.x, r.y);
+        g.translate(-r.x, -r.y);
         
         // render everything
         Renderer.renderBackground(g);
         handler.render(g);
         Renderer.renderDebug(g);
+        guirenderer.render(g);
         
     }
     
@@ -60,10 +61,11 @@ public class Renderer {
         Room room = Game.instance.getWorld().getCurrentRoom();
         SpriteCreator spriteCreator = Game.instance.getSpriteCreator();
         
+        BufferedImage img = spriteCreator.CreateSprite(SpriteType.BACKGROUND_TILE_01);
+        
         for(Block block : room.getBlocks()) {
             if(block.getBlocktype() != BlockType.NOT_ASSIGNED) {
-                g.drawImage(spriteCreator.CreateSprite(SpriteType.BACKGROUND_TILE_01), 
-                        block.getWorldPosition().x, block.getWorldPosition().y, null);
+                g.drawImage(img, block.getWorldPosition().x, block.getWorldPosition().y, null);
             }
         }
     }
