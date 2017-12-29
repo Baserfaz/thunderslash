@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferStrategy;
-import java.util.List;
 
 import com.thunderslash.data.World;
 import com.thunderslash.engine.Camera;
@@ -15,17 +14,14 @@ import com.thunderslash.engine.Window;
 import com.thunderslash.enumerations.ActorType;
 import com.thunderslash.enumerations.GameState;
 import com.thunderslash.enumerations.SpriteType;
-import com.thunderslash.gameobjects.Actor;
-import com.thunderslash.gameobjects.Block;
 import com.thunderslash.utilities.ActorManager;
-import com.thunderslash.utilities.Coordinate;
 import com.thunderslash.utilities.DynamicGuiManager;
 import com.thunderslash.utilities.SpriteCreator;
 import com.thunderslash.utilities.Util;
 
 public class Game extends Canvas implements Runnable {
-
-    private static final long serialVersionUID = -5226776943692411279L;
+    
+    private static final long serialVersionUID = -8921773408778554392L;
 
     public static Game instance;
 
@@ -45,7 +41,7 @@ public class Game extends Canvas implements Runnable {
     public static final String LEVELFOLDER         = "/levels/";
     
     public static final int SPRITEGRIDSIZE         = 32;
-    public static final int SPRITESIZEMULT         = 4;
+    public static final int SPRITESIZEMULT         = 5;
 
     public static final String CUSTOMFONTNAME      = "coders_crux";		               
     public static final String CUSTOMFONTEXTENSION = ".ttf";			               
@@ -73,7 +69,7 @@ public class Game extends Canvas implements Runnable {
     public static final Color gameObjectRectColor        = Color.red;
     
     public static boolean drawActorCollisionPoints       = false;
-    public static final Color actorCollisionPointColor   = Color.red;
+    public static final Color actorCollisionPointColor   = Color.green;
     
     // -----------------------------
 

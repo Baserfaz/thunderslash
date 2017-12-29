@@ -1,7 +1,6 @@
 package com.thunderslash.gameobjects;
 
 import java.awt.Graphics;
-import java.awt.Rectangle;
 
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.SpriteType;
@@ -11,6 +10,8 @@ public class Block extends GameObject {
 
     private BlockType blockType;
     private Coordinate gridPosition;
+    
+    private GameObject item;
     
     public Block(Coordinate worldPos, Coordinate gridPosition, BlockType blockType, SpriteType type) {
         super(worldPos, type);
@@ -39,6 +40,14 @@ public class Block extends GameObject {
 
     public void setGridPosition(Coordinate gridPosition) {
         this.gridPosition = gridPosition;
+    }
+
+    public GameObject getItem() {
+        return item;
+    }
+
+    public void setItem(GameObject item) {
+        this.item = item;
     }
 }
 

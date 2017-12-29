@@ -12,7 +12,11 @@ public abstract class GameObject {
 
     protected Coordinate worldPosition;
     protected BufferedImage sprite;
+    
+    // hitboxes
     protected Rectangle hitbox;
+    protected Rectangle hitboxSizes;
+    protected Coordinate hitboxCenter;
     
     protected boolean isEnabled = true;
     protected boolean isVisible = true;
@@ -32,6 +36,12 @@ public abstract class GameObject {
         
         // add to handler
         Game.instance.getHandler().AddObject(this);
+        
+        this.recalculateBoundingBox();
+        
+        this.hitboxCenter = new Coordinate(this.hitbox.x + this.hitbox.width / 2, 
+                this.hitbox.y + this.hitbox.height / 2);
+        
     }
 
     public String getInfo() {
@@ -89,6 +99,9 @@ public abstract class GameObject {
         
         // update hitbox 
         this.setBoundingBoxSize(x, y, w, h);
+        
+        // store hitbox sizes
+        this.hitboxSizes = new Rectangle(smallestX, smallestY, w, h);
         
     }
     

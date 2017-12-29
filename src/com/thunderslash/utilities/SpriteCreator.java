@@ -247,6 +247,16 @@ public class SpriteCreator {
                 pos.y = 1;
                 break;
                 
+            case CHEST_CLOSED:
+                pos.x = 0;
+                pos.y = 5;
+                break;
+                
+            case CHEST_OPEN:
+                pos.x = 1;
+                pos.y = 5;
+                break;
+                
             default:
                 System.out.println("Could not find a sprite of spritetype:" + type);
                 break;

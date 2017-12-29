@@ -1,8 +1,8 @@
 package com.thunderslash.gameobjects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,35 +19,35 @@ import com.thunderslash.utilities.RenderUtils;
 public class Actor extends GameObject {
     
     // references to other files
-    private String name;
-    private Health HP;
+    protected String name;
+    protected Health HP;
     
     // actor settings
-    private float maxVerticalSpeed = 7.5f * Game.SPRITESIZEMULT;
-    private float maxHorizontalSpeed = 1f * Game.SPRITESIZEMULT;
-    private float maxVerticalAccel = 0.27f * Game.SPRITESIZEMULT;
-    private float maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
-    private float horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
-    private float jumpForce = -0.24f * Game.SPRITESIZEMULT;
-    private float friction = 0.10f * Game.SPRITESIZEMULT;
-    private float collisionDistance = 40f * Game.SPRITESIZEMULT;
+    protected float maxVerticalSpeed = 7.5f * Game.SPRITESIZEMULT;
+    protected float maxHorizontalSpeed = 1f * Game.SPRITESIZEMULT;
+    protected float maxVerticalAccel = 0.27f * Game.SPRITESIZEMULT;
+    protected float maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
+    protected float horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
+    protected float jumpForce = -0.24f * Game.SPRITESIZEMULT;
+    protected float friction = 0.10f * Game.SPRITESIZEMULT;
+    protected float collisionDistance = 40f * Game.SPRITESIZEMULT;
     
     // inputs
-    private Vector2 direction = new Vector2();
+    protected Vector2 direction = new Vector2();
     
     // physics 
-    private Vector2 velocity = new Vector2();
-    private Vector2 acceleration = new Vector2();
+    protected Vector2 velocity = new Vector2();
+    protected Vector2 acceleration = new Vector2();
     
     // collisions
-    private boolean isGrounded = false;
-    private boolean collisionLeft = false;
-    private boolean collisionRight = false;
-    private boolean collisionTop = false;
+    protected boolean isGrounded = false;
+    protected boolean collisionLeft = false;
+    protected boolean collisionRight = false;
+    protected boolean collisionTop = false;
     
     // other refs
-    private Block standingBlock = null;
-    private Direction facingDirection = Direction.EAST;
+    protected Block standingBlock = null;
+    protected Direction facingDirection = Direction.WEST;
     
     // collections
     private List<Point> collisionPoints = new ArrayList<Point>();
@@ -58,7 +58,6 @@ public class Actor extends GameObject {
         this.name = name;
         this.HP = new Health(hp);
         
-        this.recalculateBoundingBox();
     }
     
     public void tick() {
@@ -71,8 +70,58 @@ public class Actor extends GameObject {
         this.move();
         
         // update hitbox position
-        this.hitbox.x = this.worldPosition.x;
-        this.hitbox.y = this.worldPosition.y;
+        this.hitbox.x = this.worldPosition.x + this.hitboxSizes.x;
+        this.hitbox.y = this.worldPosition.y + this.hitboxSizes.y;
+        
+        this.hitboxCenter = new Coordinate(this.hitbox.x + this.hitbox.width / 2, 
+                this.hitbox.y + this.hitbox.height / 2);
+    }
+    
+    public void render(Graphics g) {
+        if(this.facingDirection == Direction.EAST) {
+            g.drawImage(this.sprite, this.worldPosition.x, this.worldPosition.y, null);
+        } else if(this.facingDirection == Direction.WEST) {
+            RenderUtils.renderSpriteFlippedHorizontally(sprite, this.worldPosition, g);
+        }
+    }
+    
+    // on action key press
+    public void action() {
+        
+        // get all items near the actor
+        List<GameObject> gos = new ArrayList<GameObject>();
+        for(Block block : this.getNearbyBlocks(this.collisionDistance)) {
+            if(block.getItem() != null) {
+                gos.add(block.getItem());
+            }
+        }
+        
+        // calculate closest obj
+        float smallestDist = 99999f;
+        GameObject closestObj = null;
+        
+        // the center of the hitbox
+        // works as the anchor point
+        // for calculating distances.
+        Vector2 me = new Vector2(this.hitbox.x + this.hitboxSizes.width / 2,
+                this.hitbox.y + this.hitboxSizes.height / 2);
+        
+        for(GameObject go : gos) {
+            Vector2 v2 = new Vector2(go.hitbox.x, go.hitbox.y);
+            float dist = me.distance(v2);
+            if(dist < smallestDist) {
+                smallestDist = dist;
+                closestObj = go;
+            }
+        }
+        
+        // use the closest obj
+        if(closestObj instanceof Chest) {
+            Chest chest = (Chest) closestObj;
+            if(chest.isOpen() == false) {
+                chest.open();
+            }
+        }
     }
     
     private void move() {
@@ -162,18 +211,17 @@ public class Actor extends GameObject {
     
     private void updateCollisions() {
         
-        int margin = 10 * Game.SPRITESIZEMULT;
-        int yMargin = 10 * Game.SPRITESIZEMULT;
+        int margin = 3 * Game.SPRITESIZEMULT;
         
         // y-axis
-        int top    = this.worldPosition.y + yMargin;
-        int center = this.worldPosition.y + (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) / 2;
-        int bottom = this.worldPosition.y + Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
+        int top    = this.hitbox.y;
+        int center = this.hitbox.y + this.hitboxSizes.height / 2;
+        int bottom = this.hitbox.y + this.hitboxSizes.height;
         
         // x-axis
-        int left   = this.worldPosition.x + margin;
-        int right  = this.worldPosition.x - margin + Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
-        int middle = this.worldPosition.x + (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) / 2;
+        int left   = this.hitbox.x;
+        int right  = this.hitbox.x + this.hitboxSizes.width;
+        int middle = this.hitbox.x + this.hitboxSizes.width / 2;
         
         // left collisions
         Point lc = new Point(left, center);
@@ -198,7 +246,7 @@ public class Actor extends GameObject {
         // center
         Point c = new Point(middle, center);
         
-        for(Block block : this.getNearbyBlocks()) {
+        for(Block block : this.getNearbyBlocks(this.collisionDistance)) {
 
             // if the block is disabled -> no collisions
             if(block.isEnabled == false) continue;
@@ -273,9 +321,9 @@ public class Actor extends GameObject {
         }
     }
 
-    private List<Block> getNearbyBlocks() {
+    private List<Block> getNearbyBlocks(float colDist) {
         
-        List<Block> allBlocks  = new ArrayList<Block>();
+        List<Block> allBlocks = new ArrayList<Block>();
         
         Vector2 me = new Vector2(this.getBounds().x, this.getBounds().y);
         
@@ -284,21 +332,13 @@ public class Actor extends GameObject {
             Vector2 them = new Vector2(block.getBounds().x, block.getBounds().y);
             float distance = me.distance(them);
             
-            if(distance <= this.collisionDistance) {
+            if(distance <= colDist) {
                 allBlocks.add(block);
             }
             
         }
         
         return allBlocks;
-    }
-    
-    public void render(Graphics g) {
-        if(this.facingDirection == Direction.EAST) {
-            g.drawImage(this.sprite, this.worldPosition.x, this.worldPosition.y, null);
-        } else if(this.facingDirection == Direction.WEST) {
-            RenderUtils.renderSpriteFlippedHorizontally(sprite, this.worldPosition, g);
-        }
     }
     
     public Health getHP() {

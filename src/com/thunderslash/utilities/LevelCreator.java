@@ -15,6 +15,8 @@ import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Block;
+import com.thunderslash.gameobjects.Chest;
+import com.thunderslash.gameobjects.GameObject;
 
 public class LevelCreator {
     
@@ -101,11 +103,16 @@ public class LevelCreator {
                 blockType = BlockType.HURT;
                 spriteType = SpriteType.SPIKES;
                 
+            // any other color = play area
+            } else if(alpha == 255) {
+                
+                found = true;
+                blockType = BlockType.PLAY_AREA;
+                spriteType = SpriteType.NONE;
+                
             }
             
-            // only create blocks
-            // when we have found 
-            // "color coded" pixel.
+            // only create blocks when we have found "color coded" pixel
             if(found) {
                 
                 // calculate world position
@@ -118,10 +125,7 @@ public class LevelCreator {
                 gridPos.x = x;
                 gridPos.y = y;
                 
-                // sprite types are calculated after blocks are created.
                 Block block = new Block(pos, gridPos, blockType, spriteType);
-                
-                block.recalculateBoundingBox();
                 
                 // set block settings
                 block.setIsEnabled(isEnabled);
@@ -129,12 +133,30 @@ public class LevelCreator {
                 
                 blocks.add(block);
                 
+                // create item for this block!
+                GameObject item = LevelCreator.createItem(red, green, blue, alpha, pos.x, pos.y);
+                block.setItem(item);
+                
             }
         }
         
         return new LevelData(levelWidth, levelHeight, blocks);
     }
 
+    public static GameObject createItem(int red, int green, int blue, int alpha, int x, int y) {
+        GameObject item = null;
+        
+        // yellow = chest
+        if(red == 254 && green == 216 && blue == 35 && alpha == 255) {
+            
+            item = new Chest(new Coordinate(x, y), 
+                    SpriteType.CHEST_CLOSED, SpriteType.CHEST_OPEN);
+            
+        }
+        
+        return item;
+    }
+    
     public static List<Block> calculateSprites(List<Block> blocks) {
         
         List<Block> calcBlocks = new ArrayList<Block>(blocks);
