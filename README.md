@@ -1,6 +1,8 @@
 # Thunderslash
 2D sidescroller game using Java and custom 2D engine.
 
+![ts1](https://user-images.githubusercontent.com/7894317/34445227-0e7f92b0-ecdb-11e7-8709-7f915d8f9c9c.png)
+
 ## Introduction
 This is a 2D action sidescroller project, that is mainly developed as a programming excersice. 
 The aim is to create a slower paced sidescrolling action game (e.g. Castlevania). 
@@ -44,10 +46,6 @@ low priority features:
 * mainmenu
 * story.. (perhaps never going to happen)
 * friendly NPCs
-
-## Images
-29.12.2017 - New graphics
-![ts1](https://user-images.githubusercontent.com/7894317/34445227-0e7f92b0-ecdb-11e7-8709-7f915d8f9c9c.png)
 
 ## Contribution
 Heikki Heiskanen - design & implementation
