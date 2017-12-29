@@ -46,12 +46,6 @@ low priority features:
 * friendly NPCs
 
 ## Images
-27.12.2017 - Early screencapture of the game: solid blocks, platforms and player. Physics in place.
-![t](https://user-images.githubusercontent.com/7894317/34393185-5721752a-eb59-11e7-85de-7406b7c64cef.png)
-
-27.12.2017 - level file for the first image.  
-![b](https://user-images.githubusercontent.com/7894317/34393974-1598b9be-eb5f-11e7-909e-f8da8c963e97.png)
-
 29.12.2017 - New graphics
 ![ts1](https://user-images.githubusercontent.com/7894317/34445227-0e7f92b0-ecdb-11e7-8709-7f915d8f9c9c.png)
 
