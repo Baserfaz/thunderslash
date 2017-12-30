@@ -17,6 +17,7 @@ import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.Chest;
 import com.thunderslash.gameobjects.GameObject;
+import com.thunderslash.gameobjects.Trap;
 
 public class LevelCreator {
     
@@ -125,17 +126,26 @@ public class LevelCreator {
                 gridPos.x = x;
                 gridPos.y = y;
                 
-                Block block = new Block(pos, gridPos, blockType, spriteType);
+                if(blockType != BlockType.HURT) {
+                    
+                    Block block = new Block(pos, gridPos, blockType, spriteType);
                 
-                // set block settings
-                block.setIsEnabled(isEnabled);
-                block.setIsVisible(isVisible);
-                
-                blocks.add(block);
-                
-                // create item for this block!
-                GameObject item = LevelCreator.createItem(red, green, blue, alpha, pos.x, pos.y);
-                block.setItem(item);
+                    // set block settings
+                    block.setIsEnabled(isEnabled);
+                    block.setIsVisible(isVisible);
+                    
+                    blocks.add(block);
+                    
+                    // create item for this block!
+                    GameObject item = LevelCreator.createItem(red, green, blue, alpha, pos.x, pos.y);
+                    block.setItem(item);
+                    
+                } else {
+                    
+                    Trap trap = new Trap(pos, gridPos, blockType, spriteType, 1);
+                    blocks.add(trap);
+                    
+                }
                 
             }
         }

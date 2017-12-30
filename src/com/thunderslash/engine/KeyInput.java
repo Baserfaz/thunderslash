@@ -65,7 +65,7 @@ public class KeyInput extends KeyAdapter {
         } else if(key == KeyEvent.VK_F2) {
             Game.drawCameraRect = !Game.drawCameraRect;
         } else if(key == KeyEvent.VK_F3) {
-            Game.drawItemRects = !Game.drawItemRects;
+            Game.drawCurrentBlock = !Game.drawCurrentBlock;
         } else if(key == KeyEvent.VK_F4) {
             Game.drawGameObjectRects = !Game.drawGameObjectRects;
         } else if(key == KeyEvent.VK_F5) { 

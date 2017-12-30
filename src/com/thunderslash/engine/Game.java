@@ -62,8 +62,8 @@ public class Game extends Canvas implements Runnable {
     public static boolean drawCameraRect                 = false;
     public static final Color cameraRectColor            = Color.red;
     
-    public static boolean drawItemRects                  = false;
-    public static final Color itemRectColor              = Color.red;
+    public static boolean drawCurrentBlock               = false;
+    public static final Color currentBlockColor          = Color.green;
     
     public static boolean drawGameObjectRects            = false;
     public static final Color gameObjectRectColor        = Color.red;

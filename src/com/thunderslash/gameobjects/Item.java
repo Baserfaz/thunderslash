@@ -56,9 +56,9 @@ public class Item extends GameObject {
             
         }
         
-        if(Game.drawItemRects) {
+        if(Game.drawCurrentBlock) {
             int size = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
-            g.setColor(Game.itemRectColor);
+            g.setColor(Game.currentBlockColor);
             g.drawRect(this.worldPosition.x, this.worldPosition.y, size, size);
         }
     }

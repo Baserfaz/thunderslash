@@ -1,6 +1,5 @@
 package com.thunderslash.gameobjects;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -23,14 +22,14 @@ public class Actor extends GameObject {
     protected Health HP;
     
     // actor settings
-    protected float maxVerticalSpeed = 7.5f * Game.SPRITESIZEMULT;
+    protected float maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
     protected float maxHorizontalSpeed = 1f * Game.SPRITESIZEMULT;
-    protected float maxVerticalAccel = 0.27f * Game.SPRITESIZEMULT;
+    protected float maxVerticalAccel = 0.24f * Game.SPRITESIZEMULT;
     protected float maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
     protected float horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
     protected float jumpForce = -0.24f * Game.SPRITESIZEMULT;
     protected float friction = 0.10f * Game.SPRITESIZEMULT;
-    protected float collisionDistance = 40f * Game.SPRITESIZEMULT;
+    protected float collisionDistance = 50f * Game.SPRITESIZEMULT;
     
     // inputs
     protected Vector2 direction = new Vector2();
@@ -46,7 +45,7 @@ public class Actor extends GameObject {
     protected boolean collisionTop = false;
     
     // other refs
-    protected Block standingBlock = null;
+    protected Block lastBlock = null;
     protected Direction facingDirection = Direction.WEST;
     
     // collections
@@ -146,7 +145,7 @@ public class Actor extends GameObject {
             
             // drop down
             if(this.direction.y < 0f) {
-                if(this.standingBlock.getBlocktype() == BlockType.PLATFORM) {
+                if(this.lastBlock.getBlocktype() == BlockType.PLATFORM) {
                     this.isGrounded = false;
                     this.direction.y = 0f;
                 }
@@ -202,10 +201,15 @@ public class Actor extends GameObject {
             this.velocity.y = 0f;
             this.acceleration.y = 0f;
         
-            this.setWorldPosition(
-                this.worldPosition.x,
-                this.standingBlock.getBounds().y -
-                Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT);
+            // our position needs to be set so
+            // that we are just a tiny bit inside
+            // of the "lastBlock" because otherwise
+            // the actor would not be on ground anymore.
+            if(this.lastBlock != null) {
+                this.setWorldPosition(
+                    this.worldPosition.x,
+                    this.lastBlock.getBounds().y - (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) + 1);
+            }
         }
     }
     
@@ -251,29 +255,36 @@ public class Actor extends GameObject {
             // if the block is disabled -> no collisions
             if(block.isEnabled == false) continue;
             
-            if(block.getBlocktype() == BlockType.SOLID || block.getBlocktype() == BlockType.PLATFORM) {
+            if(block.getBlocktype() == BlockType.SOLID || 
+                    block.getBlocktype() == BlockType.PLATFORM ||
+                    block instanceof Trap) {
                 
                 // when the actor is falling
-                if(this.velocity.y > 0f) {                    
-                    if(block.getBounds().contains(bl) || 
-                            block.getBounds().contains(bc) || 
-                            block.getBounds().contains(br)) {
-                        
-                        // allow dropping through platforms,
-                        // because the block is the same block
-                        // we are currently standing on.
-                        if(this.standingBlock != block) {
-                            this.isGrounded = true;
-                            this.standingBlock = block;
+                if(this.velocity.y > 0f) {
+                    if(this.lastBlock != block) {
+                        if(block.getBounds().contains(bl) || 
+                                block.getBounds().contains(bc) || 
+                                block.getBounds().contains(br)) {
+                            
+                            if(block instanceof Trap) {
+                                Trap trap = (Trap) block;
+                                this.getHP().takeDamage(trap.getDamage());
+                                //this.isGrounded = false;
+                            } else {
+                                this.isGrounded = true;
+                                this.lastBlock = block;
+                            }
+                            
                         }
                     }
                 } else {
-                    if(block == this.standingBlock) {
+                    if(block == this.lastBlock) {
                         if(block.getBounds().contains(bl) == false && 
                                 block.getBounds().contains(bc) == false && 
                                 block.getBounds().contains(br) == false) {
+                            
                             this.isGrounded = false;
-                            this.standingBlock = null;
+                            this.lastBlock = null;
                         }
                     }
                 }

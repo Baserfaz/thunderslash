@@ -1,6 +1,7 @@
 package com.thunderslash.gameobjects;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
@@ -23,6 +24,12 @@ public class Player extends Actor {
         
     }
     
+    public void tick() {
+        super.tick();
+        
+        System.out.println(this.HP.getCurrentHP());
+    }
+    
     public void render(Graphics g) {
         
         // render light
@@ -36,6 +43,14 @@ public class Player extends Actor {
         } else if(this.facingDirection == Direction.WEST) {
             RenderUtils.renderSpriteFlippedHorizontally(sprite, this.worldPosition, g);
         }
+        
+        if(Game.drawCurrentBlock) {
+            if(this.lastBlock != null) {
+                g.setColor(Game.currentBlockColor);
+                Rectangle r = this.lastBlock.getBounds();
+                g.drawRect(r.x, r.y, r.width, r.height);
+            }
+        }
+        
     }
-    
 }
