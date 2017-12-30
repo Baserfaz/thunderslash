@@ -5,62 +5,61 @@ import java.util.List;
 
 import com.thunderslash.data.World;
 import com.thunderslash.engine.Game;
-import com.thunderslash.enumerations.ActorType;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
+import com.thunderslash.gameobjects.Enemy;
 import com.thunderslash.gameobjects.Player;
 
 public class ActorManager {
 
     private List<Actor> actorInstances;
-    private Actor playerInstance;
+    private Player playerInstance;
     
     public ActorManager() {
         actorInstances = new ArrayList<Actor>();
         setPlayerInstance(null);
     }
 
-    public Actor createActorInstance(String actorName, ActorType actorType, 
-            SpriteType spriteType, int spriteSize, int spriteSizeMult, int health) {
-
-        Actor actor = null;
+    public Enemy createEnemyInstance(String name, Coordinate pos, SpriteType spriteType, int health) {
+        Enemy enemy = new Enemy(name, pos, spriteType, health);
+        this.actorInstances.add(enemy);
+        return enemy;
+    }
+    
+    public Player createPlayerInstance(String actorName, SpriteType spriteType, int health) {
         
-        if(actorType == ActorType.Player) {
-            
-            if(this.playerInstance != null) {
-                System.out.println("player already exists!");
-                return null;
+        if(this.playerInstance != null) {
+            System.out.println("player already exists!");
+            return null;
+        }
+        
+        World world = Game.instance.getWorld();
+        
+        if(world.getCurrentRoomBlocks() == null) {
+            System.out.println("room not yet loaded!");
+            return null;
+        }
+        
+        // get the current room's spawnpoint coordinates.
+        Coordinate spawnpos = new Coordinate(0, 0);
+        for(Block block : world.getCurrentRoomBlocks()) {
+            if(block.getBlocktype() == BlockType.PLAYER_SPAWN) {
+                spawnpos = block.getWorldPosition();
+                break;
             }
-            
-            World world = Game.instance.getWorld();
-            
-            if(world.getCurrentRoomBlocks() == null) {
-                System.out.println("room not yet loaded!");
-                return null;
-            }
-            
-            // get the current room's spawnpoint coordinates.
-            Coordinate spawnpos = new Coordinate(0, 0);
-            for(Block block : world.getCurrentRoomBlocks()) {
-                if(block.getBlocktype() == BlockType.PLAYER_SPAWN) {
-                    spawnpos = block.getWorldPosition();
-                    break;
-                }
-            }
-            
-            // create player object
-            Player player = new Player(actorName, spawnpos, spriteType, health);
-            
-            // set variables
-            actor = player;
-            this.playerInstance = actor;
-            
-            Game.instance.getCamera().setFollowTarget(player);
-            
-        } else if (actorType == ActorType.Enemy) {}
-        return actor;
+        }
+        
+        // create player object
+        Player player = new Player(actorName, spawnpos, spriteType, health);
+        
+        // set variables
+        this.playerInstance = player;
+        
+        Game.instance.getCamera().setFollowTarget(player);
+        
+        return player;
     }
 
     public void removeActor(Actor go) {
@@ -80,11 +79,11 @@ public class ActorManager {
         actorInstances.addAll(actorInstances);
     }
 
-    public Actor getPlayerInstance() {
+    public Player getPlayerInstance() {
         return playerInstance;
     }
 
-    public void setPlayerInstance(Actor playerInstance) {
+    public void setPlayerInstance(Player playerInstance) {
         this.playerInstance = playerInstance;
     }
 }

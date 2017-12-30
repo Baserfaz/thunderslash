@@ -126,7 +126,7 @@ public class KeyInput extends KeyAdapter {
             } else if(cmd == "JUMP") {
                 player.setDirection(new Vector2(dir.x, 1f));
             } else if(cmd == "ATTACK") {
-                // TODO
+                player.attack();
             } else if(cmd == "DOWN") {
                 player.setDirection(new Vector2(dir.x, -1f));
             } else if(cmd == "ACTION") {

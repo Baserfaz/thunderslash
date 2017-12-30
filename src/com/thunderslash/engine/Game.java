@@ -15,7 +15,6 @@ import com.thunderslash.enumerations.ActorType;
 import com.thunderslash.enumerations.GameState;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.ActorManager;
-import com.thunderslash.utilities.DynamicGuiManager;
 import com.thunderslash.utilities.SpriteCreator;
 import com.thunderslash.utilities.Util;
 
@@ -90,7 +89,6 @@ public class Game extends Canvas implements Runnable {
     
     private World world;
     private ActorManager actorManager;
-    private DynamicGuiManager dynamicGuiManager;
     private Point mousePos;
 
     public Game() {
@@ -116,7 +114,6 @@ public class Game extends Canvas implements Runnable {
 
         // create sprite managers and creators
         this.spriteCreator = new SpriteCreator(Game.SPRITESHEETNAME);
-        this.dynamicGuiManager = new DynamicGuiManager();
         this.guiRenderer = new GuiRenderer();       
         
         // create actor manager
@@ -135,9 +132,7 @@ public class Game extends Canvas implements Runnable {
         this.world.initializeRoom(Game.instance.currentRoomIndex);
         
         // create mock up player actor
-        actorManager.createActorInstance("myplayer", ActorType.Player,
-                SpriteType.PLAYER, Game.SPRITEGRIDSIZE, Game.SPRITESIZEMULT, 3);
-        
+        actorManager.createPlayerInstance("Player", SpriteType.PLAYER, 3);
         
         // start game thread
         start();
@@ -285,10 +280,6 @@ public class Game extends Canvas implements Runnable {
 
     public void setMousePos(Point mousePos) {
         this.mousePos = mousePos;
-    }
-    
-    public DynamicGuiManager getDynamicGuiManager() {
-        return dynamicGuiManager;
     }
 
     public int getCurrentRoomIndex() {

@@ -22,20 +22,28 @@ public class Player extends Actor {
         this.light = RenderUtils.scaleSprite(Game.instance.getSpriteCreator().
                 CreateSprite(SpriteType.LIGHT_CIRCLE), 1);
         
+        // set stuff
+        this.maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
+        this.maxHorizontalSpeed = 1f * Game.SPRITESIZEMULT;
+        this.maxVerticalAccel = 0.22f * Game.SPRITESIZEMULT;
+        this.maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
+        this.horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
+        this.jumpForce = -0.24f * Game.SPRITESIZEMULT;
+        this.friction = 0.10f * Game.SPRITESIZEMULT;
+        this.collisionDistance = 50f * Game.SPRITESIZEMULT;
+        
     }
     
     public void tick() {
         super.tick();
-        
-        System.out.println(this.HP.getCurrentHP());
     }
     
     public void render(Graphics g) {
         
         // render light
-        g.drawImage(light,
-                this.hitboxCenter.x - this.light.getWidth() / 2,
-                this.hitboxCenter.y - this.light.getHeight() / 2, null);
+//        g.drawImage(light,
+//                this.hitboxCenter.x - this.light.getWidth() / 2,
+//                this.hitboxCenter.y - this.light.getHeight() / 2, null);
         
         // render current sprite
         if(this.facingDirection == Direction.EAST) {

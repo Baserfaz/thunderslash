@@ -22,9 +22,10 @@ public class Actor extends GameObject {
     protected Health HP;
     
     // actor settings
+    // default values
     protected float maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
     protected float maxHorizontalSpeed = 1f * Game.SPRITESIZEMULT;
-    protected float maxVerticalAccel = 0.24f * Game.SPRITESIZEMULT;
+    protected float maxVerticalAccel = 0.22f * Game.SPRITESIZEMULT;
     protected float maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
     protected float horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
     protected float jumpForce = -0.24f * Game.SPRITESIZEMULT;
@@ -43,6 +44,7 @@ public class Actor extends GameObject {
     protected boolean collisionLeft = false;
     protected boolean collisionRight = false;
     protected boolean collisionTop = false;
+    protected boolean collidedWithTrap = false;
     
     // other refs
     protected Block lastBlock = null;
@@ -84,6 +86,13 @@ public class Actor extends GameObject {
         }
     }
     
+    public void attack() {
+        System.out.println("ATTACK");
+        
+        
+        
+    }
+    
     // on action key press
     public void action() {
         
@@ -120,6 +129,9 @@ public class Actor extends GameObject {
             if(chest.isOpen() == false) {
                 chest.open();
             }
+        } else if(closestObj instanceof Crystal) {
+            Crystal c = (Crystal) closestObj;
+            c.absorb();
         }
     }
     
@@ -192,7 +204,7 @@ public class Actor extends GameObject {
         }
         
         if(collisionTop) {
-            this.velocity.y = 1f;
+            this.velocity.y = 2f;
             this.acceleration.y = 0f;
             this.collisionTop = false;
         }
@@ -267,9 +279,13 @@ public class Actor extends GameObject {
                                 block.getBounds().contains(br)) {
                             
                             if(block instanceof Trap) {
-                                Trap trap = (Trap) block;
-                                this.getHP().takeDamage(trap.getDamage());
-                                //this.isGrounded = false;
+                                
+                                //Trap trap = (Trap) block;
+                                //this.getHP().takeDamage(trap.getDamage());
+                                
+                                this.isGrounded = true;
+                                this.lastBlock = block;
+                                
                             } else {
                                 this.isGrounded = true;
                                 this.lastBlock = block;

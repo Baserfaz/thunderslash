@@ -58,7 +58,7 @@ public class World {
         this.rooms = rooms;
     }
     
-    public NeighborData getNeighboringPlayArea(Block block) {
+    public NeighborData getNeighbors(Block block) {
         
         NeighborData data = new NeighborData(block);
         Coordinate p1 = block.getGridPosition();
@@ -66,7 +66,8 @@ public class World {
         List<BlockType> allowedTypes = new ArrayList<BlockType>(
                 Arrays.asList(
                         BlockType.PLAY_AREA, BlockType.PLAYER_SPAWN,
-                        BlockType.PLATFORM, BlockType.EXIT, BlockType.HURT));
+                        BlockType.PLATFORM, BlockType.EXIT, BlockType.HURT,
+                        BlockType.WATER));
         
         for(Block b : this.getRoom(Game.instance.getCurrentRoomIndex()).getBlocks()) {
             

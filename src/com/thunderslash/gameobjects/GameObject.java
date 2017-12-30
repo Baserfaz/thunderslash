@@ -52,6 +52,7 @@ public abstract class GameObject {
     public abstract void tick();
     public abstract void render(Graphics g);
     public Rectangle getBounds() { return this.hitbox; }
+    public Coordinate getHitboxCenter() { return this.hitboxCenter; }
     
     public void recalculateBoundingBox() {
                 

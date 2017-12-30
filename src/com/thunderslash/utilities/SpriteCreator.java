@@ -104,7 +104,7 @@ public class SpriteCreator {
 
     public List<BufferedImage> createAllSprites() {
         List<BufferedImage> imgs = new ArrayList<BufferedImage>();
-        for(SpriteType s :SpriteType.values()) {
+        for(SpriteType s : SpriteType.values()) {
             imgs.add(this.CreateSprite(s));
         }
         return imgs;
@@ -254,6 +254,21 @@ public class SpriteCreator {
                 
             case CHEST_OPEN:
                 pos.x = 1;
+                pos.y = 5;
+                break;
+                
+            case ENEMY_SLIME:
+                pos.x = 1;
+                pos.y = 0;
+                break;
+                
+            case CRYSTAL:
+                pos.x = 2;
+                pos.y = 5;
+                break;
+                
+            case CRYSTAL_USED:
+                pos.x = 3;
                 pos.y = 5;
                 break;
                 

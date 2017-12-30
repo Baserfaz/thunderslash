@@ -16,6 +16,7 @@ import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.Chest;
+import com.thunderslash.gameobjects.Crystal;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.Trap;
 
@@ -126,10 +127,15 @@ public class LevelCreator {
                 gridPos.x = x;
                 gridPos.y = y;
                 
-                if(blockType != BlockType.HURT) {
+                if(blockType == BlockType.HURT) {
+                    
+                    Trap trap = new Trap(pos, gridPos, blockType, spriteType, 1);
+                    blocks.add(trap);
+                    
+                } else {
                     
                     Block block = new Block(pos, gridPos, blockType, spriteType);
-                
+                    
                     // set block settings
                     block.setIsEnabled(isEnabled);
                     block.setIsVisible(isVisible);
@@ -140,10 +146,8 @@ public class LevelCreator {
                     GameObject item = LevelCreator.createItem(red, green, blue, alpha, pos.x, pos.y);
                     block.setItem(item);
                     
-                } else {
-                    
-                    Trap trap = new Trap(pos, gridPos, blockType, spriteType, 1);
-                    blocks.add(trap);
+                    // create actors
+                    LevelCreator.createActor(red, green, blue, alpha, pos.x, pos.y);
                     
                 }
                 
@@ -153,6 +157,18 @@ public class LevelCreator {
         return new LevelData(levelWidth, levelHeight, blocks);
     }
 
+    public static void createActor(int red, int green, int blue, int alpha, int x, int y) {
+        
+        Coordinate pos = new Coordinate(x, y);
+        
+        // red = enemy spawn
+        if(red == 255 && green == 0 && blue == 0 && alpha == 255) {
+            Game.instance.getActorManager().createEnemyInstance("Slime",
+                    pos, SpriteType.ENEMY_SLIME, 1);
+        }
+        
+    }
+    
     public static GameObject createItem(int red, int green, int blue, int alpha, int x, int y) {
         GameObject item = null;
         
@@ -161,6 +177,11 @@ public class LevelCreator {
             
             item = new Chest(new Coordinate(x, y), 
                     SpriteType.CHEST_CLOSED, SpriteType.CHEST_OPEN);
+            
+        // orange = cystal
+        } else if(red == 251 && green == 154 && blue == 7 && alpha == 255) {
+            
+            item = new Crystal(new Coordinate(x, y), SpriteType.CRYSTAL);
             
         }
         
@@ -183,7 +204,7 @@ public class LevelCreator {
             
             // -------------------------------------------------
             
-            NeighborData data = world.getNeighboringPlayArea(block);
+            NeighborData data = world.getNeighbors(block);
             
             boolean n = data.getNeighbors().containsKey(Direction.NORTH);
             boolean s = data.getNeighbors().containsKey(Direction.SOUTH);

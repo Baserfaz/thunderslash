@@ -18,7 +18,7 @@ import com.thunderslash.enumerations.Direction;
 
 public class RenderUtils {
 
-    public static BufferedImage scaleSprite(BufferedImage sprite, int scale) {
+    public static BufferedImage scaleSprite(BufferedImage sprite, double scale) {
         AffineTransform tx = new AffineTransform();
         tx.scale(scale, scale);
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);

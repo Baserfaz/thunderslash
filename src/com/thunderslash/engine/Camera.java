@@ -42,23 +42,26 @@ public class Camera {
             // centers cam pos to the target.
             Coordinate target = Util.calculateCameraPos();
             
+            // add offset to the target pos
+            // target.y -= 100f;
+            
             // apply camera smoothing
             camX -= (target.x + camX) * Game.CAMERA_SMOOTH_MULT;
                 
-            if(actor != null) {
-                if(actor.isGrounded()) {
+            //if(actor != null) {
+            //    if(actor.isGrounded()) {
                     camY -= (target.y + camY) * Game.CAMERA_SMOOTH_MULT;
-                }
-            }
+            //    }
+            //}
           
             // on first pass instantly 
             // focus on player, after that
             // use smoothing.
             if(this.firstPass) {
                 firstPass = false;
-                this.Update(-target.x, -target.y); // no smoothing
+                this.Update(-target.x, -target.y);
             } else {
-                this.Update((int)camX, (int)camY); // smoothing
+                this.Update((int)camX, (int)camY);
             }
         }
     }
