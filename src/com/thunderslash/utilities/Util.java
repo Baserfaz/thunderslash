@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,7 +71,7 @@ public class Util {
         return a + b;
     }
 
-    public static Coordinate calculateCameraPos() {
+    public static Point calculateCameraPos() {
 
         int spriteSize = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
 
@@ -87,6 +88,6 @@ public class Util {
             y = (-cam.getFollowTarget().getWorldPosition().y - spriteSize / 2) + Game.CAMERA_HEIGHT / 2;
         }
 
-        return new Coordinate(x, y);
+        return new Point(x, y);
     }
 }

@@ -1,19 +1,17 @@
 package com.thunderslash.gameobjects;
 
 import java.awt.Graphics;
+import java.awt.Point;
 
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.SpriteType;
-import com.thunderslash.utilities.Coordinate;
 
 public class Block extends GameObject {
 
     private BlockType blockType;
-    private Coordinate gridPosition;
+    private Point gridPosition;
     
-    private GameObject item;
-    
-    public Block(Coordinate worldPos, Coordinate gridPosition, BlockType blockType, SpriteType type) {
+    public Block(Point worldPos, Point gridPosition, BlockType blockType, SpriteType type) {
         super(worldPos, type);
         
         this.blockType = blockType;
@@ -34,20 +32,12 @@ public class Block extends GameObject {
         this.blockType = blocktype;
     }
 
-    public Coordinate getGridPosition() {
+    public Point getGridPosition() {
         return gridPosition;
     }
 
-    public void setGridPosition(Coordinate gridPosition) {
+    public void setGridPosition(Point gridPosition) {
         this.gridPosition = gridPosition;
-    }
-
-    public GameObject getItem() {
-        return item;
-    }
-
-    public void setItem(GameObject item) {
-        this.item = item;
     }
 }
 

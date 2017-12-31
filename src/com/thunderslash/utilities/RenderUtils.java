@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -175,7 +176,7 @@ public class RenderUtils {
     }
     
     public static void RenderSprite(BufferedImage sprite, 
-            Coordinate pos, Direction dir, Graphics g) {
+            Point pos, Direction dir, Graphics g) {
 
         double angle = 0.0;
         if(dir == Direction.EAST) angle = 0.0;
@@ -188,7 +189,7 @@ public class RenderUtils {
 
     // render with free angle
     public static void RenderSpriteWithRotation(BufferedImage sprite, 
-            Coordinate pos, double angle, Graphics g) {
+            Point pos, double angle, Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
 
@@ -232,7 +233,7 @@ public class RenderUtils {
         return newImage;
     }
     
-    public static void renderSpriteFlippedHorizontally(BufferedImage sprite, Coordinate pos, Graphics g) {
+    public static void renderSpriteFlippedHorizontally(BufferedImage sprite, Point pos, Graphics g) {
         g.drawImage(RenderUtils.flipSpriteHorizontally(sprite), pos.x, pos.y, null);
     }
     
@@ -253,19 +254,19 @@ public class RenderUtils {
     }
 
     public static void RenderSpriteWithBorder(BufferedImage sprite,
-            Coordinate pos, Graphics g, Color borderColor) {
+            Point pos, Graphics g, Color borderColor) {
         BufferedImage img = RenderUtils.highlightTileBorders(sprite, borderColor);
         g.drawImage(img, pos.x, pos.y, sprite.getWidth(), sprite.getHeight(), null);
     }
 
     public static void RenderSpriteWithTint(BufferedImage sprite, 
-            Coordinate pos, Graphics g, Color tint) {
+            Point pos, Graphics g, Color tint) {
         BufferedImage img = RenderUtils.tintWithColor(sprite, tint);
         g.drawImage(img, pos.x, pos.y, sprite.getWidth(), sprite.getHeight(), null);
     }
 
     // render without rotation
-    public static void RenderSprite(BufferedImage sprite, Coordinate pos, Graphics g) { 
+    public static void RenderSprite(BufferedImage sprite, Point pos, Graphics g) { 
         g.drawImage(sprite, pos.x, pos.y, sprite.getWidth(), sprite.getHeight(), null);
     }
 

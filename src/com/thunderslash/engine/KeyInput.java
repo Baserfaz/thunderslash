@@ -16,8 +16,7 @@ public class KeyInput extends KeyAdapter {
     
     public KeyInput() {
         
-        // bind keys here
-        
+        // bind keys
         this.keyBinds.put(KeyEvent.VK_A, "LEFT");
         this.keyBinds.put(KeyEvent.VK_D, "RIGHT");
         this.keyBinds.put(KeyEvent.VK_W, "JUMP");
@@ -31,33 +30,13 @@ public class KeyInput extends KeyAdapter {
         // get the pressed key 
         int key = e.getKeyCode();
 
-        // add pressed button to a list of buttons
-        if(buttons.containsKey(key)) {
-            
-            // one shot keys
-            if(Game.instance.getGamestate() == GameState.INGAME) {
-                
-                Actor player = Game.instance.getActorManager().getPlayerInstance();
-                if(player == null) return;
-                Vector2 dir = player.getDirection();
-                
-                if(keyBinds.get(key) == "JUMP" || keyBinds.get(key) == "DOWN") {
-                    player.setDirection(new Vector2(dir.x, 0f));
-                }
-            }
-            
-            return;
-        }
-        
+        if(buttons.containsKey(key)) return;
         buttons.put(key, this.keyBinds.get(key));
 
         // -------------- HANDLE INPUTS ------------------
 
-        if(Game.instance.getGamestate() == GameState.MENU) {
-            handleKeysInMenu(e);
-        } else if(Game.instance.getGamestate() == GameState.INGAME) {
-            handleKeysInGame(e);
-        }
+        if(Game.instance.getGamestate() == GameState.MENU) handleKeysInMenu(e);
+        else if(Game.instance.getGamestate() == GameState.INGAME) handleKeysInGame(e);
 
         // debugging keys
         if(key == KeyEvent.VK_F1) {
@@ -70,6 +49,8 @@ public class KeyInput extends KeyAdapter {
             Game.drawGameObjectRects = !Game.drawGameObjectRects;
         } else if(key == KeyEvent.VK_F5) { 
             Game.drawActorCollisionPoints = !Game.drawActorCollisionPoints;
+        } else if(key == KeyEvent.VK_F6) { 
+            Game.drawAttackBoxes = !Game.drawAttackBoxes;
         } else if(key == KeyEvent.VK_F12) {
             Game.isPaused = !Game.isPaused;
         } else if(key == KeyEvent.VK_ESCAPE) {
@@ -82,6 +63,8 @@ public class KeyInput extends KeyAdapter {
 
         Actor player = Game.instance.getActorManager().getPlayerInstance();
         if(player == null) return;
+        
+        // cache direction
         Vector2 dir = player.getDirection();
         
         // get the pressed key 
@@ -112,11 +95,11 @@ public class KeyInput extends KeyAdapter {
     private void handleKeysInGame(KeyEvent e) {
         int key = e.getKeyCode();
         
+        Actor player = Game.instance.getActorManager().getPlayerInstance();
+        if(player == null || player.getHP().isDead()) return;
+        
         if(keyBinds.containsKey(key)) {
-            Actor player = Game.instance.getActorManager().getPlayerInstance();
-            if(player == null) return;
             Vector2 dir = player.getDirection();
-            
             String cmd = this.keyBinds.get(key);
             
             if(cmd == "RIGHT") {
@@ -132,7 +115,6 @@ public class KeyInput extends KeyAdapter {
             } else if(cmd == "ACTION") {
                 player.action();
             }
-            
         }
     }
 

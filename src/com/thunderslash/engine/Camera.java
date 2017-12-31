@@ -3,9 +3,9 @@ package com.thunderslash.engine;
 import com.thunderslash.data.Room;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.GameObject;
-import com.thunderslash.utilities.Coordinate;
 import com.thunderslash.utilities.Util;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 
 public class Camera {
@@ -40,7 +40,7 @@ public class Camera {
           
             // calculate new camera position
             // centers cam pos to the target.
-            Coordinate target = Util.calculateCameraPos();
+            Point target = Util.calculateCameraPos();
             
             // add offset to the target pos
             // target.y -= 100f;
@@ -68,7 +68,7 @@ public class Camera {
     
     public void setFollowTarget(GameObject obj) { this.followTarget = obj; }
     public GameObject getFollowTarget() { return this.followTarget; }
-    public void Update(Coordinate pos, int width, int height) { 
+    public void Update(Point pos, int width, int height) { 
         cameraBounds.setBounds(pos.x, pos.y, width, height); 
     }
     public void Update(int x, int y) {

@@ -1,5 +1,6 @@
 package com.thunderslash.utilities;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class ActorManager {
         setPlayerInstance(null);
     }
 
-    public Enemy createEnemyInstance(String name, Coordinate pos, SpriteType spriteType, int health) {
+    public Enemy createEnemyInstance(String name, Point pos, SpriteType spriteType, int health) {
         Enemy enemy = new Enemy(name, pos, spriteType, health);
         this.actorInstances.add(enemy);
         return enemy;
@@ -43,7 +44,7 @@ public class ActorManager {
         }
         
         // get the current room's spawnpoint coordinates.
-        Coordinate spawnpos = new Coordinate(0, 0);
+        Point spawnpos = new Point(0, 0);
         for(Block block : world.getCurrentRoomBlocks()) {
             if(block.getBlocktype() == BlockType.PLAYER_SPAWN) {
                 spawnpos = block.getWorldPosition();
@@ -56,6 +57,7 @@ public class ActorManager {
         
         // set variables
         this.playerInstance = player;
+        this.actorInstances.add(player);
         
         Game.instance.getCamera().setFollowTarget(player);
         

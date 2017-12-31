@@ -16,12 +16,14 @@ public class Health {
     }
     
     public void takeDamage(int amount) {
-        this.setCurrentHP(currentHP - amount);
-        if(currentHP <= 0) { setDead(true); }
+        if(this.isDead) return;
+        this.currentHP -= amount;
+        if(currentHP <= 0) { this.isDead = true; }
     }
 
     public void healDamage(int amount) {
-        this.setCurrentHP(currentHP + amount);
+        if(this.isDead) return;
+        this.currentHP += amount;
         if(currentHP > maxHP) currentHP = maxHP;
     }
 

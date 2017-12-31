@@ -11,7 +11,6 @@ import com.thunderslash.data.World;
 import com.thunderslash.engine.Camera;
 import com.thunderslash.engine.Renderer;
 import com.thunderslash.engine.Window;
-import com.thunderslash.enumerations.ActorType;
 import com.thunderslash.enumerations.GameState;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.ActorManager;
@@ -70,13 +69,18 @@ public class Game extends Canvas implements Runnable {
     public static boolean drawActorCollisionPoints       = false;
     public static final Color actorCollisionPointColor   = Color.green;
     
+    public static boolean drawAttackBoxes                = false;
+    public static final Color attackBoxDrawColor         = Color.red;
+    
     // -----------------------------
 
     public static boolean isPaused = false;
     
     private boolean isRunning = false;
+    
     private int currentRoomIndex = 0;
-
+    private double timeBetweenFrames = 0.0;
+    
     private Thread thread;
     private Window window;
 
@@ -171,6 +175,8 @@ public class Game extends Canvas implements Runnable {
         boolean render = false;
         long now = 0l, passedTime = 0l;
         
+        double lastRender = 0.0;
+        
         while(isRunning) {
 
             render = false;
@@ -204,8 +210,14 @@ public class Game extends Canvas implements Runnable {
 
             // render the scene
             if(isRunning && render) {
+                
+                this.timeBetweenFrames = System.nanoTime() - lastRender;
+                
                 render();
-                frames++;         
+                frames++;        
+                
+                lastRender = System.nanoTime();
+                
             }
         }
     }
@@ -288,6 +300,10 @@ public class Game extends Canvas implements Runnable {
 
     public void setCurrentRoomIndex(int currentRoomIndex) {
         this.currentRoomIndex = currentRoomIndex;
+    }
+
+    public double getTimeBetweenFrames() {
+        return timeBetweenFrames * 0.000001;
     }
 
 }

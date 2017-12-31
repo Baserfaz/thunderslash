@@ -5,19 +5,55 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import com.thunderslash.gameobjects.Actor;
+import com.thunderslash.gameobjects.Player;
 
 public class GuiRenderer {
 
+    // cache GUI sprites
+    private BufferedImage heart;
+
+    public GuiRenderer() {
+        
+        // cache GUI sprites
+        this.heart = Game.instance.getSpriteCreator().CreateCustomSizeSprite(0, 6 * 32, 7, 6);
+        
+    }
+    
     public void render(Graphics g) {
         
         Camera cam = Game.instance.getCamera();
         if(cam == null) return;
         
+        this.renderHP(g, cam);
+        
         this.renderVersion(g, cam);
         this.renderDebugInfo(g);
     }   
+    
+    private void renderHP(Graphics g, Camera cam) {
+        
+        Player player = Game.instance.getActorManager().getPlayerInstance();
+        if(player != null) {
+            
+            Rectangle r = cam.getCameraBounds();
+            int startx = r.x + 20;
+            int starty = r.y + 20;
+            
+            int x = startx;
+            int y = starty;
+            
+            int margin = 10;
+            
+            for(int i = 0; i < player.getHP().getCurrentHP(); i++) {
+                g.drawImage(this.heart, x, y, null);
+                x += margin + this.heart.getWidth();
+            }
+        }
+        
+    }
 
     private void renderDebugInfo(Graphics g) {
         if(Game.drawDebugInfo) {
@@ -31,8 +67,9 @@ public class GuiRenderer {
             info += "acceleration: " + player.getAcceleration().toString() + "\n";
             info += "velocity: " + player.getVelocity().toString() + "\n";
             info += "isGrounded: " + player.isGrounded() + "\n";
+            info += "state: " +  player.getActorState().toString() + "\n";
             
-            this.renderString(info, 20, 40, Game.debugInfoColor, 30f, g);
+            this.renderString(info, 20, 100, Game.debugInfoColor, 30f, g);
         }
     }
     

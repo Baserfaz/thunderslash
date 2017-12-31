@@ -72,6 +72,9 @@ public class Renderer {
     
     private static void renderDebug(Graphics g) {
         
+        Actor player = Game.instance.getActorManager().getPlayerInstance();
+        Point playerCenterHitbox = player.getHitboxCenter();
+        
         // render camera debug 
         if(Game.drawCameraRect) {
             Camera cam = Game.instance.getCamera();
@@ -80,11 +83,39 @@ public class Renderer {
             g.drawRect(camRect.x, camRect.y, camRect.width, camRect.height);
         }
         
+        if(Game.drawCurrentBlock) {
+            Block block = player.getLastBlock();
+            if(block != null) {
+                g.setColor(Game.currentBlockColor);
+                Rectangle r = block.getHitbox();
+                g.drawRect(r.x, r.y, r.width, r.height);
+            }
+        }
+        
+        if(Game.drawAttackBoxes) {
+            Rectangle box = player.getAttackBox();
+            if(box != null) {
+                g.setColor(Game.attackBoxDrawColor);
+                g.drawRect(box.x, box.y, box.width, box.height);
+                
+                g.drawLine(playerCenterHitbox.x, playerCenterHitbox.y,
+                        box.x + box.width / 2, box.y + box.height / 2);
+                
+            }
+        }
+        
+        // action area
         if(Game.drawActorCollisionPoints) {
-            Actor player = Game.instance.getActorManager().getPlayerInstance();
-            if(player != null) {
-                for(Point p : player.getCollisionPoints()) {
-                 
+            float dist = player.getCollisionDistance();
+            g.setColor(Game.actorCollisionPointColor);
+            g.drawOval((int)(playerCenterHitbox.x - dist / 2),
+                    (int)(playerCenterHitbox.y - dist / 2),
+                    (int)dist, (int)dist);
+        }
+        
+        if(Game.drawActorCollisionPoints) {
+            for(Actor actor : Game.instance.getActorManager().getActorInstances()) {
+                for(Point p : actor.getCollisionPoints()) {
                     g.setColor(Game.actorCollisionPointColor);
                     g.drawOval(p.x, p.y, 2, 2);
                 }

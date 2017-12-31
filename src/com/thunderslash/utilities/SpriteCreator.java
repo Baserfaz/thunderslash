@@ -1,5 +1,6 @@
 package com.thunderslash.utilities;
 
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,6 @@ import javax.imageio.ImageIO;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.SpriteType;
-import com.thunderslash.utilities.Coordinate;
 
 public class SpriteCreator {
 
@@ -65,7 +65,8 @@ public class SpriteCreator {
     }
 
     // uses the same spritesheet
-    public BufferedImage CreateCustomSizeSprite(int startx, int starty, int spriteWidth, int spriteHeight, int spriteSizeMult) {
+    public BufferedImage CreateCustomSizeSprite(int startx, int starty, 
+            int spriteWidth, int spriteHeight) {
 
         BufferedImage sprite = new BufferedImage(spriteWidth, spriteHeight, BufferedImage.TYPE_INT_ARGB);
         int[] spritePixelData = new int[sprite.getWidth() * sprite.getHeight()];
@@ -94,7 +95,7 @@ public class SpriteCreator {
         }
 
         AffineTransform tx = new AffineTransform();
-        tx.scale(spriteSizeMult, spriteSizeMult);
+        tx.scale(Game.SPRITESIZEMULT, Game.SPRITESIZEMULT);
 
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         sprite = op.filter(sprite, null);
@@ -110,6 +111,53 @@ public class SpriteCreator {
         return imgs;
     }
     
+    public BufferedImage[] createMultipleSprites(int column, int row, int length) {    
+
+        BufferedImage[] sprites = new BufferedImage[length];
+       
+        int spriteSize = Game.SPRITEGRIDSIZE;
+        int spriteSizeMult = Game.SPRITESIZEMULT;
+        
+        for(int i = 0; i < length; i++) {
+    
+            BufferedImage sprite = new BufferedImage(spriteSize, spriteSize, BufferedImage.TYPE_INT_ARGB);
+            int[] spritePixelData = new int[sprite.getWidth() * sprite.getHeight()];
+            
+            // calculate tile's pixel locations.
+            int startX = (column + i) * spriteSize;
+            int endX = startX + spriteSize;
+            int startY = row * spriteSize;
+            int endY = startY + spriteSize;
+    
+            int currentPixel = 0;
+            
+            // get the pixel array
+            for(int y = startY; y < endY; y++) {
+                for (int x = startX; x < endX; x++) {
+                    spritePixelData[currentPixel] = pixels[y * width + x];
+                    currentPixel ++;
+                }
+            }
+    
+            // set pixels
+            for (int y = 0; y < sprite.getHeight(); y++) {
+                for (int x = 0; x < sprite.getWidth(); x++) {
+                    sprite.setRGB(x, y, spritePixelData[y * sprite.getWidth() + x]);
+                }
+            }
+    
+            AffineTransform tx = new AffineTransform();
+            tx.scale(spriteSizeMult, spriteSizeMult);
+    
+            AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            sprite = op.filter(sprite, null);
+    
+            sprites[i] = sprite;
+        }
+        
+        return sprites;
+    }
+    
     public BufferedImage CreateSprite(SpriteType type) {	
 
         int spriteSize = Game.SPRITEGRIDSIZE;
@@ -119,7 +167,7 @@ public class SpriteCreator {
         int[] spritePixelData = new int[sprite.getWidth() * sprite.getHeight()];
 
         // get spritetype coordinates in the spritesheet
-        Coordinate pos = this.getSpriteCoordinates(type);
+        Point pos = this.getSpriteCoordinates(type);
 
         int column = pos.x;
         int row = pos.y; 
@@ -156,9 +204,9 @@ public class SpriteCreator {
         return sprite;
     }
 
-    private Coordinate getSpriteCoordinates(SpriteType type) {
+    private Point getSpriteCoordinates(SpriteType type) {
 
-        Coordinate pos = new Coordinate(0, 0);
+        Point pos = new Point(0, 0);
 
         switch(type) {
             

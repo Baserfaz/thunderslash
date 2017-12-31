@@ -1,5 +1,6 @@
 package com.thunderslash.data;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +9,6 @@ import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.gameobjects.Block;
-import com.thunderslash.utilities.Coordinate;
 import com.thunderslash.utilities.LevelCreator;
 
 public class World {
@@ -61,7 +61,7 @@ public class World {
     public NeighborData getNeighbors(Block block) {
         
         NeighborData data = new NeighborData(block);
-        Coordinate p1 = block.getGridPosition();
+        Point p1 = block.getGridPosition();
         
         List<BlockType> allowedTypes = new ArrayList<BlockType>(
                 Arrays.asList(
@@ -75,7 +75,7 @@ public class World {
             
             if(allowedTypes.contains(b.getBlocktype())) {
                 
-                Coordinate p2 = b.getGridPosition();
+                Point p2 = b.getGridPosition();
                 
                 if(p1.x == p2.x && (p1.y - 1) == p2.y) {
                     data.setNeighbor(Direction.NORTH, b);

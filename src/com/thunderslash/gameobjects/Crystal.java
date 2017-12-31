@@ -1,18 +1,18 @@
 package com.thunderslash.gameobjects;
 
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.SpriteType;
-import com.thunderslash.utilities.Coordinate;
 
 public class Crystal extends GameObject {
 
     private boolean isUsed = false;
     private BufferedImage usedSprite;
     
-    public Crystal(Coordinate worldPos, SpriteType type) {
+    public Crystal(Point worldPos, SpriteType type) {
         super(worldPos, type);
         
         this.usedSprite = Game.instance.getSpriteCreator().CreateSprite(SpriteType.CRYSTAL_USED);

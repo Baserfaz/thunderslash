@@ -1,5 +1,6 @@
 package com.thunderslash.utilities;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,8 +44,8 @@ public class LevelCreator {
             int alpha = (current & 0xff000000) >>> 24;
             
             // vars
-            Coordinate pos = new Coordinate(0, 0);
-            Coordinate gridPos = new Coordinate(0, 0);
+            Point pos = new Point(0, 0);
+            Point gridPos = new Point(0, 0);
             boolean isEnabled = true;
             boolean isVisible = true;
             BlockType blockType = BlockType.NOT_ASSIGNED;
@@ -142,15 +143,13 @@ public class LevelCreator {
                     
                     blocks.add(block);
                     
-                    // create item for this block!
-                    GameObject item = LevelCreator.createItem(red, green, blue, alpha, pos.x, pos.y);
-                    block.setItem(item);
+                    // create item
+                    LevelCreator.createItem(red, green, blue, alpha, pos.x, pos.y);
                     
                     // create actors
                     LevelCreator.createActor(red, green, blue, alpha, pos.x, pos.y);
                     
                 }
-                
             }
         }
         
@@ -159,7 +158,7 @@ public class LevelCreator {
 
     public static void createActor(int red, int green, int blue, int alpha, int x, int y) {
         
-        Coordinate pos = new Coordinate(x, y);
+        Point pos = new Point(x, y);
         
         // red = enemy spawn
         if(red == 255 && green == 0 && blue == 0 && alpha == 255) {
@@ -175,13 +174,13 @@ public class LevelCreator {
         // yellow = chest
         if(red == 254 && green == 216 && blue == 35 && alpha == 255) {
             
-            item = new Chest(new Coordinate(x, y), 
+            item = new Chest(new Point(x, y), 
                     SpriteType.CHEST_CLOSED, SpriteType.CHEST_OPEN);
             
         // orange = cystal
         } else if(red == 251 && green == 154 && blue == 7 && alpha == 255) {
             
-            item = new Crystal(new Coordinate(x, y), SpriteType.CRYSTAL);
+            item = new Crystal(new Point(x, y), SpriteType.CRYSTAL);
             
         }
         

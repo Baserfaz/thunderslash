@@ -43,7 +43,7 @@ public class Handler {
             GameObject current = objects.get(i);
             
             if(current.getIsVisible() && Game.drawGameObjectRects) {
-                Rectangle bounds = current.getBounds();
+                Rectangle bounds = current.getHitbox();
                 g.setColor(Game.gameObjectRectColor);
                 g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
             }
