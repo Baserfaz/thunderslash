@@ -27,18 +27,19 @@ These features are so far (27.12.2017):
 ## TODO
 There is a lot to do here, but the *major* features are:
 * main game mechanics: attacking and pushing
-* enemies: static enemies for now -> no AI
+* ~~enemies: Basic enemy with basic AI~~
 * physics support for actors (can be pushed)
+* ~~physics support for other gameobjects~~
 * enemy collision with player
-* enemy spawnpoint support in level editor
+* ~~enemy spawnpoint support in level editor~~
 
 minor features:
 * tileset support (changeable tilesets between levels)
 * graphics (pixel art, 32x32 sprites): multiple tilesets, background, parallax effect
-* level hazard support (traps, spikes etc.)
-* animation support
+* ~~level hazard support (traps, spikes etc.)~~
+* ~~animation support~~
 * sprite animations for the player: walk, jump, fall, attack, push
-* GUI: hp/score
+* ~~GUI: hp/score~~
 * pickupable items: health
 * particle effect support
 
