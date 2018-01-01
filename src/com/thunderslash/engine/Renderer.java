@@ -17,14 +17,20 @@ import com.thunderslash.utilities.SpriteCreator;
 
 public class Renderer {
 
-    public static void preRender(Graphics g) {
+    private Handler handler;
+    private GuiRenderer guirenderer;
+    private Camera cam;
+    
+    public Renderer() {
+        handler = Game.instance.getHandler();
+        guirenderer = Game.instance.getGuiRenderer();
+        cam = Game.instance.getCamera();
+    }
+    
+    public void preRender(Graphics g) {
 
-        // get references
-        Handler handler = Game.instance.getHandler();
-        GuiRenderer guirenderer = Game.instance.getGuiRenderer();
-        Camera cam = Game.instance.getCamera();
-        Rectangle r = cam.getCameraBounds();
         Graphics2D g2d = (Graphics2D) g;
+        Rectangle r = cam.getCameraBounds();
 
         // set rendering hints
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -38,9 +44,7 @@ public class Renderer {
         g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);   
 
         // set background
-        Renderer.fillScreen(g, new Color(51, 20, 82, 255));
-        
-        //guirenderer.render(g);
+        this.fillScreen(g, new Color(51, 20, 82, 255));
         
         // set zoom level
         g2d.scale(1, 1);
@@ -49,14 +53,14 @@ public class Renderer {
         g.translate(-r.x, -r.y);
         
         // render everything
-        Renderer.renderBackground(g);
-        handler.render(g);
-        Renderer.renderDebug(g);
+        this.renderBackground(g);
+        handler.renderGameObjects(g);
+        this.renderDebug(g);
         guirenderer.render(g);
         
     }
     
-    private static void renderBackground(Graphics g) {
+    private void renderBackground(Graphics g) {
         
         Room room = Game.instance.getWorld().getCurrentRoom();
         SpriteCreator spriteCreator = Game.instance.getSpriteCreator();
@@ -70,7 +74,7 @@ public class Renderer {
         }
     }
     
-    private static void renderDebug(Graphics g) {
+    private void renderDebug(Graphics g) {
         
         Actor player = Game.instance.getActorManager().getPlayerInstance();
         Point playerCenterHitbox = player.getHitboxCenter();
@@ -124,7 +128,7 @@ public class Renderer {
         
     }
     
-    public static void fillScreen(Graphics g, Color color) {
+    private void fillScreen(Graphics g, Color color) {
         g.setColor(color);
         g.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
     }

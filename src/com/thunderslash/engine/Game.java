@@ -73,22 +73,22 @@ public class Game extends Canvas implements Runnable {
     public static final Color attackBoxDrawColor         = Color.red;
     
     // -----------------------------
-
-    public static boolean isPaused = false;
     
     private boolean isRunning = false;
+    public static boolean isPaused = false;
     
     private int currentRoomIndex = 0;
     private double timeBetweenFrames = 0.0;
     
     private Thread thread;
     private Window window;
-
+    
     private Font customFont;
     private Camera camera;
     private SpriteCreator spriteCreator;
     private Handler handler;
     private GuiRenderer guiRenderer;
+    private Renderer renderer;
     private GameState gamestate;
     
     private World world;
@@ -112,22 +112,14 @@ public class Game extends Canvas implements Runnable {
         // load custom font
         Util.loadCustomFont();
 
-        // create window 
-        this.window = new Window(Game.WIDTH,
-                Game.HEIGHT, Game.TITLE, this);
-
-        // create sprite managers and creators
+        this.window = new Window(Game.WIDTH, Game.HEIGHT, Game.TITLE, this);
         this.spriteCreator = new SpriteCreator(Game.SPRITESHEETNAME);
-        this.guiRenderer = new GuiRenderer();       
-        
-        // create actor manager
+        this.guiRenderer = new GuiRenderer();
         setActorManager(new ActorManager());
-
-        // set gamestate
-        this.gamestate = GameState.INGAME;
-        
-        // create camera
         this.camera = new Camera();
+        this.renderer = new Renderer();
+
+        this.gamestate = GameState.INGAME;
         
         // create world
         this.world = new World();
@@ -234,7 +226,7 @@ public class Game extends Canvas implements Runnable {
 
         // DRAW GRAPHICS HERE ---------------------------------
 
-        Renderer.preRender(g);
+        this.renderer.preRender(g);
 
         // END DRAW -------------------------------------------
 
@@ -242,7 +234,7 @@ public class Game extends Canvas implements Runnable {
         bs.show();
     }
 
-    private void tick() { handler.tick(); }
+    private void tick() { handler.tickGameObjects(); }
     public static void main(String args[]) { new Game(); }
     public Window getWindow() { return this.window; }
     public Font getCustomFont() { return customFont; }

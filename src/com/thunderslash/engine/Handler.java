@@ -15,22 +15,14 @@ public class Handler {
 
     private List<GameObject> objects = new ArrayList<GameObject>();
 
-    public void tick() {
+    public void tickGameObjects() {
         for(int i = 0; i < objects.size(); i++) {
             GameObject current = objects.get(i);
             if(current != null) current.tick();
         }
     }
     
-    public void render(Graphics g) {
-
-        // render queue
-        // background
-        // blocks
-        // items
-        // actors
-        // player
-        // water
+    public void renderGameObjects(Graphics g) {
         
         // references
         List<Block> waterBlocks = new ArrayList<Block>();
