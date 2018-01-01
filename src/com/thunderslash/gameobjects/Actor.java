@@ -10,6 +10,7 @@ import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.utilities.Mathf;
 import com.thunderslash.utilities.RenderUtils;
 import com.thunderslash.utilities.Vector2;
 
@@ -82,8 +83,16 @@ public class Actor extends PhysicsObject {
         int attSizex = 20 * Game.SPRITESIZEMULT;
         int attSizey = 25 * Game.SPRITESIZEMULT;        
         
-        if(this.facingDirection == Direction.EAST) xpos += dist;
-        else if(this.facingDirection == Direction.WEST) xpos -= dist + attSizex;
+        int dir = 0;
+        
+        if(this.facingDirection == Direction.EAST) {
+            xpos += dist;
+            dir = 1;
+        }
+        else if(this.facingDirection == Direction.WEST) {
+            xpos -= dist + attSizex;
+            dir = -1;
+        }
         
         // set up the rectangle 
         attackBox = new Rectangle(xpos, this.hitbox.y, attSizex, attSizey);
@@ -91,6 +100,16 @@ public class Actor extends PhysicsObject {
         // check collisions with objs
         for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
             if(go.getHitbox().intersects(attackBox)) {
+                
+                if(go instanceof PhysicsObject) {
+                    PhysicsObject obj = (PhysicsObject) go;
+                    
+                    double force = Mathf.randomRange(0.5, 1.0);
+                    
+                    obj.acceleration.x = (float) (force * dir);
+                    System.out.println(obj.getInfo());
+                }
+                
                 if(go instanceof Actor) {
                     Actor actor = (Actor) go;
                     actor.getHP().takeDamage(this.damage);

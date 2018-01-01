@@ -18,19 +18,25 @@ public class Enemy extends Actor {
     }
 
     public void tick() {
+        
         Player player = Game.instance.getActorManager().getPlayerInstance();
         Point p = player.getHitboxCenter();
         
+        // x position
         if(p.x < this.hitboxCenter.x) {
             this.direction.x = -1;
-            this.direction.y = 1;
             
         } else if(p.x > this.hitboxCenter.x) {
             this.direction.x = 1;
+        }
+        
+        // y position
+        if(p.y < this.hitboxCenter.y) {
             this.direction.y = 1;
+        } else if(p.y > this.hitboxCenter.y) {
+            this.direction.y = -1;
         }
         
         super.tick();
     }
-    
 }

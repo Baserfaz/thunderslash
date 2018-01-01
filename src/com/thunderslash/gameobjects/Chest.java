@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.SpriteType;
 
-public class Chest extends GameObject {
+public class Chest extends PhysicsObject {
 
     private boolean isOpen = false;
     private BufferedImage openSprite;
@@ -17,8 +17,6 @@ public class Chest extends GameObject {
         
         this.openSprite = Game.instance.getSpriteCreator().CreateSprite(openSpriteType);
     }
-
-    public void tick() {}
 
     public void render(Graphics g) {
         if(this.isOpen) {

@@ -17,12 +17,16 @@ public class PhysicsObject extends GameObject {
     // default values
     protected float maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
     protected float maxHorizontalSpeed = 1f * Game.SPRITESIZEMULT;
+    
     protected float maxVerticalAccel = 0.22f * Game.SPRITESIZEMULT;
     protected float maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
+    
     protected float horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
+    
     protected float jumpForce = -0.24f * Game.SPRITESIZEMULT;
     protected float friction = 0.10f * Game.SPRITESIZEMULT;
     protected float collisionDistance = 50f * Game.SPRITESIZEMULT;
+    protected float deaccelerationRate = 0.03f;
     
     protected Vector2 velocity = new Vector2();
     protected Vector2 acceleration = new Vector2();
@@ -115,6 +119,10 @@ public class PhysicsObject extends GameObject {
         // move the character
         this.addWorldPosition(velocity.x, velocity.y);
         
+        // de-accelerate
+        if(this.acceleration.x > 0f) this.acceleration.x -= this.deaccelerationRate;
+        else if(this.acceleration.x < 0f) this.acceleration.x += this.deaccelerationRate;
+        
     }
 
     private void handleCollisions() {
@@ -206,20 +214,18 @@ public class PhysicsObject extends GameObject {
                 if(this.velocity.y > 0f) {
                     if(this.lastBlock != block) {
                         if(hitbox.contains(bl) || hitbox.contains(bc) || hitbox.contains(br)) {
-                            if(block instanceof Trap) {
-                                
+                            
+                            // landed on hurt block
+                            // actor takes damage.
+                            if(block.getBlocktype() == BlockType.HURT) {
                                 Trap trap = (Trap) block;
-                                
                                 if(this instanceof Actor) {
                                     ((Actor)this).getHP().takeDamage(trap.getDamage());
-                                    this.velocity.y = -2f;
-                                    this.lastBlock = block;
                                 }
-                                
-                            } else {
-                                this.isGrounded = true;
-                                this.lastBlock = block;
                             }
+                            
+                            this.isGrounded = true;
+                            this.lastBlock = block;
                         }
                     }
                 } else {

@@ -1,5 +1,7 @@
 package com.thunderslash.utilities;
 
+import java.util.Random;
+
 public class Mathf {
 
     public static float lerp(float point1, float point2, float alpha) {
@@ -12,4 +14,9 @@ public class Mathf {
         else return current;
     }
 
+    public static double randomRange(double min, double max) {
+        Random r = new Random();
+        return min + (max - min) * r.nextDouble();
+    }
+    
 }
