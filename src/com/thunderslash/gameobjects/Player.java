@@ -16,9 +16,9 @@ import com.thunderslash.utilities.RenderUtils;
 public class Player extends Actor {
     
     private Animation idleAnim;
-//    private Animation walkAnim;
+    private Animation walkAnim;
+    private Animation fallAnim;
 //    private Animation attackAnim;
-//    private Animation fallAnim;
 //    private Animation castAnim;
 
     public Player(String name, Point worldPos, 
@@ -27,6 +27,8 @@ public class Player extends Actor {
     
         // set animations
         this.idleAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_IDLE);
+        this.walkAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_WALK);
+        this.fallAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_FALL);
         
         // set stuff
         this.maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
@@ -36,7 +38,7 @@ public class Player extends Actor {
         this.horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
         this.jumpForce = -0.24f * Game.SPRITESIZEMULT;
         this.friction = 0.10f * Game.SPRITESIZEMULT;
-        this.setCollisionDistance(50f * Game.SPRITESIZEMULT);
+        this.collisionDistance = 50f * Game.SPRITESIZEMULT;
         
     }
     
@@ -52,8 +54,12 @@ public class Player extends Actor {
         if(this.actorState == ActorState.IDLING) {
             frame = this.idleAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.idleAnim;
-        } else if(this.actorState == ActorState.DEAD) {
-            //frame = 
+        } else if(this.actorState == ActorState.WALKING) {
+            frame = this.walkAnim.getFrame(this.currentAnimIndex);
+            currentAnim = this.walkAnim;
+        } else if(this.actorState == ActorState.FALLING) {
+            frame = this.fallAnim.getFrame(this.currentAnimIndex);
+            currentAnim = this.fallAnim;
         }
 
         // updates animation index

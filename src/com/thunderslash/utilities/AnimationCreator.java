@@ -16,7 +16,19 @@ public class AnimationCreator {
             case PLAYER_IDLE:
                 animation = new Animation(spriteCreator.createMultipleSprites(8, 0, 5));
                 break;
-
+                
+            case PLAYER_WALK:
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 1, 5));
+                break;
+            
+            case PLAYER_FALL:
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 4, 4));
+                break;
+                
+            case CRYSTAL_BOUNCE:
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 8, 7));
+                break;
+                
             default:
                 System.out.println("AnimationCreator:createAnimation: Animationtype not supported: " + animType);
                 break;

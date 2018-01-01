@@ -224,11 +224,8 @@ public class Game extends Canvas implements Runnable {
 
         Graphics g = bs.getDrawGraphics();
 
-        // DRAW GRAPHICS HERE ---------------------------------
-
+        // draws all graphics
         this.renderer.preRender(g);
-
-        // END DRAW -------------------------------------------
 
         g.dispose();
         bs.show();

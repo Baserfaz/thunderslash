@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import com.thunderslash.data.Animation;
 import com.thunderslash.data.Health;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
@@ -19,33 +18,33 @@ public class Actor extends PhysicsObject {
     protected String name;
     protected Health HP;
     
-    protected int damage = 1;
-    
     protected ActorState actorState = ActorState.IDLING;
     protected Direction facingDirection = Direction.WEST;
     private Rectangle attackBox;
     
-    // animation
-    protected double maxAnimationTime = 50.0;
-    protected double currentAnimTime = 0.0;
-    protected int currentAnimIndex = 0;
+    protected int damage = 1;
+
+    // should be calculated using 
+    // animation frame length * frameTime
+    protected double attackCooldown = 200.0;
+    protected double defendCooldown = 200.0;
+    protected double useCooldown    = 200.0;
+    
+    protected boolean canAttack = true;
+    protected boolean canDefend = true;
+    protected boolean canUse    = true;
     
     public Actor(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(worldPos, spriteType);
         
         this.name = name;
-        this.HP = new Health(hp);
+        this.HP = new Health(hp, this);
     }
     
     public void tick() {
         
-        // handle actor states
-        if(this.HP.isDead()) this.actorState = ActorState.DEAD;
-        else if(this.velocity.x == 0f && this.velocity.y == 0f ||
-                this.acceleration.x == 0f && this.acceleration.y == 0f) this.actorState = ActorState.IDLING;
-        else if(this.velocity.y < 0f) this.actorState = ActorState.JUMPING;
-        else if(this.velocity.y > 0f) this.actorState = ActorState.FALLING;
-        else if(this.direction.x > 0f || this.direction.x < 0f) this.actorState = ActorState.WALKING;
+        this.handleCooldowns();
+        this.handleActorStates();
         
         // change facing direction
         if(this.direction.x > 0f) this.facingDirection = Direction.EAST;
@@ -62,57 +61,104 @@ public class Actor extends PhysicsObject {
         } 
     }
     
-    protected void calculateAnimations(Animation anim) {
+    private void handleActorStates() {
+        
+        // TODO: cant defend, attack, use, cast at same time.
+        
+        if(this.HP.isDead()) this.actorState = ActorState.DEAD;
+        else if(this.canAttack == false) this.actorState = ActorState.ATTACKING;
+        else if(this.canDefend == false) this.actorState = ActorState.DEFENDING;
+        else if(this.canUse == false) this.actorState = ActorState.USING;
+        else if(this.velocity.x == 0f && this.velocity.y == 0f ||
+                this.acceleration.x == 0f && this.acceleration.y == 0f) this.actorState = ActorState.IDLING;
+        else if(this.velocity.y < 0f) this.actorState = ActorState.JUMPING;
+        else if(this.velocity.y > 0f) this.actorState = ActorState.FALLING;
+        else if(this.direction.x > 0f || this.direction.x < 0f) this.actorState = ActorState.WALKING;
+        
+    }
+    
+    private void handleCooldowns() {
+
         double dt = Game.instance.getTimeBetweenFrames();
-        if(this.currentAnimTime > this.maxAnimationTime) {
-            this.currentAnimTime = 0.0;
-            this.currentAnimIndex += 1;
-            if(this.currentAnimIndex >= anim.getAnimationLength()) {
-                this.currentAnimIndex = 0;
-            }
+        
+        if(this.attackTimer < this.attackCooldown) {
+            this.attackTimer += dt;
+            this.canAttack = false;
+        } else {
+            this.canAttack = true;
         }
-        this.currentAnimTime += dt;
+        
+        if(this.defendTimer < this.defendCooldown) {
+            this.defendTimer += dt;
+            this.canDefend = false;
+        } else {
+            this.canDefend = true;
+        }
+        
+        if(this.useTimer < this.useCooldown) {
+            this.useTimer += dt;
+            this.canUse = false;
+        } else {
+            this.canUse = true;
+        }
+        
+    }
+    
+    public void defend() {
+        if(this.canDefend) {
+            
+            this.defendTimer = 0.0;
+            this.actorState = ActorState.DEFENDING;
+            
+            System.out.println("defend");
+            
+        }
     }
     
     public void attack() {
-        
-        this.actorState = ActorState.ATTACKING;
-        
-        int xpos = this.hitboxCenter.x;
-        int dist = 6 * Game.SPRITESIZEMULT;
-        int attSizex = 20 * Game.SPRITESIZEMULT;
-        int attSizey = 25 * Game.SPRITESIZEMULT;        
-        
-        int dir = 0;
-        
-        if(this.facingDirection == Direction.EAST) {
-            xpos += dist;
-            dir = 1;
-        }
-        else if(this.facingDirection == Direction.WEST) {
-            xpos -= dist + attSizex;
-            dir = -1;
-        }
-        
-        // set up the rectangle 
-        attackBox = new Rectangle(xpos, this.hitbox.y, attSizex, attSizey);
-        
-        // check collisions with objs
-        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
-            if(go.getHitbox().intersects(attackBox)) {
-                
-                if(go instanceof PhysicsObject) {
-                    PhysicsObject obj = (PhysicsObject) go;
+        if(this.canAttack) {
+            
+            this.attackTimer = 0.0;
+            this.actorState = ActorState.ATTACKING;
+            
+            System.out.println("attack");
+            
+            int xpos = this.hitboxCenter.x;
+            int dist = 6 * Game.SPRITESIZEMULT;
+            int attSizex = 20 * Game.SPRITESIZEMULT;
+            int attSizey = 25 * Game.SPRITESIZEMULT;        
+            
+            int dir = 0;
+            
+            if(this.facingDirection == Direction.EAST) {
+                xpos += dist;
+                dir = 1;
+            }
+            else if(this.facingDirection == Direction.WEST) {
+                xpos -= dist + attSizex;
+                dir = -1;
+            }
+            
+            // set up the rectangle 
+            attackBox = new Rectangle(xpos, this.hitbox.y, attSizex, attSizey);
+            
+            // check collisions with objs
+            for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
+                if(go.getHitbox().intersects(attackBox)) {
                     
-                    double force = Mathf.randomRange(0.5, 1.0);
+                    if(go instanceof PhysicsObject) {
+                        PhysicsObject obj = (PhysicsObject) go;
+                        
+                        double force = Mathf.randomRange(0.5, 1.0);
+                        
+                        obj.acceleration.x = (float) (force * dir);
+                        System.out.println(obj.getInfo());
+                    }
                     
-                    obj.acceleration.x = (float) (force * dir);
-                    System.out.println(obj.getInfo());
-                }
-                
-                if(go instanceof Actor) {
-                    Actor actor = (Actor) go;
-                    actor.getHP().takeDamage(this.damage);
+                    if(go instanceof Actor) {
+                        Actor actor = (Actor) go;
+                        actor.getHP().takeDamage(this.damage);
+                    }
                 }
             }
         }
@@ -121,28 +167,31 @@ public class Actor extends PhysicsObject {
     // on action key press
     public void action() {
         
-        this.actorState = ActorState.ACTION;
+        if(this.canUse) {
         
-        // calculate closest obj
-        double smallestDist = Double.POSITIVE_INFINITY;
-        GameObject closestObj = null;
-        
-        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
-            double dist = go.hitboxCenter.distance(this.hitboxCenter);
-            if(dist < smallestDist) {
-                smallestDist = dist;
-                closestObj = go;
+            this.useTimer = 0.0;
+            this.actorState = ActorState.USING;
+            
+            // calculate closest obj
+            double smallestDist = Double.POSITIVE_INFINITY;
+            GameObject closestObj = null;
+            
+            for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
+                double dist = go.hitboxCenter.distance(this.hitboxCenter);
+                if(dist < smallestDist) {
+                    smallestDist = dist;
+                    closestObj = go;
+                }
             }
-        }
-        
-        // use the closest obj
-        if(closestObj instanceof Chest) {
-            Chest chest = (Chest) closestObj;
-            if(chest.isOpen() == false) chest.open();
-        } else if(closestObj instanceof Crystal) {
-            ((Crystal) closestObj).absorb();
-        }
-        
+            
+            // use the closest obj
+            if(closestObj instanceof Chest) {
+                Chest chest = (Chest) closestObj;
+                if(chest.isOpen() == false) chest.open();
+            } else if(closestObj instanceof Crystal) {
+                ((Crystal) closestObj).absorb();
+            }
+        }   
     }
     
     public Health getHP() {

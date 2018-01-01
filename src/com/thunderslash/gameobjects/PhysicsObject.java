@@ -71,7 +71,7 @@ public class PhysicsObject extends GameObject {
         
         // horizontal movement
         if(this instanceof Actor) {
-            this.acceleration.x = this.direction.x * this.horizontalAccelMult;
+                this.acceleration.x = this.direction.x * this.horizontalAccelMult;
         }
         
         if(this.isGrounded) {
@@ -162,6 +162,7 @@ public class PhysicsObject extends GameObject {
     private void updateCollisions() {
         
         int margin = 3 * Game.SPRITESIZEMULT;
+        int bottomMargin = 1 * Game.SPRITESIZEMULT;
         
         // y-axis
         int top    = this.hitbox.y;
@@ -191,9 +192,9 @@ public class PhysicsObject extends GameObject {
         Point tr = new Point(right - margin, top);
         
         // bottom collisions
-        Point bl = new Point(left + margin, bottom);
+        Point bl = new Point(left + bottomMargin, bottom);
         Point bc = new Point(middle, bottom);
-        Point br = new Point(right - margin, bottom);
+        Point br = new Point(right - bottomMargin, bottom);
         
         // center
         Point c = new Point(middle, center);

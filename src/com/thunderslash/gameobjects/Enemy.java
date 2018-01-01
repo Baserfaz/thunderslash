@@ -11,13 +11,26 @@ public class Enemy extends Actor {
         super(name, worldPos, spriteType, hp);
         
         // set enemy movement settings  
-        this.maxHorizontalAccel = 0.1f * Game.SPRITESIZEMULT;
+        this.maxHorizontalAccel = 0.2f * Game.SPRITESIZEMULT;
         this.maxHorizontalSpeed = 0.5f * Game.SPRITESIZEMULT;
-        this.friction = 0f;
+        this.friction = 0.1f;
         
     }
 
     public void tick() {
+        
+        if(this.HP.isDead()) {
+            this.direction.x = 0f;
+            this.direction.y = 0f;
+        } else {
+            this.doBehaviour();
+        }
+        
+        // always tick physics
+        super.tick();
+    }
+    
+    private void doBehaviour() {
         
         Player player = Game.instance.getActorManager().getPlayerInstance();
         Point p = player.getHitboxCenter();
@@ -37,6 +50,5 @@ public class Enemy extends Actor {
             this.direction.y = -1;
         }
         
-        super.tick();
     }
 }

@@ -216,8 +216,8 @@ public class SpriteCreator {
                 break;
             
             case NONE:
-                pos.x = 15;
-                pos.y = 15;
+                pos.x = 0;
+                pos.y = 0;
                 break;
                 
             case ERROR:
@@ -232,7 +232,12 @@ public class SpriteCreator {
                 
             case PLAYER:
                 pos.x = 0;
-                pos.y = 0;
+                pos.y = 7;
+                break;
+                
+            case PLAYER_DEAD:
+                pos.x = 0;
+                pos.y = 8;
                 break;
                 
             case WALL_90_DEGREE:
@@ -307,7 +312,12 @@ public class SpriteCreator {
                 
             case ENEMY_SLIME:
                 pos.x = 1;
-                pos.y = 0;
+                pos.y = 7;
+                break;
+                
+            case ENEMY_SLIME_DEAD:
+                pos.x = 1;
+                pos.y = 8;
                 break;
                 
             case CRYSTAL:

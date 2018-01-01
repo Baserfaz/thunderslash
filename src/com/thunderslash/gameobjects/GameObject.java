@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import com.thunderslash.data.Animation;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.SpriteType;
 
@@ -20,6 +21,16 @@ public abstract class GameObject {
     
     protected boolean isEnabled = true;
     protected boolean isVisible = true;
+    
+    // animation
+    protected double maxAnimationTime = 50.0;
+    protected double currentAnimTime = 0.0;
+    protected int currentAnimIndex = 0;
+    
+    // dont touch
+    protected double attackTimer = 0.0;
+    protected double defendTimer = 0.0;
+    protected double useTimer = 0.0;
     
     public GameObject(Point worldPos, SpriteType type) {
 
@@ -44,6 +55,18 @@ public abstract class GameObject {
         
     }
 
+    protected void calculateAnimations(Animation anim) {
+        double dt = Game.instance.getTimeBetweenFrames();
+        if(this.currentAnimTime > this.maxAnimationTime) {
+            this.currentAnimTime = 0.0;
+            this.currentAnimIndex += 1;
+            if(this.currentAnimIndex >= anim.getAnimationLength()) {
+                this.currentAnimIndex = 0;
+            }
+        }
+        this.currentAnimTime += dt;
+    }
+    
     public String getInfo() {
         return "GameObject: " + this.toString() + " worldPos: (" +
                 this.getWorldPosition().x + ", " + this.getWorldPosition().y + ")";

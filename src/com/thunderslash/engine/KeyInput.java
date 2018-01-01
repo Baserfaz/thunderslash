@@ -22,6 +22,7 @@ public class KeyInput extends KeyAdapter {
         this.keyBinds.put(KeyEvent.VK_W, "JUMP");
         this.keyBinds.put(KeyEvent.VK_S, "DOWN");
         this.keyBinds.put(KeyEvent.VK_SPACE, "ATTACK");
+        this.keyBinds.put(KeyEvent.VK_V, "DEFEND");
         this.keyBinds.put(KeyEvent.VK_ENTER, "ACTION");
     }
 
@@ -88,7 +89,6 @@ public class KeyInput extends KeyAdapter {
             player.setDirection(new Vector2(dir.x, 0f));
         }
         
-        // remove all occurrences of key code from buttons
         buttons.remove(key);
     }
 
@@ -114,6 +114,8 @@ public class KeyInput extends KeyAdapter {
                 player.setDirection(new Vector2(dir.x, -1f));
             } else if(cmd == "ACTION") {
                 player.action();
+            } else if(cmd == "DEFEND") {
+                player.defend();
             }
         }
     }

@@ -24,7 +24,17 @@ public class Animation {
     }
     
     public BufferedImage getFrame(int index) {
-        return this.frames[index];
+        
+        BufferedImage img = null;
+        
+        try {
+            img = this.frames[index];
+        } catch(ArrayIndexOutOfBoundsException e) {
+            //System.out.println(e);
+            img = this.frames[0];
+        }
+        
+        return img;
     }
     
     public BufferedImage[] getFrames() {
