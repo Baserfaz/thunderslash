@@ -3,3 +3,6 @@ bin
 builds
 *.jar
 *.class
+.settings
+/.classpath
+/.project
