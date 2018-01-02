@@ -23,8 +23,8 @@ public abstract class GameObject {
     protected boolean isVisible = true;
     
     // animation
-    protected double maxAnimationTime = 50.0;
-    protected double currentAnimTime = 0.0;
+    protected double frameTime = 50.0;
+    protected double currentFrameTime = 0.0;
     protected int currentAnimIndex = 0;
     
     // dont touch
@@ -57,14 +57,14 @@ public abstract class GameObject {
 
     protected void calculateAnimations(Animation anim) {
         double dt = Game.instance.getTimeBetweenFrames();
-        if(this.currentAnimTime > this.maxAnimationTime) {
-            this.currentAnimTime = 0.0;
+        if(this.currentFrameTime > this.frameTime) {
+            this.currentFrameTime = 0.0;
             this.currentAnimIndex += 1;
             if(this.currentAnimIndex >= anim.getAnimationLength()) {
                 this.currentAnimIndex = 0;
             }
         }
-        this.currentAnimTime += dt;
+        this.currentFrameTime += dt;
     }
     
     public String getInfo() {

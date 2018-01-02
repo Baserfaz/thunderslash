@@ -18,7 +18,7 @@ public class Player extends Actor {
     private Animation idleAnim;
     private Animation walkAnim;
     private Animation fallAnim;
-//    private Animation attackAnim;
+    private Animation attackAnim;
 //    private Animation castAnim;
 
     public Player(String name, Point worldPos, 
@@ -29,6 +29,10 @@ public class Player extends Actor {
         this.idleAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_IDLE);
         this.walkAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_WALK);
         this.fallAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_FALL);
+        this.attackAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_ATTACK);
+        
+        // set animation timers / cooldowns
+        this.attackCooldown = this.frameTime * this.attackAnim.getAnimationLength();
         
         // set stuff
         this.maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
@@ -60,6 +64,9 @@ public class Player extends Actor {
         } else if(this.actorState == ActorState.FALLING) {
             frame = this.fallAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.fallAnim;
+        } else if(this.actorState == ActorState.ATTACKING) {
+            frame = this.attackAnim.getFrame(this.currentAnimIndex);
+            currentAnim = this.attackAnim;
         }
 
         // updates animation index

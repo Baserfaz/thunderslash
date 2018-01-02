@@ -23,9 +23,11 @@ public class Actor extends PhysicsObject {
     private Rectangle attackBox;
     
     protected int damage = 1;
-
-    // should be calculated using 
-    // animation frame length * frameTime
+    
+    protected boolean stateChanged = false;
+    
+    private ActorState oldState;
+    
     protected double attackCooldown = 200.0;
     protected double defendCooldown = 200.0;
     protected double useCooldown    = 200.0;
@@ -74,6 +76,12 @@ public class Actor extends PhysicsObject {
         else if(this.velocity.y < 0f) this.actorState = ActorState.JUMPING;
         else if(this.velocity.y > 0f) this.actorState = ActorState.FALLING;
         else if(this.direction.x > 0f || this.direction.x < 0f) this.actorState = ActorState.WALKING;
+        
+        stateChanged = (this.actorState != this.oldState);
+        
+        if(stateChanged) this.currentAnimIndex = 0;
+        
+        this.oldState = this.actorState;
         
     }
     

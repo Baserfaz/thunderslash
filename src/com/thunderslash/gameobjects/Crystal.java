@@ -21,7 +21,7 @@ public class Crystal extends GameObject {
         super(worldPos, type);
         
         // modify animation speed
-        this.maxAnimationTime = 150.0;
+        this.frameTime = 150.0;
         
         this.bounceAnim = AnimationCreator.createAnimation(AnimationType.CRYSTAL_BOUNCE);
         this.usedSprite = Game.instance.getSpriteCreator().CreateSprite(SpriteType.CRYSTAL_USED);
