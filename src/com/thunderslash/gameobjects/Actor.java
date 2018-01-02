@@ -124,8 +124,6 @@ public class Actor extends PhysicsObject {
             this.defendTimer = 0.0;
             this.actorState = ActorState.DEFENDING;
             
-            System.out.println("defend");
-            
         }
     }
     
@@ -134,8 +132,6 @@ public class Actor extends PhysicsObject {
             
             this.attackTimer = 0.0;
             this.actorState = ActorState.ATTACKING;
-            
-            System.out.println("attack");
             
             int xpos = this.hitboxCenter.x;
             int dist = 6 * Game.SPRITESIZEMULT;
