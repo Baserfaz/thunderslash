@@ -24,6 +24,7 @@ public class KeyInput extends KeyAdapter {
         this.keyBinds.put(KeyEvent.VK_SPACE, "ATTACK");
         this.keyBinds.put(KeyEvent.VK_V, "DEFEND");
         this.keyBinds.put(KeyEvent.VK_ENTER, "ACTION");
+        this.keyBinds.put(KeyEvent.VK_F, "CAST");
     }
 
     public void keyPressed(KeyEvent e) {
@@ -116,6 +117,8 @@ public class KeyInput extends KeyAdapter {
                 player.action();
             } else if(cmd == "DEFEND") {
                 player.defend();
+            } else if(cmd == "CAST") {
+                player.cast();
             }
         }
     }

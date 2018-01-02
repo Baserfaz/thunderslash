@@ -15,6 +15,8 @@ public class Crystal extends GameObject {
     private boolean isUsed = false;
     private BufferedImage usedSprite;
     
+    private int powerValue = 1;
+    
     private Animation bounceAnim;
     
     public Crystal(Point worldPos, SpriteType type) {
@@ -29,7 +31,6 @@ public class Crystal extends GameObject {
 
     public void absorb() {
         if(this.isUsed == false) {
-            System.out.println("ABSORBED A CRYSTAL!");
             this.isUsed = true;
         }
     }
@@ -49,6 +50,22 @@ public class Crystal extends GameObject {
         if(this.isVisible) {
             g.drawImage(frame, this.worldPosition.x, this.worldPosition.y, null);
         }
+    }
+
+    public int getPowerValue() {
+        return powerValue;
+    }
+
+    public void setPowerValue(int powerValue) {
+        this.powerValue = powerValue;
+    }
+
+    public boolean isUsed() {
+        return isUsed;
+    }
+
+    public void setUsed(boolean isUsed) {
+        this.isUsed = isUsed;
     }
 
 }

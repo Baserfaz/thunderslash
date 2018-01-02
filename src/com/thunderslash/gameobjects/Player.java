@@ -38,10 +38,12 @@ public class Player extends Actor {
         this.fallAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_FALL);
         this.attackAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_ATTACK);
         this.defendAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_DEFEND);
+        // this.castAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_CAST);
         
         // set animation timers / cooldowns
         this.attackCooldown = this.attackFrameTime * this.attackAnim.getAnimationLength();
         this.defendCooldown = this.attackFrameTime * this.defendAnim.getAnimationLength();
+        //this.castCooldown = this.attackFrameTime * this.castAnim.getAnimationLength();
         
         // set stuff
         this.maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
@@ -53,14 +55,6 @@ public class Player extends Actor {
         this.friction = 0.10f * Game.SPRITESIZEMULT;
         this.collisionDistance = 50f * Game.SPRITESIZEMULT;
         
-    }
-    
-    public void tick() {
-        
-        this.handleStunState();
-        if(this.isStunned) return;
-        
-        super.tick();
     }
     
     public void render(Graphics g) {

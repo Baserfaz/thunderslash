@@ -31,6 +31,7 @@ public abstract class GameObject {
     protected double attackTimer = 0.0;
     protected double defendTimer = 0.0;
     protected double useTimer = 0.0;
+    protected double castTimer = 0.0;
     protected double currentFrameTime = 0.0;
     protected int currentAnimIndex = 0;
     

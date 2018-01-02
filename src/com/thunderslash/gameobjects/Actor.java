@@ -22,6 +22,7 @@ public class Actor extends PhysicsObject {
     private Rectangle attackBox;
     
     protected int attackDamage = 1;
+    protected int castDamage = 3;
     
     protected boolean isStunned = false;
     private ActorState oldState;
@@ -32,10 +33,12 @@ public class Actor extends PhysicsObject {
     protected double attackCooldown = 200.0;
     protected double defendCooldown = 200.0;
     protected double useCooldown    = 200.0;
+    protected double castCooldown   = 200.0;
     
     protected boolean canAttack = true;
     protected boolean canDefend = true;
     protected boolean canUse    = true;
+    protected boolean canCast   = true;
     
     public Actor(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(worldPos, spriteType);
@@ -46,6 +49,7 @@ public class Actor extends PhysicsObject {
     
     public void tick() {
         
+        this.handleStunState();
         this.handleCooldowns();
         this.handleActorStates();
         
@@ -80,6 +84,7 @@ public class Actor extends PhysicsObject {
         // TODO: cant defend, attack, use, cast at same time.
         
         if(this.HP.isDead()) this.actorState = ActorState.DEAD;
+        else if(this.canCast == false) this.actorState = ActorState.CASTING;
         else if(this.canAttack == false) this.actorState = ActorState.ATTACKING;
         else if(this.canDefend == false) this.actorState = ActorState.DEFENDING;
         else if(this.canUse == false) this.actorState = ActorState.USING;
@@ -110,6 +115,13 @@ public class Actor extends PhysicsObject {
 
         double dt = Game.instance.getTimeBetweenFrames();
         
+        if(this.castTimer < this.castCooldown) {
+            this.castTimer += dt;
+            this.canCast = false;
+        } else {
+            this.canCast = true;
+        }
+        
         if(this.attackTimer < this.attackCooldown) {
             this.attackTimer += dt;
             this.canAttack = false;
@@ -133,6 +145,34 @@ public class Actor extends PhysicsObject {
         
     }
     
+    public void cast() {
+        
+        // TODO: only support player casts for now
+        
+        if(this.canCast && this instanceof Player) {
+            Player player = (Player) this;
+            
+            if(player.getPower().getCurrentPower() > 0) {
+                
+                player.getPower().addCurrentPower(-1);
+                
+                this.castTimer = 0.0;
+                this.actorState = ActorState.CASTING;
+
+                GameObject hit = this.checkHit(10, 20, 25);
+                        
+                if(hit != null) {
+                    
+                    if(hit instanceof Enemy) {
+                    
+                       ((Actor) hit).getHP().takeDamage(this.castDamage);
+                        
+                    }
+                }
+            }
+        }
+    }
+    
     public void defend() {
         if(this.canDefend) {
             
@@ -140,13 +180,14 @@ public class Actor extends PhysicsObject {
             this.actorState = ActorState.DEFENDING;
             
             // check if we hit something
-            GameObject hit = this.checkHit();
+            GameObject hit = this.checkHit(6, 20, 25);
             
             if(hit != null) {
                 
                 if(hit instanceof Enemy) {
                     Enemy enemy = (Enemy) hit;
                     enemy.isStunned = true;
+                    enemy.velocity.x = 2f * this.getHorizontalDirectionAsInteger();
                 }
                 
             }
@@ -160,7 +201,7 @@ public class Actor extends PhysicsObject {
             this.actorState = ActorState.ATTACKING;
             
             // check if we hit something.
-            GameObject hit = this.checkHit();
+            GameObject hit = this.checkHit(6, 20, 25);
             
             if(hit != null) {
                 
@@ -181,39 +222,17 @@ public class Actor extends PhysicsObject {
         }
     }
     
-    public GameObject checkHit() {
-        
-        GameObject retObj = null;
-        
-        int xpos = this.hitboxCenter.x;
-        int dist = 6 * Game.SPRITESIZEMULT;
-        int attSizex = 20 * Game.SPRITESIZEMULT;
-        int attSizey = 25 * Game.SPRITESIZEMULT;        
-        
-        if(this.facingDirection == Direction.EAST) xpos += dist;
-        else if(this.facingDirection == Direction.WEST) xpos -= dist + attSizex;
-        
-        // set up the rectangle 
-        attackBox = new Rectangle(xpos, this.hitbox.y, attSizex, attSizey);
-        
-        // check collisions with objs
-        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
-            if(go.getHitbox().intersects(attackBox)) {
-                retObj = go;
-                break;
-            }
-        }
-        
-        return retObj;
-    }
-    
-    // on action key press
     public void action() {
         
         if(this.canUse) {
         
+            // should always be player
+            Player player = (Player) this;
+            
             this.useTimer = 0.0;
             this.actorState = ActorState.USING;
+            
+            // TODO: use checkHit method instead.
             
             // calculate closest obj
             double smallestDist = Double.POSITIVE_INFINITY;
@@ -232,10 +251,42 @@ public class Actor extends PhysicsObject {
                 Chest chest = (Chest) closestObj;
                 if(chest.isOpen() == false) chest.open();
             } else if(closestObj instanceof Crystal) {
-                ((Crystal) closestObj).absorb();
+                Crystal crystal = (Crystal) closestObj;
+                
+                if(crystal.isUsed() == false) {
+                    crystal.absorb();
+                    player.getPower().addCurrentPower(crystal.getPowerValue());
+                }
             }
         }   
     }
+    
+    public GameObject checkHit(int distanceX, int sizex, int sizey) {
+        
+        GameObject retObj = null;
+        
+        int xpos = this.hitboxCenter.x;
+        int dist = distanceX * Game.SPRITESIZEMULT;
+        int attSizex = sizex * Game.SPRITESIZEMULT;
+        int attSizey = sizey * Game.SPRITESIZEMULT;        
+        
+        if(this.facingDirection == Direction.EAST) xpos += dist;
+        else if(this.facingDirection == Direction.WEST) xpos -= dist + attSizex;
+        
+        // set up the rectangle 
+        attackBox = new Rectangle(xpos, this.hitbox.y, attSizex, attSizey);
+        
+        // check collisions with objs
+        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
+            if(go.getHitbox().intersects(attackBox)) {
+                retObj = go;
+                break;
+            }
+        }
+        
+        return retObj;
+    }
+    
     
     public int getHorizontalDirectionAsInteger() {
         return (this.facingDirection == Direction.EAST) ? 1 : -1;

@@ -66,7 +66,17 @@ public class PhysicsObject extends GameObject {
         this.handleCollisions();
         
         // horizontal movement
-        if(this instanceof Actor) this.acceleration.x = this.direction.x * this.horizontalAccelMult;
+        if(this instanceof Actor) {
+            
+            // if the actor is stunned
+            // dont read the inputs
+            if(((Actor) this).isStunned) {
+                this.direction.x = 0f;
+                this.direction.y = 0f;
+            }
+            
+            this.acceleration.x = this.direction.x * this.horizontalAccelMult;
+        }
         
         if(this.isGrounded) {
             
