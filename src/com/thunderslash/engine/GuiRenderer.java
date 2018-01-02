@@ -7,19 +7,34 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import com.thunderslash.data.Health;
+import com.thunderslash.data.Power;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Player;
+import com.thunderslash.utilities.RenderUtils;
+import com.thunderslash.utilities.SpriteCreator;
 
 public class GuiRenderer {
 
     // cache GUI sprites
     private BufferedImage heart;
-
+    private BufferedImage tintedHeart;
+    
+    private BufferedImage powerSword;
+    private BufferedImage tintedPowerSword;
+    
     public GuiRenderer() {
         
-        // cache GUI sprites
-        this.heart = Game.instance.getSpriteCreator().CreateCustomSizeSprite(0, 6 * 32, 7, 6);
+        SpriteCreator sc = Game.instance.getSpriteCreator();
         
+        int tintAmount = 3;
+        
+        // cache GUI sprites
+        this.heart = sc.CreateCustomSizeSprite(0, 6 * 32, 7, 6);
+        this.tintedHeart = RenderUtils.tint(this.heart, true, tintAmount); 
+        
+        this.powerSword = sc.CreateCustomSizeSprite(8, 6 * 32, 10, 6);
+        this.tintedPowerSword = RenderUtils.tint(this.powerSword, true, tintAmount);
     }
     
     public void render(Graphics g) {
@@ -27,32 +42,41 @@ public class GuiRenderer {
         Camera cam = Game.instance.getCamera();
         if(cam == null) return;
         
-        this.renderHP(g, cam);
+        Player player = Game.instance.getActorManager().getPlayerInstance();
+        if(player == null) return;
         
+        // vars
+        Health hp = player.getHP();
+        Power power = player.getPower();  
+        int x = 20;
+        
+        // render hp and power
+        this.renderImg(g, cam, x, 20, 10, 
+                hp.getMaxHP(), hp.getCurrentHP(), this.heart, this.tintedHeart);
+        this.renderImg(g, cam, x, 60, 10,
+                power.getMaxPower(), power.getCurrentPower(), this.powerSword, this.tintedPowerSword);
+        
+        // render debugging information
         this.renderVersion(g, cam);
         this.renderDebugInfo(g);
     }   
     
-    private void renderHP(Graphics g, Camera cam) {
+    private void renderImg(Graphics g, Camera cam,
+            int x, int y, int margin, int maxAmount, int currentAmount,
+            BufferedImage img, BufferedImage img2) {
+            
+        Rectangle r = cam.getCameraBounds();
+        int startx = r.x + x;
+        int starty = r.y + y;
         
-        Player player = Game.instance.getActorManager().getPlayerInstance();
-        if(player != null) {
-            
-            Rectangle r = cam.getCameraBounds();
-            int startx = r.x + 20;
-            int starty = r.y + 20;
-            
-            int x = startx;
-            int y = starty;
-            
-            int margin = 10;
-            
-            for(int i = 0; i < player.getHP().getCurrentHP(); i++) {
-                g.drawImage(this.heart, x, y, null);
-                x += margin + this.heart.getWidth();
-            }
+        int xx = startx;
+        int yy = starty;
+        
+        for(int i = 0; i < maxAmount; i++) {
+            if(i < currentAmount)g.drawImage(img, xx, yy, null);
+            else g.drawImage(img2, xx, yy, null);
+            xx += margin + img.getWidth();
         }
-        
     }
 
     private void renderDebugInfo(Graphics g) {
@@ -69,7 +93,7 @@ public class GuiRenderer {
             info += "isGrounded: " + player.isGrounded() + "\n";
             info += "state: " +  player.getActorState().toString() + "\n";
             
-            this.renderString(info, 20, 100, Game.debugInfoColor, 30f, g);
+            this.renderString(info, 20, 150, Game.debugInfoColor, 30f, g);
         }
     }
     

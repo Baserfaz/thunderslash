@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.data.Animation;
+import com.thunderslash.data.Power;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.AnimationType;
@@ -14,6 +15,8 @@ import com.thunderslash.utilities.AnimationCreator;
 import com.thunderslash.utilities.RenderUtils;
 
 public class Player extends Actor {
+    
+    private Power power;
     
     private Animation idleAnim;
     private Animation walkAnim;
@@ -27,6 +30,8 @@ public class Player extends Actor {
     public Player(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
     
+        this.power = new Power();
+        
         // set animations
         this.idleAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_IDLE);
         this.walkAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_WALK);
@@ -88,5 +93,13 @@ public class Player extends Actor {
         } else if(this.facingDirection == Direction.WEST) {
             RenderUtils.renderSpriteFlippedHorizontally(frame, this.worldPosition, g);
         }
+    }
+
+    public Power getPower() {
+        return power;
+    }
+
+    public void setPower(Power power) {
+        this.power = power;
     }
 }

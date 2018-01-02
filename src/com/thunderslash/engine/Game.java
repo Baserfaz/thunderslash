@@ -54,7 +54,7 @@ public class Game extends Canvas implements Runnable {
     // ------------------------------
     // DEBUG
 
-    public static boolean drawDebugInfo                  = true;
+    public static boolean drawDebugInfo                  = false;
     public static final Color debugInfoColor             = Color.red;
     
     public static boolean drawCameraRect                 = false;
@@ -128,7 +128,7 @@ public class Game extends Canvas implements Runnable {
         this.world.initializeRoom(Game.instance.currentRoomIndex);
         
         // create mock up player actor
-        actorManager.createPlayerInstance("Player", SpriteType.PLAYER, 3);
+        actorManager.createPlayerInstance("Player", SpriteType.PLAYER, 4);
         
         // start game thread
         start();

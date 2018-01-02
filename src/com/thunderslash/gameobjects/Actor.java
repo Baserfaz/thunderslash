@@ -144,8 +144,7 @@ public class Actor extends PhysicsObject {
             if(this.facingDirection == Direction.EAST) {
                 xpos += dist;
                 dir = 1;
-            }
-            else if(this.facingDirection == Direction.WEST) {
+            } else if(this.facingDirection == Direction.WEST) {
                 xpos -= dist + attSizex;
                 dir = -1;
             }
@@ -160,10 +159,9 @@ public class Actor extends PhysicsObject {
                     if(go instanceof PhysicsObject) {
                         PhysicsObject obj = (PhysicsObject) go;
                         
-                        double force = Mathf.randomRange(0.5, 1.0);
+                        double force = 1.0;
                         
                         obj.acceleration.x = (float) (force * dir);
-                        System.out.println(obj.getInfo());
                     }
                     
                     if(go instanceof Actor) {

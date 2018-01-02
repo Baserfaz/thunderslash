@@ -17,12 +17,9 @@ public class PhysicsObject extends GameObject {
     // default values
     protected float maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
     protected float maxHorizontalSpeed = 1f * Game.SPRITESIZEMULT;
-    
     protected float maxVerticalAccel = 0.22f * Game.SPRITESIZEMULT;
     protected float maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
-    
     protected float horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
-    
     protected float jumpForce = -0.24f * Game.SPRITESIZEMULT;
     protected float friction = 0.10f * Game.SPRITESIZEMULT;
     protected float collisionDistance = 50f * Game.SPRITESIZEMULT;
@@ -206,12 +203,15 @@ public class PhysicsObject extends GameObject {
                     block.getBlocktype() == BlockType.PLATFORM ||
                     block.getBlocktype() == BlockType.HURT) {
                 
-                Rectangle hitbox = block.getHitbox();
+                Rectangle blockHitbox = block.getHitbox();
                 
                 // when the actor is falling
                 if(this.velocity.y > 0f) {
+                    
+                    // checking whether the actor hit ground.
+                    
                     if(this.lastBlock != block) {
-                        if(hitbox.contains(bl) || hitbox.contains(bc) || hitbox.contains(br)) {
+                        if(blockHitbox.contains(bl) || blockHitbox.contains(bc) || blockHitbox.contains(br)) {
                             
                             // landed on hurt block
                             // actor takes damage.
@@ -226,27 +226,49 @@ public class PhysicsObject extends GameObject {
                             this.lastBlock = block;
                         }
                     }
+                    
                 } else {
+                    
+                    // this block is executed when the actor is grounded,
+                    // to check if the player is still on ground.
+                    
                     if(block == this.lastBlock) {
-                        if(hitbox.contains(bl) == false && 
-                                hitbox.contains(bc) == false &&
-                                hitbox.contains(br) == false) {
+                        
+                        // only check collisions with the 
+                        // current block the actor is standing on.
+                        
+                        if(blockHitbox.contains(bl) == false && 
+                                blockHitbox.contains(bc) == false &&
+                                blockHitbox.contains(br) == false) {
                             this.isGrounded = false;
                             this.lastBlock = null;
                         }
+                        
+                    } else {
+                        
+                        // check other nearby blocks
+                        // if we are standing on them.
+                        
+                        if(blockHitbox.contains(bl) || 
+                                blockHitbox.contains(br) ||
+                                blockHitbox.contains(bc)) {
+                            this.isGrounded = true;
+                            this.lastBlock = block;
+                        }
+                        
                     }
                 }
                 
                 if(block.getBlocktype() != BlockType.PLATFORM) {
-                    if(hitbox.contains(lc) || hitbox.contains(lt) || hitbox.contains(lb)) {
+                    if(blockHitbox.contains(lc) || blockHitbox.contains(lt) || blockHitbox.contains(lb)) {
                         this.collisionLeft = true;
                     }
                     
-                    if(hitbox.contains(rc) || hitbox.contains(rt) || hitbox.contains(rb)) {
+                    if(blockHitbox.contains(rc) || blockHitbox.contains(rt) || blockHitbox.contains(rb)) {
                         this.collisionRight = true;
                     }
                     
-                    if(hitbox.contains(tc) || hitbox.contains(tl) || hitbox.contains(tr)) {
+                    if(blockHitbox.contains(tc) || blockHitbox.contains(tl) || blockHitbox.contains(tr)) {
                         this.collisionTop = true;
                     }
                 }
