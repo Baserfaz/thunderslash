@@ -29,6 +29,10 @@ public class AnimationCreator {
                 animation = new Animation(spriteCreator.createMultipleSprites(8, 2, 9));
                 break;
                 
+            case PLAYER_DEFEND:
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 3, 7));
+                break;
+                
             case CRYSTAL_BOUNCE:
                 animation = new Animation(spriteCreator.createMultipleSprites(8, 8, 7));
                 break;

@@ -82,7 +82,8 @@ public class Actor extends PhysicsObject {
             this.currentAnimIndex = 0;
             
             // change animation speed when attacking.
-            if(this.actorState == ActorState.ATTACKING) this.frameTime = this.attackFrameTime;
+            if(this.actorState == ActorState.ATTACKING ||
+                    this.actorState == ActorState.DEFENDING) this.frameTime = this.attackFrameTime;
             else this.frameTime = this.defaultFrameTime;
         }
         

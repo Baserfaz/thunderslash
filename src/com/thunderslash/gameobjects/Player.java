@@ -19,6 +19,7 @@ public class Player extends Actor {
     private Animation walkAnim;
     private Animation fallAnim;
     private Animation attackAnim;
+    private Animation defendAnim;
     // private Animation castAnim;
     // private Animation jumpAnim;
     // private Animation useAnim;
@@ -31,9 +32,11 @@ public class Player extends Actor {
         this.walkAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_WALK);
         this.fallAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_FALL);
         this.attackAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_ATTACK);
+        this.defendAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_DEFEND);
         
         // set animation timers / cooldowns
         this.attackCooldown = this.attackFrameTime * this.attackAnim.getAnimationLength();
+        this.defendCooldown = this.attackFrameTime * this.defendAnim.getAnimationLength();
         
         // set stuff
         this.maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
@@ -68,6 +71,9 @@ public class Player extends Actor {
         } else if(this.actorState == ActorState.ATTACKING) {
             frame = this.attackAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.attackAnim;
+        } else if(this.actorState == ActorState.DEFENDING) {
+            frame = this.defendAnim.getFrame(this.currentAnimIndex);
+            currentAnim = this.defendAnim;
         }
 
         // updates animation index
