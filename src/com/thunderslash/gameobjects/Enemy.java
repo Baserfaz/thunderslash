@@ -19,6 +19,9 @@ public class Enemy extends Actor {
 
     public void tick() {
         
+        this.handleStunState();
+        if(this.isStunned) return;
+         
         if(this.HP.isDead()) {
             this.direction.x = 0f;
             this.direction.y = 0f;

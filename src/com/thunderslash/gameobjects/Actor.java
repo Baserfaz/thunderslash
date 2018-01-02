@@ -9,7 +9,6 @@ import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
-import com.thunderslash.utilities.Mathf;
 import com.thunderslash.utilities.RenderUtils;
 import com.thunderslash.utilities.Vector2;
 
@@ -22,9 +21,13 @@ public class Actor extends PhysicsObject {
     protected Direction facingDirection = Direction.WEST;
     private Rectangle attackBox;
     
-    protected int damage = 1;
+    protected int attackDamage = 1;
     
+    protected boolean isStunned = false;
     private ActorState oldState;
+    
+    protected double stunTimer = 0.0;
+    protected double defaultStunDuration = 500.0;
     
     protected double attackCooldown = 200.0;
     protected double defendCooldown = 200.0;
@@ -59,6 +62,17 @@ public class Actor extends PhysicsObject {
         } else if(this.facingDirection == Direction.WEST) {
             RenderUtils.renderSpriteFlippedHorizontally(sprite, this.worldPosition, g);
         } 
+    }
+    
+    protected void handleStunState() {
+        if(this.isStunned) {
+            if(this.stunTimer > this.defaultStunDuration) {
+                this.isStunned = false;
+                this.stunTimer = 0.0;
+            } else {
+                this.stunTimer += Game.instance.getTimeBetweenFrames();
+            }
+        }
     }
     
     private void handleActorStates() {
@@ -125,6 +139,17 @@ public class Actor extends PhysicsObject {
             this.defendTimer = 0.0;
             this.actorState = ActorState.DEFENDING;
             
+            // check if we hit something
+            GameObject hit = this.checkHit();
+            
+            if(hit != null) {
+                
+                if(hit instanceof Enemy) {
+                    Enemy enemy = (Enemy) hit;
+                    enemy.isStunned = true;
+                }
+                
+            }
         }
     }
     
@@ -134,43 +159,52 @@ public class Actor extends PhysicsObject {
             this.attackTimer = 0.0;
             this.actorState = ActorState.ATTACKING;
             
-            int xpos = this.hitboxCenter.x;
-            int dist = 6 * Game.SPRITESIZEMULT;
-            int attSizex = 20 * Game.SPRITESIZEMULT;
-            int attSizey = 25 * Game.SPRITESIZEMULT;        
+            // check if we hit something.
+            GameObject hit = this.checkHit();
             
-            int dir = 0;
-            
-            if(this.facingDirection == Direction.EAST) {
-                xpos += dist;
-                dir = 1;
-            } else if(this.facingDirection == Direction.WEST) {
-                xpos -= dist + attSizex;
-                dir = -1;
-            }
-            
-            // set up the rectangle 
-            attackBox = new Rectangle(xpos, this.hitbox.y, attSizex, attSizey);
-            
-            // check collisions with objs
-            for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
-                if(go.getHitbox().intersects(attackBox)) {
-                    
-                    if(go instanceof PhysicsObject) {
-                        PhysicsObject obj = (PhysicsObject) go;
-                        
-                        double force = 1.0;
-                        
-                        obj.acceleration.x = (float) (force * dir);
-                    }
-                    
-                    if(go instanceof Actor) {
-                        Actor actor = (Actor) go;
-                        actor.getHP().takeDamage(this.damage);
-                    }
+            if(hit != null) {
+                
+                if(hit instanceof Actor) {
+                    ((Actor)hit).getHP().takeDamage(this.attackDamage);
                 }
+                
+                // push physics enabled objects to the direction
+                // this actor is looking at.
+                if(hit instanceof PhysicsObject) {
+                    PhysicsObject obj = (PhysicsObject) hit;
+                    float force = 2f * this.getHorizontalDirectionAsInteger();
+                    obj.velocity.x = force;
+                    obj.acceleration.x = force;
+                }
+                
             }
         }
+    }
+    
+    public GameObject checkHit() {
+        
+        GameObject retObj = null;
+        
+        int xpos = this.hitboxCenter.x;
+        int dist = 6 * Game.SPRITESIZEMULT;
+        int attSizex = 20 * Game.SPRITESIZEMULT;
+        int attSizey = 25 * Game.SPRITESIZEMULT;        
+        
+        if(this.facingDirection == Direction.EAST) xpos += dist;
+        else if(this.facingDirection == Direction.WEST) xpos -= dist + attSizex;
+        
+        // set up the rectangle 
+        attackBox = new Rectangle(xpos, this.hitbox.y, attSizex, attSizey);
+        
+        // check collisions with objs
+        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
+            if(go.getHitbox().intersects(attackBox)) {
+                retObj = go;
+                break;
+            }
+        }
+        
+        return retObj;
     }
     
     // on action key press
@@ -201,6 +235,10 @@ public class Actor extends PhysicsObject {
                 ((Crystal) closestObj).absorb();
             }
         }   
+    }
+    
+    public int getHorizontalDirectionAsInteger() {
+        return (this.facingDirection == Direction.EAST) ? 1 : -1;
     }
     
     public Health getHP() {

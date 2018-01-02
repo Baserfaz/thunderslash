@@ -56,6 +56,10 @@ public class Player extends Actor {
     }
     
     public void tick() {
+        
+        this.handleStunState();
+        if(this.isStunned) return;
+        
         super.tick();
     }
     
