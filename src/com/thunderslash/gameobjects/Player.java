@@ -19,20 +19,21 @@ public class Player extends Actor {
     private Animation walkAnim;
     private Animation fallAnim;
     private Animation attackAnim;
-//    private Animation castAnim;
+    // private Animation castAnim;
+    // private Animation jumpAnim;
+    // private Animation useAnim;
 
-    public Player(String name, Point worldPos, 
-            SpriteType spriteType, int hp) {
+    public Player(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
     
         // set animations
-        this.idleAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_IDLE);
-        this.walkAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_WALK);
-        this.fallAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_FALL);
+        this.idleAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_IDLE);
+        this.walkAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_WALK);
+        this.fallAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_FALL);
         this.attackAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_ATTACK);
         
         // set animation timers / cooldowns
-        this.attackCooldown = this.frameTime * this.attackAnim.getAnimationLength();
+        this.attackCooldown = this.attackFrameTime * this.attackAnim.getAnimationLength();
         
         // set stuff
         this.maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
@@ -72,7 +73,7 @@ public class Player extends Actor {
         // updates animation index
         if(currentAnim != null) this.calculateAnimations(currentAnim);
         
-        // fallbacks to default static sprite
+        // fallback to default static sprite
         if(frame == null) frame = this.sprite;
         
         // render current sprite

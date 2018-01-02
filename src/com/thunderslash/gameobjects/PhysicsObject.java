@@ -50,29 +50,26 @@ public class PhysicsObject extends GameObject {
     
     public void tick() {
         if(Game.drawActorCollisionPoints) this.collisionPoints.clear();
-        
         this.updateCollisions();
         this.move();
-        
-        // update hitbox position
-        this.hitbox.x = this.worldPosition.x + this.hitboxSizes.x;
-        this.hitbox.y = this.worldPosition.y + this.hitboxSizes.y;
-        
-        this.hitboxCenter = new Point(this.hitbox.x + this.hitbox.width / 2, 
-                this.hitbox.y + this.hitbox.height / 2);
-
+        this.updateHitbox();
     }
     
     public void render(Graphics g) {}
+    
+    private void updateHitbox() {
+        this.hitbox.x = this.worldPosition.x + this.hitboxSizes.x;
+        this.hitbox.y = this.worldPosition.y + this.hitboxSizes.y;
+        this.hitboxCenter = new Point(this.hitbox.x + this.hitbox.width / 2, 
+                this.hitbox.y + this.hitbox.height / 2);
+    }
     
     private void move() {
         
         this.handleCollisions();
         
         // horizontal movement
-        if(this instanceof Actor) {
-                this.acceleration.x = this.direction.x * this.horizontalAccelMult;
-        }
+        if(this instanceof Actor) this.acceleration.x = this.direction.x * this.horizontalAccelMult;
         
         if(this.isGrounded) {
             

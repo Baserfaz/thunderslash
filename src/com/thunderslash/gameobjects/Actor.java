@@ -24,8 +24,6 @@ public class Actor extends PhysicsObject {
     
     protected int damage = 1;
     
-    protected boolean stateChanged = false;
-    
     private ActorState oldState;
     
     protected double attackCooldown = 200.0;
@@ -77,10 +75,18 @@ public class Actor extends PhysicsObject {
         else if(this.velocity.y > 0f) this.actorState = ActorState.FALLING;
         else if(this.direction.x > 0f || this.direction.x < 0f) this.actorState = ActorState.WALKING;
         
-        stateChanged = (this.actorState != this.oldState);
+        // on state change.
+        if(this.actorState != this.oldState) { 
+            
+            // reset frame index when state changes.
+            this.currentAnimIndex = 0;
+            
+            // change animation speed when attacking.
+            if(this.actorState == ActorState.ATTACKING) this.frameTime = this.attackFrameTime;
+            else this.frameTime = this.defaultFrameTime;
+        }
         
-        if(stateChanged) this.currentAnimIndex = 0;
-        
+        // cache last frame's state
         this.oldState = this.actorState;
         
     }

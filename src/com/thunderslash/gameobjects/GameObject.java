@@ -23,14 +23,16 @@ public abstract class GameObject {
     protected boolean isVisible = true;
     
     // animation
-    protected double frameTime = 50.0;
-    protected double currentFrameTime = 0.0;
-    protected int currentAnimIndex = 0;
+    protected double defaultFrameTime = 50.0;
+    protected double attackFrameTime = 25.0;
     
     // dont touch
+    protected double frameTime = 0.0;
     protected double attackTimer = 0.0;
     protected double defendTimer = 0.0;
     protected double useTimer = 0.0;
+    protected double currentFrameTime = 0.0;
+    protected int currentAnimIndex = 0;
     
     public GameObject(Point worldPos, SpriteType type) {
 
@@ -52,6 +54,8 @@ public abstract class GameObject {
         
         this.hitboxCenter = new Point(this.hitbox.x + this.hitbox.width / 2, 
                 this.hitbox.y + this.hitbox.height / 2);
+        
+        this.frameTime = this.defaultFrameTime;
         
     }
 
