@@ -3,6 +3,8 @@ package com.thunderslash.gameobjects;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.thunderslash.data.Health;
 import com.thunderslash.engine.Game;
@@ -39,6 +41,8 @@ public class Actor extends PhysicsObject {
     protected boolean canDefend = true;
     protected boolean canUse    = true;
     protected boolean canCast   = true;
+    
+    protected boolean allowCleaveAttacks = false;
     
     public Actor(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(worldPos, spriteType);
@@ -159,16 +163,16 @@ public class Actor extends PhysicsObject {
                 this.castTimer = 0.0;
                 this.actorState = ActorState.CASTING;
 
-                GameObject hit = this.checkHit(10, 20, 25);
+                List<GameObject> hits = this.checkHit(5, 75, 25);
                         
-                if(hit != null) {
-                    
-                    if(hit instanceof Enemy) {
-                    
-                       ((Actor) hit).getHP().takeDamage(this.castDamage);
-                        
+                if(hits.isEmpty() == false) {    
+                    for(GameObject hit : hits) {
+                        if(hit instanceof Enemy) {
+                           ((Actor) hit).getHP().takeDamage(this.castDamage);
+                        }
                     }
                 }
+                
             }
         }
     }
@@ -180,17 +184,19 @@ public class Actor extends PhysicsObject {
             this.actorState = ActorState.DEFENDING;
             
             // check if we hit something
-            GameObject hit = this.checkHit(6, 20, 25);
+            List<GameObject> hits = this.checkHit(3, 10, 25);
             
-            if(hit != null) {
-                
-                if(hit instanceof Enemy) {
-                    Enemy enemy = (Enemy) hit;
-                    enemy.isStunned = true;
-                    enemy.velocity.x = 2f * this.getHorizontalDirectionAsInteger();
+            if(hits.isEmpty() == false) {
+                for(GameObject hit : hits) {
+                    if(hit instanceof Enemy) {
+                        Enemy enemy = (Enemy) hit;
+                        enemy.isStunned = true;
+                    }
+                    
+                    if(this.allowCleaveAttacks == false) break;
                 }
-                
             }
+            
         }
     }
     
@@ -201,24 +207,21 @@ public class Actor extends PhysicsObject {
             this.actorState = ActorState.ATTACKING;
             
             // check if we hit something.
-            GameObject hit = this.checkHit(6, 20, 25);
+            List<GameObject> hits = this.checkHit(3, 15, 28);
             
-            if(hit != null) {
-                
-                if(hit instanceof Actor) {
-                    ((Actor)hit).getHP().takeDamage(this.attackDamage);
+            if(hits.isEmpty() == false) {
+                for(GameObject hit : hits) {
+                    
+                    if(hit instanceof Actor) {
+                        ((Actor)hit).getHP().takeDamage(this.attackDamage);
+                    }
+                    
+                    this.knockback(hit);
+                    
+                    if(this.allowCleaveAttacks == false) break;
                 }
-                
-                // push physics enabled objects to the direction
-                // this actor is looking at.
-                if(hit instanceof PhysicsObject) {
-                    PhysicsObject obj = (PhysicsObject) hit;
-                    float force = 2f * this.getHorizontalDirectionAsInteger();
-                    obj.velocity.x = force;
-                    obj.acceleration.x = force;
-                }
-                
             }
+            
         }
     }
     
@@ -238,7 +241,7 @@ public class Actor extends PhysicsObject {
             double smallestDist = Double.POSITIVE_INFINITY;
             GameObject closestObj = null;
             
-            for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
+            for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
                 double dist = go.hitboxCenter.distance(this.hitboxCenter);
                 if(dist < smallestDist) {
                     smallestDist = dist;
@@ -248,22 +251,46 @@ public class Actor extends PhysicsObject {
             
             // use the closest obj
             if(closestObj instanceof Chest) {
+                
                 Chest chest = (Chest) closestObj;
                 if(chest.isOpen() == false) chest.open();
+                
             } else if(closestObj instanceof Crystal) {
+                
                 Crystal crystal = (Crystal) closestObj;
                 
                 if(crystal.isUsed() == false) {
                     crystal.absorb();
                     player.getPower().addCurrentPower(crystal.getPowerValue());
                 }
+                
             }
         }   
     }
     
-    public GameObject checkHit(int distanceX, int sizex, int sizey) {
+    private void knockback(GameObject target) {
         
-        GameObject retObj = null;
+        if(target instanceof PhysicsObject) {
+            PhysicsObject obj = (PhysicsObject) target;
+            
+            float xforce = 1f * this.getHorizontalDirectionAsInteger();
+            float yforce = -0.5f;
+            
+            obj.isGrounded = false;
+            
+            obj.velocity.x = xforce;
+            obj.acceleration.x = xforce;
+        
+            obj.velocity.y = yforce;
+            obj.acceleration.y = yforce;
+            
+        }
+        
+    }
+    
+    public List<GameObject> checkHit(int distanceX, int sizex, int sizey) {
+        
+        List<GameObject> retObjs = new ArrayList<GameObject>();
         
         int xpos = this.hitboxCenter.x;
         int dist = distanceX * Game.SPRITESIZEMULT;
@@ -277,14 +304,13 @@ public class Actor extends PhysicsObject {
         attackBox = new Rectangle(xpos, this.hitbox.y, attSizex, attSizey);
         
         // check collisions with objs
-        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance)) {
+        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
             if(go.getHitbox().intersects(attackBox)) {
-                retObj = go;
-                break;
+                retObjs.add(go);
             }
         }
         
-        return retObj;
+        return retObjs;
     }
     
     

@@ -15,7 +15,7 @@ public class Crystal extends GameObject {
     private boolean isUsed = false;
     private BufferedImage usedSprite;
     
-    private int powerValue = 1;
+    private int powerValue = 3;
     
     private Animation bounceAnim;
     

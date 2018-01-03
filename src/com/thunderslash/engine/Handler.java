@@ -9,6 +9,7 @@ import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.GameObject;
+import com.thunderslash.gameobjects.PhysicsObject;
 import com.thunderslash.gameobjects.Player;
 
 public class Handler {
@@ -27,12 +28,13 @@ public class Handler {
         // references
         List<Block> waterBlocks = new ArrayList<Block>();
         List<Actor> actors = new ArrayList<Actor>();
+        List<PhysicsObject> items = new ArrayList<PhysicsObject>();
         Actor player = Game.instance.getActorManager().getPlayerInstance();
         if(player == null) return;
         
         // render all game objects 
-        for(int i = 0; i < objects.size(); i++) {
-            GameObject current = objects.get(i);
+        for(int i = 0; i < this.objects.size(); i++) {
+            GameObject current = this.objects.get(i);
             
             if(current.getIsVisible() && Game.drawGameObjectRects) {
                 Rectangle bounds = current.getHitbox();
@@ -58,10 +60,22 @@ public class Handler {
                 }
             }
             
+            // get physicsObjects
+            if(current instanceof PhysicsObject) {
+                PhysicsObject obj = (PhysicsObject) current;
+                items.add(obj);
+                continue;
+            }
+            
             // nothing special -> just render it
             if(current.getIsVisible()) {
                 current.render(g);
             }
+        }
+        
+        // render items
+        for(PhysicsObject obj : items) {
+            obj.render(g);
         }
         
         // render other actors

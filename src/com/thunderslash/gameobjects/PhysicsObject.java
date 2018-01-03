@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.thunderslash.engine.Game;
@@ -39,14 +40,13 @@ public class PhysicsObject extends GameObject {
     protected boolean collidedWithTrap = false;
     
     // collections
-    private List<Point> collisionPoints = new ArrayList<Point>();
+    private List<Point> collisionPoints;
     
     public PhysicsObject(Point worldPos, SpriteType type) {
         super(worldPos, type);
     }
     
     public void tick() {
-        if(Game.drawActorCollisionPoints) this.collisionPoints.clear();
         this.updateCollisions();
         this.move();
         this.updateHitbox();
@@ -164,6 +164,26 @@ public class PhysicsObject extends GameObject {
     }
     
     private void updateCollisions() {
+
+        List<Point> collisionPoints = this.createCollisionPoints();
+        
+        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, true)) {
+
+            if(go.isEnabled == false) continue;
+            
+            if(go instanceof Block) {
+                this.handleBlockCollisions(go, collisionPoints);
+            } else if(go instanceof PhysicsObject) {
+                this.handlePhysicsObjectCollisions(go, collisionPoints);
+            }
+        }
+        
+        if(Game.drawActorCollisionPoints) {
+            this.collisionPoints = new ArrayList<Point>(collisionPoints);
+        }
+    }
+    
+    private List<Point> createCollisionPoints() {
         
         int margin = 3 * Game.SPRITESIZEMULT;
         int bottomMargin = 1 * Game.SPRITESIZEMULT;
@@ -203,113 +223,158 @@ public class PhysicsObject extends GameObject {
         // center
         Point c = new Point(middle, center);
         
-        for(Block block : this.getNearbyBlocks(this.collisionDistance)) {
-
-            // if the block is disabled -> no collisions
-            if(block.isEnabled == false) continue;
+        return Arrays.asList(lc, lt, lb, rc, rt, rb, tc, tl, tr, bl, bc, br, c);
+    }
+    
+    private void handlePhysicsObjectCollisions(GameObject go, List<Point> points) {
+        
+//        PhysicsObject obj = (PhysicsObject) go;
+//        
+//        // open collision points
+//        Point lc = points.get(0);
+//        Point lt = points.get(1);
+//        Point lb = points.get(2);
+//        
+//        Point rc = points.get(3);
+//        Point rt = points.get(4);
+//        Point rb = points.get(5);
+//        
+//        Point tc = points.get(6);
+//        Point tl = points.get(7);
+//        Point tr = points.get(8);
+//        
+//        Point bl = points.get(9);
+//        Point bc = points.get(10);
+//        Point br = points.get(11);
+//        
+//        Point c = points.get(12);
+//        
+//        Rectangle hitbox = obj.getHitbox();
+//        
+//        if(hitbox.contains(bl) || hitbox.contains(bc) || hitbox.contains(br)) {
+//            this.isGrounded = true;
+//        }
+//        
+//        if(hitbox.contains(lc) || hitbox.contains(lt) || hitbox.contains(lb)) {
+//            this.collisionLeft = true;
+//        }
+//        
+//        if(hitbox.contains(rc) || hitbox.contains(rt) || hitbox.contains(rb)) {
+//            this.collisionRight = true;
+//        }
+//        
+//        if(hitbox.contains(tc) || hitbox.contains(tl) || hitbox.contains(tr)) {
+//            this.collisionTop = true;
+//        }
+        
+    }
+    
+    private void handleBlockCollisions(GameObject go, List<Point> points) {
+        
+        Block block = (Block) go;
+        
+        // open collision points
+        Point lc = points.get(0);
+        Point lt = points.get(1);
+        Point lb = points.get(2);
+        
+        Point rc = points.get(3);
+        Point rt = points.get(4);
+        Point rb = points.get(5);
+        
+        Point tc = points.get(6);
+        Point tl = points.get(7);
+        Point tr = points.get(8);
+        
+        Point bl = points.get(9);
+        Point bc = points.get(10);
+        Point br = points.get(11);
+        
+        Point c = points.get(12);
+        
+        // only check collisions against these
+        if(block.getBlocktype() == BlockType.SOLID || 
+                block.getBlocktype() == BlockType.PLATFORM ||
+                        block.getBlocktype() == BlockType.HURT) {
             
-            // only check collisions against these
-            if(block.getBlocktype() == BlockType.SOLID || 
-                    block.getBlocktype() == BlockType.PLATFORM ||
-                    block.getBlocktype() == BlockType.HURT) {
+            Rectangle blockHitbox = go.getHitbox();
+            
+            // when the actor is falling
+            if(this.velocity.y > 0f) {
                 
-                Rectangle blockHitbox = block.getHitbox();
+                // checking whether the actor hit ground.
                 
-                // when the actor is falling
-                if(this.velocity.y > 0f) {
-                    
-                    // checking whether the actor hit ground.
-                    
-                    if(this.lastBlock != block) {
-                        if(blockHitbox.contains(bl) || blockHitbox.contains(bc) || blockHitbox.contains(br)) {
-                            
-                            // landed on hurt block
-                            // actor takes damage.
-                            if(block.getBlocktype() == BlockType.HURT) {
-                                Trap trap = (Trap) block;
-                                if(this instanceof Actor) {
-                                    ((Actor)this).getHP().takeDamage(trap.getDamage());
-                                }
+                if(this.lastBlock != block) {
+                    if(blockHitbox.contains(bl) || blockHitbox.contains(bc) || blockHitbox.contains(br)) {
+                        
+                        // landed on hurt block
+                        // actor takes damage.
+                        if(block.getBlocktype() == BlockType.HURT) {
+                            Trap trap = (Trap) block;
+                            if(this instanceof Actor) {
+                                ((Actor)this).getHP().takeDamage(trap.getDamage());
                             }
-                            
-                            this.isGrounded = true;
-                            this.lastBlock = block;
                         }
+                        
+                        this.isGrounded = true;
+                        this.lastBlock = block;
+                    }
+                }
+                
+            } else {
+                
+                // this block is executed when the actor is grounded,
+                // to check if the player is still on ground.
+                
+                if(block == this.lastBlock) {
+                    
+                    // only check collisions with the 
+                    // current block the actor is standing on.
+                    
+                    if(blockHitbox.contains(bl) == false && 
+                            blockHitbox.contains(bc) == false &&
+                            blockHitbox.contains(br) == false) {
+                        this.isGrounded = false;
+                        this.lastBlock = null;
                     }
                     
                 } else {
                     
-                    // this block is executed when the actor is grounded,
-                    // to check if the player is still on ground.
+                    // check other nearby blocks
+                    // if we are standing on them.
                     
-                    if(block == this.lastBlock) {
-                        
-                        // only check collisions with the 
-                        // current block the actor is standing on.
-                        
-                        if(blockHitbox.contains(bl) == false && 
-                                blockHitbox.contains(bc) == false &&
-                                blockHitbox.contains(br) == false) {
-                            this.isGrounded = false;
-                            this.lastBlock = null;
-                        }
-                        
-                    } else {
-                        
-                        // check other nearby blocks
-                        // if we are standing on them.
-                        
-                        if(blockHitbox.contains(bl) || 
-                                blockHitbox.contains(br) ||
-                                blockHitbox.contains(bc)) {
-                            this.isGrounded = true;
-                            this.lastBlock = block;
-                        }
-                        
+                    if(blockHitbox.contains(bl) || 
+                            blockHitbox.contains(br) ||
+                            blockHitbox.contains(bc)) {
+                        this.isGrounded = true;
+                        this.lastBlock = block;
                     }
+                    
+                }
+            }
+            
+            if(block.getBlocktype() != BlockType.PLATFORM) {
+                if(blockHitbox.contains(lc) || blockHitbox.contains(lt) || blockHitbox.contains(lb)) {
+                    this.collisionLeft = true;
                 }
                 
-                if(block.getBlocktype() != BlockType.PLATFORM) {
-                    if(blockHitbox.contains(lc) || blockHitbox.contains(lt) || blockHitbox.contains(lb)) {
-                        this.collisionLeft = true;
-                    }
-                    
-                    if(blockHitbox.contains(rc) || blockHitbox.contains(rt) || blockHitbox.contains(rb)) {
-                        this.collisionRight = true;
-                    }
-                    
-                    if(blockHitbox.contains(tc) || blockHitbox.contains(tl) || blockHitbox.contains(tr)) {
-                        this.collisionTop = true;
-                    }
+                if(blockHitbox.contains(rc) || blockHitbox.contains(rt) || blockHitbox.contains(rb)) {
+                    this.collisionRight = true;
+                }
+                
+                if(blockHitbox.contains(tc) || blockHitbox.contains(tl) || blockHitbox.contains(tr)) {
+                    this.collisionTop = true;
                 }
             }
         }
         
-        if(Game.drawActorCollisionPoints) {
-            collisionPoints.add(lc);
-            collisionPoints.add(lt);
-            collisionPoints.add(lb);            
-            
-            collisionPoints.add(rc);
-            collisionPoints.add(rt);   
-            collisionPoints.add(rb);   
-            
-            collisionPoints.add(tc);
-            collisionPoints.add(tl);
-            collisionPoints.add(tr);
-            
-            collisionPoints.add(bl);
-            collisionPoints.add(bc);
-            collisionPoints.add(br);
-
-            collisionPoints.add(c);
-        }
     }
     
-    protected List<GameObject> getNearbyGameObjects(float distance) {
+    protected List<GameObject> getNearbyGameObjects(float distance, boolean allowBlocks) {
         List<GameObject> objs = new ArrayList<GameObject>();
         for(GameObject go : Game.instance.getHandler().getObjects()) {
-            if(go instanceof Player || go instanceof Block) continue;
+            if(go instanceof Player) continue;
+            if(allowBlocks == false && go instanceof Block) continue;
             if(go.hitboxCenter.distance(this.hitboxCenter) < distance) objs.add(go); 
         }
         return objs;

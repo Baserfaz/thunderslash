@@ -59,24 +59,6 @@ public class GuiRenderer {
         // render debugging information
         this.renderVersion(g, cam);
         this.renderDebugInfo(g);
-    }   
-    
-    private void renderImg(Graphics g, Camera cam,
-            int x, int y, int margin, int maxAmount, int currentAmount,
-            BufferedImage img, BufferedImage img2) {
-            
-        Rectangle r = cam.getCameraBounds();
-        int startx = r.x + x;
-        int starty = r.y + y;
-        
-        int xx = startx;
-        int yy = starty;
-        
-        for(int i = 0; i < maxAmount; i++) {
-            if(i < currentAmount)g.drawImage(img, xx, yy, null);
-            else g.drawImage(img2, xx, yy, null);
-            xx += margin + img.getWidth();
-        }
     }
 
     private void renderDebugInfo(Graphics g) {
@@ -100,6 +82,26 @@ public class GuiRenderer {
     private void renderVersion(Graphics g, Camera cam) {
         Rectangle r = cam.getCameraBounds();
         this.renderString("v0.1", r.width - 50, 20, Color.white, 20f, g);
+    }
+    
+    // -----------------------------------
+    
+    private void renderImg(Graphics g, Camera cam,
+            int x, int y, int margin, int maxAmount, int currentAmount,
+            BufferedImage img, BufferedImage img2) {
+            
+        Rectangle r = cam.getCameraBounds();
+        int startx = r.x + x;
+        int starty = r.y + y;
+        
+        int xx = startx;
+        int yy = starty;
+        
+        for(int i = 0; i < maxAmount; i++) {
+            if(i < currentAmount)g.drawImage(img, xx, yy, null);
+            else g.drawImage(img2, xx, yy, null);
+            xx += margin + img.getWidth();
+        }
     }
     
     public void renderString(String msg, int x, int y, Color color, float size, Graphics g) {

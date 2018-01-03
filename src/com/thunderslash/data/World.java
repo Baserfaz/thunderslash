@@ -21,7 +21,7 @@ public class World {
         this.currentRoomBlocks = new ArrayList<Block>();
         
         for(int i = 0; i < Game.WORLD_ROOM_COUNT; i++) {
-            LevelData data = LevelCreator.createLevel("testlevel.png");
+            LevelData data = LevelCreator.createLevel("testlevel2.png");
             Room room = new Room(i, data.getWidth(), data.getHeight(), data.getBlocks());
             this.rooms.add(room);
             System.out.println("created room \'" + room.toString() +

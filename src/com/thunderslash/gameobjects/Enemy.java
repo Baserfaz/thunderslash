@@ -4,8 +4,12 @@ import java.awt.Point;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.utilities.Mathf;
 
 public class Enemy extends Actor {
+    
+    private double tickTimer = 0.0;
+    private double tickCooldown = 200.0;
     
     public Enemy(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
@@ -15,22 +19,37 @@ public class Enemy extends Actor {
         this.maxHorizontalSpeed = 0.5f * Game.SPRITESIZEMULT;
         this.friction = 0.1f;
         
+        // randomize tick cooldown for all enemies.
+        this.tickCooldown += Mathf.randomRange(0.0, 250.0);
+        
     }
 
     public void tick() {
-        
-        //this.handleStunState();
-        //if(this.isStunned) return;
          
-        if(this.HP.isDead()) {
-            this.direction.x = 0f;
-            this.direction.y = 0f;
-        } else {
-            this.doBehaviour();
+        if(this.HP.isDead()) this.resetInputs();
+        else {
+            
+            if(this.tickTimer > this.tickCooldown) {
+                
+                this.tickTimer = 0.0;
+                this.doBehaviour();
+                
+            } else {
+                
+                this.resetInputs();
+                this.tickTimer += Game.instance.getTimeBetweenFrames();
+                
+            }
+            
         }
         
         // always tick physics
         super.tick();
+    }
+    
+    private void resetInputs() {
+        this.direction.x = 0f;
+        this.direction.y = 0f;
     }
     
     private void doBehaviour() {
