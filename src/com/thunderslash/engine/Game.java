@@ -13,6 +13,7 @@ import com.thunderslash.engine.Renderer;
 import com.thunderslash.engine.Window;
 import com.thunderslash.enumerations.GameState;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.gameobjects.Animator;
 import com.thunderslash.utilities.ActorManager;
 import com.thunderslash.utilities.SpriteCreator;
 import com.thunderslash.utilities.Util;
@@ -91,6 +92,7 @@ public class Game extends Canvas implements Runnable {
     private Renderer renderer;
     private GameState gamestate;
     
+    private Animator animator;
     private World world;
     private ActorManager actorManager;
     private Point mousePos;
@@ -117,8 +119,9 @@ public class Game extends Canvas implements Runnable {
         this.guiRenderer = new GuiRenderer();
         setActorManager(new ActorManager());
         this.camera = new Camera();
+        this.animator = new Animator();
         this.renderer = new Renderer();
-
+        
         this.gamestate = GameState.INGAME;
         
         // create world
@@ -188,13 +191,13 @@ public class Game extends Canvas implements Runnable {
                 
                 if(this.gamestate == GameState.INGAME) {
                     if(Game.isPaused == false) {
-                        tick();
+                        this.tick();
                         this.camera.tick();
                     }
                 }
                 
                 if(frameCounter >= SECOND) {
-                    window.SetCustomTitle("FPS: " + frames);
+                    this.window.SetCustomTitle("FPS: " + frames);
                     frames = 0;
                     frameCounter = 0;
                 }
@@ -205,7 +208,7 @@ public class Game extends Canvas implements Runnable {
                 
                 this.timeBetweenFrames = System.nanoTime() - lastRender;
                 
-                render();
+                this.render();
                 frames++;        
                 
                 lastRender = System.nanoTime();
@@ -231,7 +234,11 @@ public class Game extends Canvas implements Runnable {
         bs.show();
     }
 
-    private void tick() { handler.tickGameObjects(); }
+    private void tick() { 
+        handler.tickGameObjects(); 
+        handler.tickAnimations();
+    }
+    
     public static void main(String args[]) { new Game(); }
     public Window getWindow() { return this.window; }
     public Font getCustomFont() { return customFont; }
@@ -244,7 +251,7 @@ public class Game extends Canvas implements Runnable {
     public void setHandler(Handler handler) { this.handler = handler; }
 
     public ActorManager getActorManager() {
-        return actorManager;
+        return this.actorManager;
     }
 
     public void setActorManager(ActorManager actorManager) {
@@ -252,7 +259,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     public World getWorld() {
-        return world;
+        return this.world;
     }
 
     public void setWorld(World world) {
@@ -260,7 +267,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     public GameState getGamestate() {
-        return gamestate;
+        return this.gamestate;
     }
 
     public void setGamestate(GameState gamestate) {
@@ -268,7 +275,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     public GuiRenderer getGuiRenderer() {
-        return guiRenderer;
+        return this.guiRenderer;
     }
 
     public void setGuiRenderer(GuiRenderer guiRenderer) {
@@ -276,7 +283,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     public Point getMousePos() {
-        return mousePos;
+        return this.mousePos;
     }
 
     public void setMousePos(Point mousePos) {
@@ -284,7 +291,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     public int getCurrentRoomIndex() {
-        return currentRoomIndex;
+        return this.currentRoomIndex;
     }
 
     public void setCurrentRoomIndex(int currentRoomIndex) {
@@ -292,7 +299,11 @@ public class Game extends Canvas implements Runnable {
     }
 
     public double getTimeBetweenFrames() {
-        return timeBetweenFrames * 0.000001;
+        return this.timeBetweenFrames * 0.000001;
+    }
+
+    public Animator getAnimator() {
+        return this.animator;
     }
 
 }

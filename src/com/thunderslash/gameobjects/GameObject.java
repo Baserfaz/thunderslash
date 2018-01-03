@@ -25,6 +25,7 @@ public abstract class GameObject {
     // animation
     protected double defaultFrameTime = 50.0;
     protected double attackFrameTime = 25.0;
+    protected double castFrameTime = 40.0;
     
     // dont touch
     protected double frameTime = 0.0;

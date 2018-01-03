@@ -9,6 +9,7 @@ import java.util.List;
 import com.thunderslash.data.Health;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
+import com.thunderslash.enumerations.AnimationType;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.RenderUtils;
@@ -107,6 +108,7 @@ public class Actor extends PhysicsObject {
             // change animation speed when attacking.
             if(this.actorState == ActorState.ATTACKING ||
                     this.actorState == ActorState.DEFENDING) this.frameTime = this.attackFrameTime;
+            else if(this.actorState == ActorState.CASTING) this.frameTime = this.castFrameTime;
             else this.frameTime = this.defaultFrameTime;
         }
         
@@ -163,8 +165,15 @@ public class Actor extends PhysicsObject {
                 this.castTimer = 0.0;
                 this.actorState = ActorState.CASTING;
 
-                List<GameObject> hits = this.checkHit(5, 75, 25);
+                List<GameObject> hits = this.checkHit(25, 25, 45);
                         
+                int spriteSize = (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) / 2;
+                
+                // create animation
+                Game.instance.getAnimator().play(AnimationType.LIGHTNING_STRIKE,
+                        (this.attackBox.x + this.attackBox.width / 2) - spriteSize,
+                        this.attackBox.y - spriteSize);
+                
                 if(hits.isEmpty() == false) {    
                     for(GameObject hit : hits) {
                         if(hit instanceof Enemy) {
@@ -184,7 +193,7 @@ public class Actor extends PhysicsObject {
             this.actorState = ActorState.DEFENDING;
             
             // check if we hit something
-            List<GameObject> hits = this.checkHit(3, 10, 25);
+            List<GameObject> hits = this.checkHit(3, 10, 30);
             
             if(hits.isEmpty() == false) {
                 for(GameObject hit : hits) {
@@ -207,7 +216,7 @@ public class Actor extends PhysicsObject {
             this.actorState = ActorState.ATTACKING;
             
             // check if we hit something.
-            List<GameObject> hits = this.checkHit(3, 15, 28);
+            List<GameObject> hits = this.checkHit(3, 15, 30);
             
             if(hits.isEmpty() == false) {
                 for(GameObject hit : hits) {
@@ -301,7 +310,7 @@ public class Actor extends PhysicsObject {
         else if(this.facingDirection == Direction.WEST) xpos -= dist + attSizex;
         
         // set up the rectangle 
-        attackBox = new Rectangle(xpos, this.hitbox.y, attSizex, attSizey);
+        attackBox = new Rectangle(xpos, this.hitboxCenter.y - attSizey / 2, attSizex, attSizey);
         
         // check collisions with objs
         for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {

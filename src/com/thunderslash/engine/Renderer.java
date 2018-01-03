@@ -8,10 +8,12 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import com.thunderslash.data.Animation;
 import com.thunderslash.data.Room;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
+import com.thunderslash.gameobjects.Animator;
 import com.thunderslash.gameobjects.Block;
 import com.thunderslash.utilities.SpriteCreator;
 
@@ -20,11 +22,13 @@ public class Renderer {
     private Handler handler;
     private GuiRenderer guirenderer;
     private Camera cam;
+    private Animator animator;
     
     public Renderer() {
-        handler = Game.instance.getHandler();
-        guirenderer = Game.instance.getGuiRenderer();
-        cam = Game.instance.getCamera();
+        this.handler = Game.instance.getHandler();
+        this.guirenderer = Game.instance.getGuiRenderer();
+        this.cam = Game.instance.getCamera();
+        this.animator = Game.instance.getAnimator();
     }
     
     public void preRender(Graphics g) {
@@ -55,9 +59,19 @@ public class Renderer {
         // render everything
         this.renderBackground(g);
         handler.renderGameObjects(g);
+        
+        this.renderAnimations(g);
+        
         this.renderDebug(g);
         guirenderer.render(g);
         
+    }
+    
+    private void renderAnimations(Graphics g) {
+        if(this.animator.getCurrentAnims().isEmpty()) return;
+        for(Animation anim : this.animator.getCurrentAnims()) {
+            g.drawImage(anim.getCurrentFrame(), anim.getX(), anim.getY(), null);
+        }
     }
     
     private void renderBackground(Graphics g) {
@@ -119,6 +133,9 @@ public class Renderer {
         
         if(Game.drawActorCollisionPoints) {
             for(Actor actor : Game.instance.getActorManager().getActorInstances()) {
+                
+                if(actor.getCollisionPoints().isEmpty()) continue;
+                
                 for(Point p : actor.getCollisionPoints()) {
                     g.setColor(Game.actorCollisionPointColor);
                     g.drawOval(p.x, p.y, 2, 2);

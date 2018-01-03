@@ -5,8 +5,10 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thunderslash.data.Animation;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.gameobjects.Actor;
+import com.thunderslash.gameobjects.Animator;
 import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.PhysicsObject;
@@ -20,6 +22,24 @@ public class Handler {
         for(int i = 0; i < objects.size(); i++) {
             GameObject current = objects.get(i);
             if(current != null) current.tick();
+        }
+    }
+    
+    public void tickAnimations() {
+        Animator animator = Game.instance.getAnimator();
+        if(animator == null || animator.getCurrentAnims().isEmpty()) return;
+        for(Animation anim : animator.getCurrentAnims()) {
+            anim.tick();
+        }
+        
+        for(int i = animator.getCurrentAnims().size() - 1; i >= 0; i--) {
+            
+            Animation anim = animator.getCurrentAnims().get(i);
+            
+            if(anim.getHasFinished()) {
+                animator.removeAnim(anim);
+            }
+            
         }
     }
     

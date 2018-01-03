@@ -23,7 +23,7 @@ public class Player extends Actor {
     private Animation fallAnim;
     private Animation attackAnim;
     private Animation defendAnim;
-    // private Animation castAnim;
+    private Animation castAnim;    
     // private Animation jumpAnim;
     // private Animation useAnim;
 
@@ -38,12 +38,12 @@ public class Player extends Actor {
         this.fallAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_FALL);
         this.attackAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_ATTACK);
         this.defendAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_DEFEND);
-        // this.castAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_CAST);
+        this.castAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_CAST);
         
         // set animation timers / cooldowns
         this.attackCooldown = this.attackFrameTime * this.attackAnim.getAnimationLength();
         this.defendCooldown = this.attackFrameTime * this.defendAnim.getAnimationLength();
-        //this.castCooldown = this.attackFrameTime * this.castAnim.getAnimationLength();
+        this.castCooldown = this.castFrameTime * this.castAnim.getAnimationLength();
         
         // set stuff
         this.maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
@@ -77,6 +77,9 @@ public class Player extends Actor {
         } else if(this.actorState == ActorState.DEFENDING) {
             frame = this.defendAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.defendAnim;
+        } else if(this.actorState == ActorState.CASTING) {
+            frame = this.castAnim.getFrame(this.currentAnimIndex);
+            currentAnim = this.castAnim;
         }
 
         // updates animation index
