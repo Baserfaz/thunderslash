@@ -35,12 +35,10 @@ public class Actor extends PhysicsObject {
     
     protected double attackCooldown = 200.0;
     protected double defendCooldown = 200.0;
-    protected double useCooldown    = 200.0;
     protected double castCooldown   = 200.0;
     
     protected boolean canAttack = true;
     protected boolean canDefend = true;
-    protected boolean canUse    = true;
     protected boolean canCast   = true;
     
     protected boolean allowCleaveAttacks = false;
@@ -92,12 +90,11 @@ public class Actor extends PhysicsObject {
         else if(this.canCast == false) this.actorState = ActorState.CASTING;
         else if(this.canAttack == false) this.actorState = ActorState.ATTACKING;
         else if(this.canDefend == false) this.actorState = ActorState.DEFENDING;
-        else if(this.canUse == false) this.actorState = ActorState.USING;
-        else if(this.velocity.x == 0f && this.velocity.y == 0f ||
-                this.acceleration.x == 0f && this.acceleration.y == 0f) this.actorState = ActorState.IDLING;
         else if(this.velocity.y < 0f) this.actorState = ActorState.JUMPING;
         else if(this.velocity.y > 0f) this.actorState = ActorState.FALLING;
         else if(this.direction.x > 0f || this.direction.x < 0f) this.actorState = ActorState.WALKING;
+        else if(this.velocity.x == 0f && this.velocity.y == 0f ||
+                this.acceleration.x == 0f && this.acceleration.y == 0f) this.actorState = ActorState.IDLING;
         
         // on state change.
         if(this.actorState != this.oldState) { 
@@ -140,13 +137,6 @@ public class Actor extends PhysicsObject {
             this.canDefend = false;
         } else {
             this.canDefend = true;
-        }
-        
-        if(this.useTimer < this.useCooldown) {
-            this.useTimer += dt;
-            this.canUse = false;
-        } else {
-            this.canUse = true;
         }
         
     }
@@ -235,46 +225,33 @@ public class Actor extends PhysicsObject {
     }
     
     public void action() {
-        
-        if(this.canUse) {
-        
-            // should always be player
-            Player player = (Player) this;
             
-            this.useTimer = 0.0;
-            this.actorState = ActorState.USING;
-            
-            // TODO: use checkHit method instead.
-            
-            // calculate closest obj
-            double smallestDist = Double.POSITIVE_INFINITY;
-            GameObject closestObj = null;
-            
-            for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
-                double dist = go.hitboxCenter.distance(this.hitboxCenter);
-                if(dist < smallestDist) {
-                    smallestDist = dist;
-                    closestObj = go;
-                }
-            }
+//        List<GameObject> objs = this.checkHit(0, this.hitbox.width, this.hitbox.height);
+//        if(objs.isEmpty()) return;
+//        
+//        for(GameObject obj : objs) {
+//            
+//            
+//            
+//        }
             
             // use the closest obj
-            if(closestObj instanceof Chest) {
-                
-                Chest chest = (Chest) closestObj;
-                if(chest.isOpen() == false) chest.open();
-                
-            } else if(closestObj instanceof Crystal) {
-                
-                Crystal crystal = (Crystal) closestObj;
-                
-                if(crystal.isUsed() == false) {
-                    crystal.absorb();
-                    player.getPower().addCurrentPower(crystal.getPowerValue());
-                }
-                
-            }
-        }   
+//            if(closestObj instanceof Chest) {
+//                
+//                Chest chest = (Chest) closestObj;
+//                if(chest.isOpen() == false) chest.open();
+//                
+//            } else if(closestObj instanceof Crystal) {
+//                
+//                Crystal crystal = (Crystal) closestObj;
+//                
+//                if(crystal.isUsed() == false) {
+//                    crystal.absorb();
+//                    player.getPower().addCurrentPower(crystal.getPowerValue());
+//                }
+//                
+//            }
+//        }   
     }
     
     private void knockback(GameObject target) {

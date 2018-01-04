@@ -6,16 +6,22 @@ import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.utilities.SpriteCreator;
 
 public class Chest extends PhysicsObject {
 
     private boolean isOpen = false;
-    private BufferedImage openSprite;
     
-    public Chest(Point worldPos, SpriteType closedSpriteType, SpriteType openSpriteType) {
-        super(worldPos, closedSpriteType);
+    private BufferedImage openSprite;
+    private BufferedImage questionMark;
+    
+    public Chest(Point worldPos, SpriteType spriteType) {
+        super(worldPos, spriteType);
         
-        this.openSprite = Game.instance.getSpriteCreator().CreateSprite(openSpriteType);
+        SpriteCreator sc = Game.instance.getSpriteCreator();
+        
+        this.questionMark = sc.CreateCustomSizeSprite(0, 6 * 32 + 6, 4, 9);
+        this.openSprite = sc.CreateSprite(SpriteType.CHEST_OPEN);
     }
 
     public void render(Graphics g) {
@@ -24,10 +30,18 @@ public class Chest extends PhysicsObject {
         } else {
             g.drawImage(this.sprite, worldPosition.x, worldPosition.y, null);
         }
+        
+        if(this.hasFocus) {
+            g.drawImage(this.questionMark,
+                    this.hitboxCenter.x - this.questionMark.getWidth() / 2,
+                    this.hitbox.y - this.questionMark.getHeight() - 30, null);
+        }
+        
     }
 
     public void open() {
         this.isOpen = true;
+        this.hasFocus = false;
     }
     
     public boolean isOpen() {

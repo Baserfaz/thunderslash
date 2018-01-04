@@ -23,9 +23,7 @@ public class Player extends Actor {
     private Animation fallAnim;
     private Animation attackAnim;
     private Animation defendAnim;
-    private Animation castAnim;    
-    // private Animation jumpAnim;
-    // private Animation useAnim;
+    private Animation castAnim;
 
     public Player(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
@@ -43,18 +41,23 @@ public class Player extends Actor {
         // set animation timers / cooldowns
         this.attackCooldown = this.attackFrameTime * this.attackAnim.getAnimationLength();
         this.defendCooldown = this.attackFrameTime * this.defendAnim.getAnimationLength();
-        this.castCooldown = this.castFrameTime * this.castAnim.getAnimationLength();
+        this.castCooldown   = this.castFrameTime   * this.castAnim.getAnimationLength();
         
         // set stuff
-        this.maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
-        this.maxHorizontalSpeed = 1f * Game.SPRITESIZEMULT;
-        this.maxVerticalAccel = 0.22f * Game.SPRITESIZEMULT;
-        this.maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
-        this.horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
-        this.jumpForce = -0.24f * Game.SPRITESIZEMULT;
-        this.friction = 0.10f * Game.SPRITESIZEMULT;
-        this.collisionDistance = 50f * Game.SPRITESIZEMULT;
+        this.maxVerticalSpeed    = 5.5f   * Game.SPRITESIZEMULT;
+        this.maxHorizontalSpeed  = 1f     * Game.SPRITESIZEMULT;
+        this.maxVerticalAccel    = 0.22f  * Game.SPRITESIZEMULT;
+        this.maxHorizontalAccel  = 0.25f  * Game.SPRITESIZEMULT;
+        this.horizontalAccelMult = 0.35f  * Game.SPRITESIZEMULT;
+        this.jumpForce           = -0.24f * Game.SPRITESIZEMULT;
+        this.friction            = 0.10f  * Game.SPRITESIZEMULT;
+        this.collisionDistance   = 50f    * Game.SPRITESIZEMULT;
         
+    }
+    
+    public void tick() {
+        this.checkGameObjectCollisions();
+        super.tick();
     }
     
     public void render(Graphics g) {
@@ -96,6 +99,18 @@ public class Player extends Actor {
         }
     }
 
+    private void checkGameObjectCollisions() {
+        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
+            if(go instanceof Chest) {
+                Chest chest = (Chest) go;
+                if(chest.isOpen() == false) go.hasFocus = this.hitbox.intersects(go.getHitbox());
+            } else if(go instanceof Crystal) {
+                Crystal crystal = (Crystal) go;
+                if(crystal.isUsed() == false) go.hasFocus = this.hitbox.intersects(go.getHitbox());
+            }
+        }
+    }
+    
     public Power getPower() {
         return power;
     }

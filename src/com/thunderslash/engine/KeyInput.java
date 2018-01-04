@@ -37,7 +37,7 @@ public class KeyInput extends KeyAdapter {
 
         // -------------- HANDLE INPUTS ------------------
 
-        if(Game.instance.getGamestate() == GameState.MENU) handleKeysInMenu(e);
+        if(Game.instance.getGamestate() == GameState.MAINMENU) handleKeysInMenu(e);
         else if(Game.instance.getGamestate() == GameState.INGAME) handleKeysInGame(e);
 
         // debugging keys

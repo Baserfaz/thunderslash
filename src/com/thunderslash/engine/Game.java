@@ -126,7 +126,7 @@ public class Game extends Canvas implements Runnable {
         this.animator = new Animator();
         this.renderer = new Renderer();
         
-        this.gamestate = GameState.MENU;
+        this.gamestate = GameState.MAINMENU;
         
         // create world
         this.world = new World();
@@ -237,7 +237,7 @@ public class Game extends Canvas implements Runnable {
             handler.tickGameObjects(); 
             handler.tickAnimations();
             this.camera.tick();
-        } else if(this.gamestate == GameState.MENU) {
+        } else if(this.gamestate == GameState.MAINMENU) {
             this.guiElementManager.tick();
             
         }

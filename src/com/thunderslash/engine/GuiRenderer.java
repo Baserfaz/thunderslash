@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 
 import com.thunderslash.data.Health;
 import com.thunderslash.data.Power;
+import com.thunderslash.enumerations.ButtonAction;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Player;
 import com.thunderslash.ui.Button;
@@ -84,10 +85,10 @@ public class GuiRenderer {
         
         // create menu gui-elements
         Button playButton = new Button(xpos, starty, width, height, "Play",
-                Color.black, Color.white, 40);
+                Color.black, Color.white, 40, ButtonAction.PLAY);
         
         Button exitButton = new Button(xpos, starty + height + margin, width, height,
-                "Exit", Color.black, Color.white, 40);
+                "Exit", Color.black, Color.white, 40, ButtonAction.EXIT);
         
         // add elements to list
         this.guiManager.addElement(playButton);

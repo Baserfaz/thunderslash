@@ -29,10 +29,9 @@ public class Crystal extends GameObject {
         this.usedSprite = Game.instance.getSpriteCreator().CreateSprite(SpriteType.CRYSTAL_USED);
     }
 
-    public void absorb() {
-        if(this.isUsed == false) {
-            this.isUsed = true;
-        }
+    public void use() {
+        this.isUsed = true;
+        this.hasFocus = false;
     }
     
     public void tick() {}

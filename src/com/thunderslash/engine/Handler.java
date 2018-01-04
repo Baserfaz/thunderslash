@@ -56,12 +56,6 @@ public class Handler {
         for(int i = 0; i < this.objects.size(); i++) {
             GameObject current = this.objects.get(i);
             
-            if(current.getIsVisible() && Game.drawGameObjectRects) {
-                Rectangle bounds = current.getHitbox();
-                g.setColor(Game.gameObjectRectColor);
-                g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-            }
-            
             if(current instanceof Player) continue;
             
             // get actors

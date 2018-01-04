@@ -14,7 +14,8 @@ public abstract class GameObject {
     protected Point worldPosition;
     protected BufferedImage sprite;
     
-    // hitboxes
+    protected boolean hasFocus = false;
+    
     protected Rectangle hitbox;
     protected Rectangle hitboxSizes;
     protected Point hitboxCenter;
@@ -29,10 +30,9 @@ public abstract class GameObject {
     
     // dont touch
     protected double frameTime = 0.0;
-    protected double attackTimer = 0.0;
-    protected double defendTimer = 0.0;
-    protected double useTimer = 0.0;
-    protected double castTimer = 0.0;
+    protected double attackTimer = Double.POSITIVE_INFINITY;
+    protected double defendTimer = Double.POSITIVE_INFINITY;
+    protected double castTimer = Double.POSITIVE_INFINITY;
     protected double currentFrameTime = 0.0;
     protected int currentAnimIndex = 0;
     

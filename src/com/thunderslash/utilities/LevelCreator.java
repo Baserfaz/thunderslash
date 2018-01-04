@@ -76,7 +76,7 @@ public class LevelCreator {
                 isEnabled = true;
                 isVisible = true;
                 blockType = BlockType.PLAYER_SPAWN;
-                spriteType = SpriteType.DOOR_CLOSED;
+                spriteType = SpriteType.GATE_CLOSED;
             
             // blue = water
             } else if(red == 0 && green == 0 && blue == 255 && alpha == 255) {
@@ -97,7 +97,7 @@ public class LevelCreator {
                 
                 found = true;
                 blockType = BlockType.EXIT;
-                spriteType = SpriteType.DOOR_OPEN;
+                spriteType = SpriteType.GATE_OPEN;
                 
             // teal = trap
             } else if(red == 16 && green == 221 && blue == 219 && alpha == 255) {
@@ -174,8 +174,7 @@ public class LevelCreator {
         // yellow = chest
         if(red == 254 && green == 216 && blue == 35 && alpha == 255) {
             
-            item = new Chest(new Point(x, y), 
-                    SpriteType.CHEST_CLOSED, SpriteType.CHEST_OPEN);
+            item = new Chest(new Point(x, y), SpriteType.CHEST_CLOSED);
             
         // orange = cystal
         } else if(red == 251 && green == 154 && blue == 7 && alpha == 255) {

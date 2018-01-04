@@ -24,7 +24,7 @@ public class SpriteCreator {
 
         BufferedImage image = null;
 
-        System.out.println("Loading spritesheet from path: " + path);
+        System.out.println("Loading spritesheet from path: \'" + path + "\'");
 
         // get the sprite sheet
         try { image = ImageIO.read(getClass().getResourceAsStream("/" + path)); }
@@ -280,12 +280,12 @@ public class SpriteCreator {
                 pos.y = 3;
                 break;
                 
-            case DOOR_CLOSED:
+            case GATE_CLOSED:
                 pos.x = 2;
                 pos.y = 4;
                 break;
                 
-            case DOOR_OPEN:
+            case GATE_OPEN:
                 pos.x = 3;
                 pos.y = 4;
                 break;

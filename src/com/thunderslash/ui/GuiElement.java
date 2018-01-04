@@ -9,6 +9,8 @@ public abstract class GuiElement {
     protected int y = 0;
     protected int width = 0;
     protected int height = 0;
+    
+    protected boolean isHovering = false;
     protected boolean isEnabled = true;
     protected boolean isVisible = true;
     
@@ -22,7 +24,8 @@ public abstract class GuiElement {
     public abstract void render(Graphics g);
     public abstract void tick();
     public abstract void onClick();
-
+    public abstract void onHover();
+    
     public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, this.width, this.height);
     }
@@ -73,5 +76,13 @@ public abstract class GuiElement {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+    
+    public void setIsHovering(boolean b) {
+        this.isHovering = b;
+    }
+    
+    public boolean getIsHovering() {
+        return this.isHovering;
     }
 }

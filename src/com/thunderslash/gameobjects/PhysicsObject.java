@@ -174,7 +174,7 @@ public class PhysicsObject extends GameObject {
             if(go instanceof Block) {
                 this.handleBlockCollisions(go, collisionPoints);
             } else if(go instanceof PhysicsObject) {
-                this.handlePhysicsObjectCollisions(go, collisionPoints);
+                this.handlePhysicsObjectCollisions(go);
             }
         }
         
@@ -226,48 +226,7 @@ public class PhysicsObject extends GameObject {
         return Arrays.asList(lc, lt, lb, rc, rt, rb, tc, tl, tr, bl, bc, br, c);
     }
     
-    private void handlePhysicsObjectCollisions(GameObject go, List<Point> points) {
-        
-//        PhysicsObject obj = (PhysicsObject) go;
-//        
-//        // open collision points
-//        Point lc = points.get(0);
-//        Point lt = points.get(1);
-//        Point lb = points.get(2);
-//        
-//        Point rc = points.get(3);
-//        Point rt = points.get(4);
-//        Point rb = points.get(5);
-//        
-//        Point tc = points.get(6);
-//        Point tl = points.get(7);
-//        Point tr = points.get(8);
-//        
-//        Point bl = points.get(9);
-//        Point bc = points.get(10);
-//        Point br = points.get(11);
-//        
-//        Point c = points.get(12);
-//        
-//        Rectangle hitbox = obj.getHitbox();
-//        
-//        if(hitbox.contains(bl) || hitbox.contains(bc) || hitbox.contains(br)) {
-//            this.isGrounded = true;
-//        }
-//        
-//        if(hitbox.contains(lc) || hitbox.contains(lt) || hitbox.contains(lb)) {
-//            this.collisionLeft = true;
-//        }
-//        
-//        if(hitbox.contains(rc) || hitbox.contains(rt) || hitbox.contains(rb)) {
-//            this.collisionRight = true;
-//        }
-//        
-//        if(hitbox.contains(tc) || hitbox.contains(tl) || hitbox.contains(tr)) {
-//            this.collisionTop = true;
-//        }
-        
-    }
+    private void handlePhysicsObjectCollisions(GameObject go) {}
     
     private void handleBlockCollisions(GameObject go, List<Point> points) {
         

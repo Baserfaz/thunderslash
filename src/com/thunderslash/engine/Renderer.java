@@ -15,6 +15,7 @@ import com.thunderslash.enumerations.GameState;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
+import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.utilities.Animator;
 import com.thunderslash.utilities.SpriteCreator;
 
@@ -38,7 +39,7 @@ public class Renderer {
         
         this.setRenderingHints(g2d);
         if(Game.instance.getGamestate() == GameState.INGAME) this.renderIngame(g2d);
-        else if(Game.instance.getGamestate() == GameState.MENU)this.renderMenu(g2d);
+        else if(Game.instance.getGamestate() == GameState.MAINMENU)this.renderMenu(g2d);
     }
     
     private void setRenderingHints(Graphics2D g2d) {
@@ -149,7 +150,7 @@ public class Renderer {
         if(Game.drawActorCollisionPoints) {
             for(Actor actor : Game.instance.getActorManager().getActorInstances()) {
                 
-                if(actor.getCollisionPoints().isEmpty()) continue;
+                if(actor.getCollisionPoints() == null || actor.getCollisionPoints().isEmpty()) continue;
                 
                 for(Point p : actor.getCollisionPoints()) {
                     g.setColor(Game.actorCollisionPointColor);
@@ -158,6 +159,16 @@ public class Renderer {
             }
         }
         
+        if(Game.drawGameObjectRects) {
+            g.setColor(Game.gameObjectRectColor);
+            for(GameObject go : Game.instance.getHandler().getObjects()) {
+                if(go.getIsVisible()) {
+                    Rectangle hitbox = go.getHitbox();
+                    g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+                    g.drawOval(go.getHitboxCenter().x, go.getHitboxCenter().y, 2, 2);
+                }
+            }
+        }
     }
     
     private void fillScreen(Graphics g, Color color) {

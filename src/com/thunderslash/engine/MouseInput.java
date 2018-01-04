@@ -12,7 +12,7 @@ import com.thunderslash.ui.GuiElement;
 public class MouseInput implements MouseMotionListener, MouseListener {
     
     public void mousePressed(MouseEvent e) {
-        if(Game.instance.getGamestate() == GameState.MENU) {
+        if(Game.instance.getGamestate() == GameState.MAINMENU) {
             this.handleMousePressedInMenu(e);
         } else if(Game.instance.getGamestate() == GameState.INGAME) {
             this.handleMousePressedInGame(e);
@@ -20,7 +20,7 @@ public class MouseInput implements MouseMotionListener, MouseListener {
     }
 
     public void mouseReleased(MouseEvent e) {
-        if(Game.instance.getGamestate() == GameState.MENU) {
+        if(Game.instance.getGamestate() == GameState.MAINMENU) {
             this.handleMouseReleaseInMenu(e);
         } else if(Game.instance.getGamestate() == GameState.INGAME) {
             this.handleMouseReleaseInGame(e);
@@ -29,6 +29,26 @@ public class MouseInput implements MouseMotionListener, MouseListener {
 
     public void mouseMoved(MouseEvent e) {
         Game.instance.setMousePos(e.getPoint());
+        
+        // hover effects
+        
+        if(Game.instance.getGuiElementManager() == null) return;
+        
+        List<GuiElement> elements = Game.instance.getGuiElementManager().getElements();
+        if(elements.isEmpty()) return;
+        
+        for(GuiElement element : elements) {
+            if(element.isEnabled()) {
+                
+                element.setIsHovering(false);
+                
+                if(element.getBounds().contains(e.getPoint())) {
+                    element.onHover();
+                    break;
+                }
+            }
+        }
+        
     }
 
     public void mouseDragged(MouseEvent e) {
@@ -40,14 +60,8 @@ public class MouseInput implements MouseMotionListener, MouseListener {
     public void mouseClicked(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
 
-    private void handleMouseReleaseInGame(MouseEvent e) {
-
-    }
-
-    private void handleMousePressedInGame(MouseEvent e) {
-
-    }
-
+    private void handleMouseReleaseInGame(MouseEvent e) {}
+    private void handleMousePressedInGame(MouseEvent e) {}
     private void handleMousePressedInMenu(MouseEvent e) {}
     
     private void handleMouseReleaseInMenu(MouseEvent e) {
