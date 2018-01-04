@@ -1,6 +1,7 @@
 package com.thunderslash.engine;
 
 import com.thunderslash.data.Room;
+import com.thunderslash.enumerations.GameState;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.utilities.Util;
@@ -26,6 +27,7 @@ public class Camera {
     }
 
     public void tick() {
+        
         if(this.isFollowing() && this.followTarget != null) {
             
             Actor actor = null;

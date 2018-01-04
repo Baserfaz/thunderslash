@@ -28,7 +28,7 @@ public class Window extends Canvas {
         frame = new JFrame(title);
 
         // set cursor
-        setCursor(CursorMode.DEFAULT);
+        this.setCursor(CursorMode.DEFAULT);
 
         // add window borders
         int actualHeight = height + 25;
@@ -72,7 +72,7 @@ public class Window extends Canvas {
         
         switch(mode) {
         case DEFAULT:
-            fullPath = "/images/hand.png";
+            fullPath = "/images/cursor2.png";
             img = new ImageIcon(Window.class.getResource(fullPath));
             break;
         default:

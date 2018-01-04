@@ -1,11 +1,10 @@
-package com.thunderslash.gameobjects;
+package com.thunderslash.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.thunderslash.data.Animation;
 import com.thunderslash.enumerations.AnimationType;
-import com.thunderslash.utilities.AnimationCreator;
 
 public class Animator {
 

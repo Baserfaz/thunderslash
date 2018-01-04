@@ -11,10 +11,11 @@ import java.awt.image.BufferedImage;
 import com.thunderslash.data.Animation;
 import com.thunderslash.data.Room;
 import com.thunderslash.enumerations.BlockType;
+import com.thunderslash.enumerations.GameState;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
-import com.thunderslash.gameobjects.Animator;
 import com.thunderslash.gameobjects.Block;
+import com.thunderslash.utilities.Animator;
 import com.thunderslash.utilities.SpriteCreator;
 
 public class Renderer {
@@ -34,9 +35,13 @@ public class Renderer {
     public void preRender(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
-        Rectangle r = cam.getCameraBounds();
-
-        // set rendering hints
+        
+        this.setRenderingHints(g2d);
+        if(Game.instance.getGamestate() == GameState.INGAME) this.renderIngame(g2d);
+        else if(Game.instance.getGamestate() == GameState.MENU)this.renderMenu(g2d);
+    }
+    
+    private void setRenderingHints(Graphics2D g2d) {
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -45,25 +50,35 @@ public class Renderer {
         g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);   
-
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);  
+        
+    }
+    
+    private void renderMenu(Graphics2D g) {
+        this.fillScreen(g, Color.black);
+        guirenderer.renderMenu(g);
+    }
+    
+    private void renderIngame(Graphics2D g) {
+        
+        Rectangle r = cam.getCameraBounds();
+        
         // set background
         this.fillScreen(g, new Color(51, 20, 82, 255));
         
         // set zoom level
-        g2d.scale(1, 1);
+        g.scale(1, 1);
 
         // move the camera
         g.translate(-r.x, -r.y);
         
-        // render everything
         this.renderBackground(g);
         handler.renderGameObjects(g);
         
         this.renderAnimations(g);
         
         this.renderDebug(g);
-        guirenderer.render(g);
+        guirenderer.renderIngameGui(g);
         
     }
     

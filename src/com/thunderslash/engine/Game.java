@@ -13,8 +13,9 @@ import com.thunderslash.engine.Renderer;
 import com.thunderslash.engine.Window;
 import com.thunderslash.enumerations.GameState;
 import com.thunderslash.enumerations.SpriteType;
-import com.thunderslash.gameobjects.Animator;
+import com.thunderslash.ui.GuiElementManager;
 import com.thunderslash.utilities.ActorManager;
+import com.thunderslash.utilities.Animator;
 import com.thunderslash.utilities.SpriteCreator;
 import com.thunderslash.utilities.Util;
 
@@ -89,6 +90,7 @@ public class Game extends Canvas implements Runnable {
     private SpriteCreator spriteCreator;
     private Handler handler;
     private GuiRenderer guiRenderer;
+    private GuiElementManager guiElementManager;
     private Renderer renderer;
     private GameState gamestate;
     
@@ -116,13 +118,15 @@ public class Game extends Canvas implements Runnable {
 
         this.window = new Window(Game.WIDTH, Game.HEIGHT, Game.TITLE, this);
         this.spriteCreator = new SpriteCreator(Game.SPRITESHEETNAME);
+        this.guiElementManager = new GuiElementManager();
+        
         this.guiRenderer = new GuiRenderer();
-        setActorManager(new ActorManager());
+        this.actorManager = new ActorManager();
         this.camera = new Camera();
         this.animator = new Animator();
         this.renderer = new Renderer();
         
-        this.gamestate = GameState.INGAME;
+        this.gamestate = GameState.MENU;
         
         // create world
         this.world = new World();
@@ -188,13 +192,7 @@ public class Game extends Canvas implements Runnable {
                 
                 render = true;
                 unprocessedTime -= frameTime;
-                
-                if(this.gamestate == GameState.INGAME) {
-                    if(Game.isPaused == false) {
-                        this.tick();
-                        this.camera.tick();
-                    }
-                }
+                this.tick();
                 
                 if(frameCounter >= SECOND) {
                     this.window.SetCustomTitle("FPS: " + frames);
@@ -235,8 +233,14 @@ public class Game extends Canvas implements Runnable {
     }
 
     private void tick() { 
-        handler.tickGameObjects(); 
-        handler.tickAnimations();
+        if(this.gamestate == GameState.INGAME) {
+            handler.tickGameObjects(); 
+            handler.tickAnimations();
+            this.camera.tick();
+        } else if(this.gamestate == GameState.MENU) {
+            this.guiElementManager.tick();
+            
+        }
     }
     
     public static void main(String args[]) { new Game(); }
@@ -306,4 +310,7 @@ public class Game extends Canvas implements Runnable {
         return this.animator;
     }
 
+    public GuiElementManager getGuiElementManager() {
+        return guiElementManager;
+    }
 }

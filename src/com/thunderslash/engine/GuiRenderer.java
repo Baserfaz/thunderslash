@@ -11,6 +11,8 @@ import com.thunderslash.data.Health;
 import com.thunderslash.data.Power;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Player;
+import com.thunderslash.ui.Button;
+import com.thunderslash.ui.GuiElementManager;
 import com.thunderslash.utilities.RenderUtils;
 import com.thunderslash.utilities.SpriteCreator;
 
@@ -23,8 +25,11 @@ public class GuiRenderer {
     private BufferedImage powerSword;
     private BufferedImage tintedPowerSword;
     
+    private GuiElementManager guiManager;
+    
     public GuiRenderer() {
-        
+    
+        this.guiManager = Game.instance.getGuiElementManager();
         SpriteCreator sc = Game.instance.getSpriteCreator();
         
         int tintAmount = 3;
@@ -35,9 +40,16 @@ public class GuiRenderer {
         
         this.powerSword = sc.CreateCustomSizeSprite(8, 6 * 32, 10, 6);
         this.tintedPowerSword = RenderUtils.tint(this.powerSword, true, tintAmount);
+        
+        this.createGuiElements();
     }
     
-    public void render(Graphics g) {
+    public void renderMenu(Graphics g) {
+        this.renderMainmenuTitle(g);
+        this.guiManager.render(g);
+    }
+    
+    public void renderIngameGui(Graphics g) {
         
         Camera cam = Game.instance.getCamera();
         if(cam == null) return;
@@ -61,6 +73,27 @@ public class GuiRenderer {
         this.renderDebugInfo(g);
     }
 
+    private void createGuiElements() {
+        
+        int width = 350;
+        int height = 75;
+        int margin = 10;
+        
+        int starty = 400;
+        int xpos = Game.CAMERA_WIDTH / 2 - width / 2;
+        
+        // create menu gui-elements
+        Button playButton = new Button(xpos, starty, width, height, "Play",
+                Color.black, Color.white, 40);
+        
+        Button exitButton = new Button(xpos, starty + height + margin, width, height,
+                "Exit", Color.black, Color.white, 40);
+        
+        // add elements to list
+        this.guiManager.addElement(playButton);
+        this.guiManager.addElement(exitButton);
+    }
+    
     private void renderDebugInfo(Graphics g) {
         if(Game.drawDebugInfo) {
             
@@ -82,6 +115,24 @@ public class GuiRenderer {
     private void renderVersion(Graphics g, Camera cam) {
         Rectangle r = cam.getCameraBounds();
         this.renderString("v0.1", r.width - 50, 20, Color.white, 20f, g);
+    }
+    
+    private void renderMainmenuTitle(Graphics g) {
+        
+        Graphics2D g2d = (Graphics2D) g;
+        
+        int titleFontSize = 50;
+        
+        Font font = Game.instance.getCustomFont().deriveFont(Font.PLAIN, titleFontSize);
+        g2d.setFont(font);
+        
+        int width = g.getFontMetrics().stringWidth(Game.TITLE);
+        
+        this.renderString(Game.TITLE, 
+                Game.CAMERA_WIDTH / 2 - width / 2,
+                200,
+                Color.white, titleFontSize, g);
+        
     }
     
     // -----------------------------------
@@ -123,5 +174,4 @@ public class GuiRenderer {
             yy += g.getFontMetrics().getHeight() + Game.LINEHEIGHT;
         }
     }
-
 }

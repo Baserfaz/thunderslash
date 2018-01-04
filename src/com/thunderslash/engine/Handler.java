@@ -8,11 +8,11 @@ import java.util.List;
 import com.thunderslash.data.Animation;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.gameobjects.Actor;
-import com.thunderslash.gameobjects.Animator;
 import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.PhysicsObject;
 import com.thunderslash.gameobjects.Player;
+import com.thunderslash.utilities.Animator;
 
 public class Handler {
 
