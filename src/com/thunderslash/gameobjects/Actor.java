@@ -9,7 +9,6 @@ import java.util.List;
 import com.thunderslash.data.Health;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
-import com.thunderslash.enumerations.AnimationType;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.RenderUtils;
@@ -22,24 +21,21 @@ public class Actor extends PhysicsObject {
     
     protected ActorState actorState = ActorState.IDLING;
     protected Direction facingDirection = Direction.WEST;
-    private Rectangle attackBox;
+    protected Rectangle attackBox;
     
     protected int attackDamage = 1;
-    protected int castDamage = 3;
     
-    protected boolean isStunned = false;
     private ActorState oldState;
     
+    protected boolean isStunned = false;
     protected double stunTimer = 0.0;
     protected double defaultStunDuration = 500.0;
     
     protected double attackCooldown = 200.0;
     protected double defendCooldown = 200.0;
-    protected double castCooldown   = 200.0;
     
     protected boolean canAttack = true;
     protected boolean canDefend = true;
-    protected boolean canCast   = true;
     
     protected boolean allowCleaveAttacks = false;
     
@@ -84,18 +80,6 @@ public class Actor extends PhysicsObject {
     
     private void handleActorStates() {
         
-        // TODO: cant defend, attack, use, cast at same time.
-        
-        if(this.HP.isDead()) this.actorState = ActorState.DEAD;
-        else if(this.canCast == false) this.actorState = ActorState.CASTING;
-        else if(this.canAttack == false) this.actorState = ActorState.ATTACKING;
-        else if(this.canDefend == false) this.actorState = ActorState.DEFENDING;
-        else if(this.velocity.y < 0f) this.actorState = ActorState.JUMPING;
-        else if(this.velocity.y > 0f) this.actorState = ActorState.FALLING;
-        else if(this.direction.x > 0f || this.direction.x < 0f) this.actorState = ActorState.WALKING;
-        else if(this.velocity.x == 0f && this.velocity.y == 0f ||
-                this.acceleration.x == 0f && this.acceleration.y == 0f) this.actorState = ActorState.IDLING;
-        
         // on state change.
         if(this.actorState != this.oldState) { 
             
@@ -118,13 +102,6 @@ public class Actor extends PhysicsObject {
 
         double dt = Game.instance.getTimeBetweenFrames();
         
-        if(this.castTimer < this.castCooldown) {
-            this.castTimer += dt;
-            this.canCast = false;
-        } else {
-            this.canCast = true;
-        }
-        
         if(this.attackTimer < this.attackCooldown) {
             this.attackTimer += dt;
             this.canAttack = false;
@@ -139,41 +116,6 @@ public class Actor extends PhysicsObject {
             this.canDefend = true;
         }
         
-    }
-    
-    public void cast() {
-        
-        // TODO: only support player casts for now
-        
-        if(this.canCast && this instanceof Player) {
-            Player player = (Player) this;
-            
-            if(player.getPower().getCurrentPower() > 0) {
-                
-                player.getPower().addCurrentPower(-1);
-                
-                this.castTimer = 0.0;
-                this.actorState = ActorState.CASTING;
-
-                List<GameObject> hits = this.checkHit(25, 25, 45);
-                        
-                int spriteSize = (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) / 2;
-                
-                // create animation
-                Game.instance.getAnimator().play(AnimationType.LIGHTNING_STRIKE,
-                        (this.attackBox.x + this.attackBox.width / 2) - spriteSize,
-                        this.attackBox.y - spriteSize);
-                
-                if(hits.isEmpty() == false) {    
-                    for(GameObject hit : hits) {
-                        if(hit instanceof Enemy) {
-                           ((Actor) hit).getHP().takeDamage(this.castDamage);
-                        }
-                    }
-                }
-                
-            }
-        }
     }
     
     public void defend() {
@@ -195,7 +137,6 @@ public class Actor extends PhysicsObject {
                     if(this.allowCleaveAttacks == false) break;
                 }
             }
-            
         }
     }
     
@@ -210,68 +151,11 @@ public class Actor extends PhysicsObject {
             
             if(hits.isEmpty() == false) {
                 for(GameObject hit : hits) {
-                    
-                    if(hit instanceof Actor) {
-                        ((Actor)hit).getHP().takeDamage(this.attackDamage);
-                    }
-                    
-                    this.knockback(hit);
-                    
+                    if(hit instanceof Actor) ((Actor)hit).getHP().takeDamage(this.attackDamage);
                     if(this.allowCleaveAttacks == false) break;
                 }
             }
-            
         }
-    }
-    
-    public void action() {
-            
-//        List<GameObject> objs = this.checkHit(0, this.hitbox.width, this.hitbox.height);
-//        if(objs.isEmpty()) return;
-//        
-//        for(GameObject obj : objs) {
-//            
-//            
-//            
-//        }
-            
-            // use the closest obj
-//            if(closestObj instanceof Chest) {
-//                
-//                Chest chest = (Chest) closestObj;
-//                if(chest.isOpen() == false) chest.open();
-//                
-//            } else if(closestObj instanceof Crystal) {
-//                
-//                Crystal crystal = (Crystal) closestObj;
-//                
-//                if(crystal.isUsed() == false) {
-//                    crystal.absorb();
-//                    player.getPower().addCurrentPower(crystal.getPowerValue());
-//                }
-//                
-//            }
-//        }   
-    }
-    
-    private void knockback(GameObject target) {
-        
-        if(target instanceof PhysicsObject) {
-            PhysicsObject obj = (PhysicsObject) target;
-            
-            float xforce = 1f * this.getHorizontalDirectionAsInteger();
-            float yforce = -0.5f;
-            
-            obj.isGrounded = false;
-            
-            obj.velocity.x = xforce;
-            obj.acceleration.x = xforce;
-        
-            obj.velocity.y = yforce;
-            obj.acceleration.y = yforce;
-            
-        }
-        
     }
     
     public List<GameObject> checkHit(int distanceX, int sizex, int sizey) {
@@ -287,11 +171,11 @@ public class Actor extends PhysicsObject {
         else if(this.facingDirection == Direction.WEST) xpos -= dist + attSizex;
         
         // set up the rectangle 
-        attackBox = new Rectangle(xpos, this.hitboxCenter.y - attSizey / 2, attSizex, attSizey);
+        this.attackBox = new Rectangle(xpos, this.hitboxCenter.y - attSizey / 2, attSizex, attSizey);
         
         // check collisions with objs
         for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
-            if(go.getHitbox().intersects(attackBox)) {
+            if(go.getHitbox().intersects(this.attackBox)) {
                 retObjs.add(go);
             }
         }
@@ -299,68 +183,21 @@ public class Actor extends PhysicsObject {
         return retObjs;
     }
     
-    
-    public int getHorizontalDirectionAsInteger() {
-        return (this.facingDirection == Direction.EAST) ? 1 : -1;
-    }
-    
-    public Health getHP() {
-        return this.HP;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-    
-    public Vector2 getAcceleration() {
-        return this.acceleration;
-    }
-    
-    public Vector2 getVelocity() {
-        return this.velocity;
-    }
-    
-    public boolean isGrounded() {
-        return this.isGrounded;
-    }
-    
-    public void setGrounded(boolean isGrounded) {
-        this.isGrounded = isGrounded;
-    }
-
-    public Vector2 getDirection() {
-        return this.direction;
-    }
-
-    public void setDirection(Vector2 direction) {
-        this.direction = direction;
-    }
-
-    public Direction getFacingDirection() {
-        return facingDirection;
-    }
-
-    public void setFacingDirection(Direction facingDirection) {
-        this.facingDirection = facingDirection;
-    }
-    
-    public ActorState getActorState() {
-        return this.actorState;
-    }
-
-    public float getCollisionDistance() {
-        return collisionDistance;
-    }
-
-    public void setCollisionDistance(float collisionDistance) {
-        this.collisionDistance = collisionDistance;
-    }
-
-    public Rectangle getAttackBox() {
-        return attackBox;
-    }
-
-    public void setAttackBox(Rectangle attackBox) {
-        this.attackBox = attackBox;
-    }
+    // --------- GETTERS & SETTERS --------
+    public int getHorizontalDirectionAsInteger() { return (this.facingDirection == Direction.EAST) ? 1 : -1; }
+    public Health getHP() { return this.HP; }
+    public String getName() { return this.name; }
+    public Vector2 getAcceleration() { return this.acceleration; }
+    public Vector2 getVelocity() { return this.velocity; }
+    public boolean isGrounded() { return this.isGrounded; }
+    public void setGrounded(boolean isGrounded) { this.isGrounded = isGrounded; }
+    public Vector2 getDirection() { return this.direction; }
+    public void setDirection(Vector2 direction) { this.direction = direction; }
+    public Direction getFacingDirection() { return facingDirection; }
+    public void setFacingDirection(Direction facingDirection) { this.facingDirection = facingDirection; }
+    public ActorState getActorState() { return this.actorState; }
+    public float getCollisionDistance() { return collisionDistance; }
+    public void setCollisionDistance(float collisionDistance) { this.collisionDistance = collisionDistance; }
+    public Rectangle getAttackBox() { return attackBox; }
+    public void setAttackBox(Rectangle attackBox) { this.attackBox = attackBox; }
 }

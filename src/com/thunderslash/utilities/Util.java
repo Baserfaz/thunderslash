@@ -3,21 +3,14 @@ package com.thunderslash.utilities;
 import com.thunderslash.engine.Camera;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.Direction;
-import com.thunderslash.gameobjects.GameObject;
 
 import java.lang.Math;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Util {

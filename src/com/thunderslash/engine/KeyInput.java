@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.thunderslash.enumerations.GameState;
 import com.thunderslash.gameobjects.Actor;
+import com.thunderslash.gameobjects.Player;
 import com.thunderslash.utilities.Vector2;
 
 public class KeyInput extends KeyAdapter {
@@ -96,7 +97,7 @@ public class KeyInput extends KeyAdapter {
     private void handleKeysInGame(KeyEvent e) {
         int key = e.getKeyCode();
         
-        Actor player = Game.instance.getActorManager().getPlayerInstance();
+        Player player = Game.instance.getActorManager().getPlayerInstance();
         if(player == null || player.getHP().isDead()) return;
         
         if(keyBinds.containsKey(key)) {

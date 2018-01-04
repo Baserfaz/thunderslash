@@ -1,8 +1,5 @@
 package com.thunderslash.engine;
 
-import com.thunderslash.data.Room;
-import com.thunderslash.enumerations.GameState;
-import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.utilities.Util;
 
@@ -27,14 +24,7 @@ public class Camera {
     }
 
     public void tick() {
-        
         if(this.isFollowing() && this.followTarget != null) {
-            
-            Actor actor = null;
-            
-            if(this.followTarget instanceof Actor) {
-                actor = (Actor) this.followTarget;
-            }
             
             // current position
             int camX = this.getCameraBounds().x;
@@ -44,17 +34,9 @@ public class Camera {
             // centers cam pos to the target.
             Point target = Util.calculateCameraPos();
             
-            // add offset to the target pos
-            // target.y -= 100f;
-            
             // apply camera smoothing
             camX -= (target.x + camX) * Game.CAMERA_SMOOTH_MULT;
-                
-            //if(actor != null) {
-            //    if(actor.isGrounded()) {
-                    camY -= (target.y + camY) * Game.CAMERA_SMOOTH_MULT;
-            //    }
-            //}
+            camY -= (target.y + camY) * Game.CAMERA_SMOOTH_MULT;
           
             // on first pass instantly 
             // focus on player, after that
@@ -67,6 +49,8 @@ public class Camera {
             }
         }
     }
+    
+    // ------ GETTERS & SETTERS -------
     
     public void setFollowTarget(GameObject obj) { this.followTarget = obj; }
     public GameObject getFollowTarget() { return this.followTarget; }

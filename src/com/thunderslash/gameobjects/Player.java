@@ -3,6 +3,7 @@ package com.thunderslash.gameobjects;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import com.thunderslash.data.Animation;
 import com.thunderslash.data.Power;
@@ -18,6 +19,8 @@ public class Player extends Actor {
     
     private Power power;
     
+    private GameObject focusedObject;
+    
     private Animation idleAnim;
     private Animation walkAnim;
     private Animation fallAnim;
@@ -25,6 +28,14 @@ public class Player extends Actor {
     private Animation defendAnim;
     private Animation castAnim;
 
+    private double actionPollingCooldown = 50;
+    private double currentPollingTimer = 0.0;
+    
+    protected int castDamage = 3;
+    
+    private boolean canCast       = true;
+    private double castCooldown   = 200.0;
+    
     public Player(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
     
@@ -57,6 +68,8 @@ public class Player extends Actor {
     
     public void tick() {
         this.checkGameObjectCollisions();
+        this.updateActorState();
+        this.updatePlayerAbilityCooldowns();
         super.tick();
     }
     
@@ -99,15 +112,97 @@ public class Player extends Actor {
         }
     }
 
-    private void checkGameObjectCollisions() {
-        for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
-            if(go instanceof Chest) {
-                Chest chest = (Chest) go;
-                if(chest.isOpen() == false) go.hasFocus = this.hitbox.intersects(go.getHitbox());
-            } else if(go instanceof Crystal) {
-                Crystal crystal = (Crystal) go;
-                if(crystal.isUsed() == false) go.hasFocus = this.hitbox.intersects(go.getHitbox());
+    private void updatePlayerAbilityCooldowns() {
+        
+        double dt = Game.instance.getTimeBetweenFrames();
+        
+        if(this.castTimer < this.castCooldown) {
+            this.castTimer += dt;
+            this.canCast = false;
+        } else {
+            this.canCast = true;
+        }
+        
+    }
+    
+    private void updateActorState() {
+        
+        if(this.HP.isDead()) this.actorState = ActorState.DEAD;
+        else if(this.canCast == false) this.actorState = ActorState.CASTING;
+        else if(this.canAttack == false) this.actorState = ActorState.ATTACKING;
+        else if(this.canDefend == false) this.actorState = ActorState.DEFENDING;
+        else if(this.velocity.y < 0f) this.actorState = ActorState.JUMPING;
+        else if(this.velocity.y > 0f) this.actorState = ActorState.FALLING;
+        else if(this.direction.x > 0f || this.direction.x < 0f) this.actorState = ActorState.WALKING;
+        else if(this.velocity.x == 0f && this.velocity.y == 0f ||
+                this.acceleration.x == 0f && this.acceleration.y == 0f) this.actorState = ActorState.IDLING;
+        
+    }
+    
+    public void cast() {
+        
+        if(this.canCast && this instanceof Player) {
+            Player player = (Player) this;
+            
+            if(player.getPower().getCurrentPower() > 0) {
+                
+                player.getPower().addCurrentPower(-1);
+                
+                this.castTimer = 0.0;
+                this.actorState = ActorState.CASTING;
+
+                List<GameObject> hits = this.checkHit(25, 25, 45);
+                        
+                int spriteSize = (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) / 2;
+                
+                // create animation
+                Game.instance.getAnimator().play(AnimationType.LIGHTNING_STRIKE,
+                        (this.attackBox.x + this.attackBox.width / 2) - spriteSize,
+                        this.attackBox.y - spriteSize);
+                
+                if(hits.isEmpty() == false) {    
+                    for(GameObject hit : hits) {
+                        if(hit instanceof Enemy) {
+                           ((Actor) hit).getHP().takeDamage(this.castDamage);
+                        }
+                    }
+                }
             }
+        }
+    }
+    
+    public void action() {
+        if(this.focusedObject != null) {
+            if(this.focusedObject instanceof Chest) {
+                ((Chest)this.focusedObject).open();
+            } else if(this.focusedObject instanceof Crystal) {
+                ((Crystal)this.focusedObject).use();
+                this.power.setCurrentPower(this.power.getMaxPower());
+            }
+        }
+    }
+    
+    private void checkGameObjectCollisions() {
+        
+        // every n check collisions with GOs.
+        
+        if(this.currentPollingTimer > this.actionPollingCooldown) {
+            
+            this.focusedObject = null;
+            this.currentPollingTimer = 0.0;
+            
+            for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
+                if(go instanceof Chest && ((Chest)go).isOpen() == false) {
+                    go.hasFocus = this.hitbox.intersects(go.getHitbox());
+                    if(go.hasFocus) this.focusedObject = go;
+                } else if(go instanceof Crystal && ((Crystal)go).isUsed() == false) {
+                    go.hasFocus = this.hitbox.intersects(go.getHitbox());
+                    if(go.hasFocus) this.focusedObject = go;
+                }
+            }
+            
+        } else {
+            this.currentPollingTimer += Game.instance.getTimeBetweenFrames();
         }
     }
     

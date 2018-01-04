@@ -9,13 +9,14 @@ import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.AnimationType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.AnimationCreator;
+import com.thunderslash.utilities.SpriteCreator;
 
 public class Crystal extends GameObject {
 
     private boolean isUsed = false;
-    private BufferedImage usedSprite;
     
-    private int powerValue = 3;
+    private BufferedImage usedSprite;
+    private BufferedImage questionMark;
     
     private Animation bounceAnim;
     
@@ -25,8 +26,11 @@ public class Crystal extends GameObject {
         // modify animation speed
         this.frameTime = 150.0;
         
+        SpriteCreator sc = Game.instance.getSpriteCreator();
+        
+        this.questionMark = sc.CreateCustomSizeSprite(0, 6 * 32 + 6, 4, 9);
         this.bounceAnim = AnimationCreator.createAnimation(AnimationType.CRYSTAL_BOUNCE);
-        this.usedSprite = Game.instance.getSpriteCreator().CreateSprite(SpriteType.CRYSTAL_USED);
+        this.usedSprite = sc.CreateSprite(SpriteType.CRYSTAL_USED);
     }
 
     public void use() {
@@ -49,14 +53,13 @@ public class Crystal extends GameObject {
         if(this.isVisible) {
             g.drawImage(frame, this.worldPosition.x, this.worldPosition.y, null);
         }
-    }
-
-    public int getPowerValue() {
-        return powerValue;
-    }
-
-    public void setPowerValue(int powerValue) {
-        this.powerValue = powerValue;
+        
+        if(this.hasFocus) {
+            g.drawImage(this.questionMark,
+                    this.hitboxCenter.x - this.questionMark.getWidth() / 2,
+                    this.hitbox.y - this.questionMark.getHeight() - 30, null);
+        }
+        
     }
 
     public boolean isUsed() {

@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.BlockType;
+import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.Mathf;
 import com.thunderslash.utilities.Vector2;
@@ -53,6 +54,29 @@ public class PhysicsObject extends GameObject {
     }
     
     public void render(Graphics g) {}
+    
+    protected void knockback(GameObject target, Direction dir) {
+        
+        if(target instanceof PhysicsObject) {
+            PhysicsObject obj = (PhysicsObject) target;
+            
+            int d = 0;
+            
+            if(dir == Direction.WEST) d = -1; 
+            else if(dir == Direction.EAST) d = 1;
+            
+            float xforce = 1f * d;
+            float yforce = -0.5f;
+            
+            obj.isGrounded = false;
+            
+            obj.velocity.x = xforce;
+            obj.acceleration.x = xforce;
+        
+            obj.velocity.y = yforce;
+            obj.acceleration.y = yforce;
+        }
+    }
     
     private void updateHitbox() {
         this.hitbox.x = this.worldPosition.x + this.hitboxSizes.x;
@@ -326,7 +350,6 @@ public class PhysicsObject extends GameObject {
                 }
             }
         }
-        
     }
     
     protected List<GameObject> getNearbyGameObjects(float distance, boolean allowBlocks) {
@@ -348,21 +371,10 @@ public class PhysicsObject extends GameObject {
         }
         return allBlocks;
     }
-    
-    public List<Point> getCollisionPoints() {
-        return collisionPoints;
-    }
 
-    public void setCollisionPoints(List<Point> collisionPoints) {
-        this.collisionPoints = collisionPoints;
-    }
-    
-    public Block getLastBlock() {
-        return lastBlock;
-    }
-
-    public void setLastBlock(Block lastBlock) {
-        this.lastBlock = lastBlock;
-    }
-    
+    // ----- GETTERS & SETTERS -------
+    public List<Point> getCollisionPoints() { return collisionPoints; }
+    public void setCollisionPoints(List<Point> collisionPoints) { this.collisionPoints = collisionPoints; }
+    public Block getLastBlock() { return lastBlock; }
+    public void setLastBlock(Block lastBlock) { this.lastBlock = lastBlock; }
 }
