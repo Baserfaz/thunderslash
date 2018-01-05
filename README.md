@@ -26,27 +26,39 @@ These features are so far (27.12.2017):
 
 ## TODO
 There is a lot to do here, but the *major* features are:
-* main game mechanics: attacking and pushing
+* Actor collisions with physics objects
+* implementing randomized & hand put foreground, background support for better graphics. 
+* fixing bugs and optimizing algorithms (mainly caching sprites etc.)
+* more diverse enemies: hopping slimes, walking skeletons, charging tanks, ranged enemies etc.
+* tweaking gameplay feeling
+* ~~GUI-elements: images, buttons, strings~~
+* ~~main game mechanics: attacking and pushing~~
 * ~~enemies: Basic enemy with basic AI~~
-* physics support for actors (can be pushed)
+* ~~physics support for actors (can be pushed)~~
 * ~~physics support for other gameobjects~~
-* enemy collision with player
+* ~~enemy collision with player~~
 * ~~enemy spawnpoint support in level editor~~
 
 minor features:
 * tileset support (changeable tilesets between levels)
 * graphics (pixel art, 32x32 sprites): multiple tilesets, background, parallax effect
+* player jump animation + current animations are placeholders
+* pickupable items: coins, health etc.
+* particle effect support
+* controller support
+* ~~mouse and keyboard support~~
+* ~~rebindable keys support~~
 * ~~level hazard support (traps, spikes etc.)~~
 * ~~animation support~~
-* sprite animations for the player: walk, jump, fall, attack, push
+* ~~sprite animations for the player: walk, fall, attack, cast, idle~~
 * ~~GUI: hp/score~~
-* pickupable items: health
-* particle effect support
+* ~~usable items: crystal~~
 
 low priority features:
-* mainmenu
 * story.. (perhaps never going to happen)
 * friendly NPCs
+* text dialogs: conversations + help signs
+* ~~simple mainmenu~~
 
 ## Contribution
 Heikki Heiskanen - design & implementation
