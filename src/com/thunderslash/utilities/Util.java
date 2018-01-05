@@ -39,11 +39,13 @@ public class Util {
     public static void loadCustomFont() {
 
         String fullPath = "/fonts/" + Game.CUSTOMFONTFOLDER + "/" + Game.CUSTOMFONTNAME + Game.CUSTOMFONTEXTENSION;
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         Font font = null;
+        
+        System.out.println("Trying to load font: " + fullPath);
+        
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, Util.class.getResourceAsStream(fullPath));
-            ge.registerFont(font);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
         } catch (FontFormatException | IOException e) { e.printStackTrace(); }
 
         // cache the font
