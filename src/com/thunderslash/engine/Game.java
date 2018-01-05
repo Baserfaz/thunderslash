@@ -147,11 +147,9 @@ public class Game extends Canvas implements Runnable {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    public void run() { 
-        gameLoop();
-    }
+    public void run() { this.gameloop(); }
 
-    private void gameLoop() {
+    private void gameloop() {
 
         long lastTime = System.nanoTime();
         double unprocessedTime = 0;
@@ -194,14 +192,10 @@ public class Game extends Canvas implements Runnable {
 
             // render the scene
             if(isRunning && render) {
-                
                 this.timeBetweenFrames = System.nanoTime() - lastRender;
-                
                 this.render();
                 frames++;        
-                
                 lastRender = System.nanoTime();
-                
             }
         }
     }
@@ -231,7 +225,7 @@ public class Game extends Canvas implements Runnable {
         } else if(this.gamestate == GameState.MAINMENU) {
             this.guiElementManager.tick();
         } else if(this.gamestate == GameState.LOADING) {
-            // TODO
+            // TODO: animate?
         }
     }
     

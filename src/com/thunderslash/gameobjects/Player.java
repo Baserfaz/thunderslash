@@ -184,7 +184,7 @@ public class Player extends Actor {
     
     private void checkGameObjectCollisions() {
         
-        // every n check collisions with GOs.
+        // every n millisecond check collisions with GOs.
         
         if(this.currentPollingTimer > this.actionPollingCooldown) {
             
@@ -198,19 +198,15 @@ public class Player extends Actor {
                 } else if(go instanceof Crystal && ((Crystal)go).isUsed() == false) {
                     go.hasFocus = this.hitbox.intersects(go.getHitbox());
                     if(go.hasFocus) this.focusedObject = go;
+                } else if(go instanceof Enemy) {
+                    if(this.hitbox.intersects(go.getHitbox())) this.HP.takeDamage(1);
                 }
             }
-            
         } else {
             this.currentPollingTimer += Game.instance.getTimeBetweenFrames();
         }
     }
     
-    public Power getPower() {
-        return power;
-    }
-
-    public void setPower(Power power) {
-        this.power = power;
-    }
+    public Power getPower() { return power; }
+    public void setPower(Power power) { this.power = power; }
 }
