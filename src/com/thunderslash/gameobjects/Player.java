@@ -28,6 +28,11 @@ public class Player extends Actor {
     private Animation defendAnim;
     private Animation castAnim;
 
+    private boolean isInvulnerable = false;
+    
+    private double invulnerabilityTimer = 0.0;
+    private double invulnerableTime = 100.0;
+    
     private double actionPollingCooldown = 50;
     private double currentPollingTimer = 0.0;
     
@@ -199,9 +204,32 @@ public class Player extends Actor {
                     go.hasFocus = this.hitbox.intersects(go.getHitbox());
                     if(go.hasFocus) this.focusedObject = go;
                 } else if(go instanceof Enemy) {
-                    if(this.hitbox.intersects(go.getHitbox())) this.HP.takeDamage(1);
+                    
+                    // when the player takes damage,
+                    // set the player to invulnerability state,
+                    // where the player doesn't take recurring damage.
+                    
+                    if(this.isInvulnerable) {
+                        
+                        if(this.invulnerabilityTimer < this.invulnerableTime) {
+                            this.invulnerabilityTimer += Game.instance.getTimeBetweenFrames();
+                        } else {
+                            this.isInvulnerable = false;
+                            this.invulnerabilityTimer = 0.0;
+                        }
+                        
+                    } else {
+                        
+                        Enemy enemy = (Enemy) go;    
+                        if(enemy.getHP().isDead() == false && this.hitbox.intersects(go.getHitbox())) {
+                            this.isInvulnerable = true;
+                            this.HP.takeDamage(1);
+                        }
+                        
+                    }
                 }
             }
+            
         } else {
             this.currentPollingTimer += Game.instance.getTimeBetweenFrames();
         }
