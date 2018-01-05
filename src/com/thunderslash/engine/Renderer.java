@@ -38,8 +38,10 @@ public class Renderer {
         Graphics2D g2d = (Graphics2D) g;
         
         this.setRenderingHints(g2d);
+        
         if(Game.instance.getGamestate() == GameState.INGAME) this.renderIngame(g2d);
-        else if(Game.instance.getGamestate() == GameState.MAINMENU)this.renderMenu(g2d);
+        else if(Game.instance.getGamestate() == GameState.MAINMENU) this.renderMenu(g2d);
+        else if(Game.instance.getGamestate() == GameState.LOADING) this.renderLoading(g2d);
     }
     
     private void setRenderingHints(Graphics2D g2d) {
@@ -51,13 +53,17 @@ public class Renderer {
         g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);  
-        
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+    }
+    
+    private void renderLoading(Graphics2D g) {
+        this.fillScreen(g, Color.black);
+        this.guirenderer.renderLoading(g);        
     }
     
     private void renderMenu(Graphics2D g) {
         this.fillScreen(g, Color.black);
-        guirenderer.renderMenu(g);
+        this.guirenderer.renderMenu(g);
     }
     
     private void renderIngame(Graphics2D g) {
@@ -79,7 +85,7 @@ public class Renderer {
         this.renderAnimations(g);
         
         this.renderDebug(g);
-        guirenderer.renderIngameGui(g);
+        this.guirenderer.renderIngameGui(g);
         
     }
     

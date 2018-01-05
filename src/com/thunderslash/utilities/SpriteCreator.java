@@ -27,7 +27,7 @@ public class SpriteCreator {
         System.out.println("Loading spritesheet from path: \'" + path + "\'");
 
         // get the sprite sheet
-        try { image = ImageIO.read(getClass().getResourceAsStream("/" + path)); }
+        try { image = ImageIO.read(getClass().getResourceAsStream(path)); }
         catch (IOException e) { e.printStackTrace(); }
 
         if(image == null) {

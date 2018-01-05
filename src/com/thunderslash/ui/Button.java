@@ -67,7 +67,6 @@ public class Button extends GuiElement {
                 // render text inside it
                 g.setColor(this.fontColor);
                 g.drawString(this.txt, centerX, centerY);
-                
             }
         }
     }
@@ -77,53 +76,27 @@ public class Button extends GuiElement {
     }
 
     public void onClick() {
-        
         switch(this.action) {
             case EXIT:
                 System.exit(0);
                 break;
             case PLAY:
-                Game.instance.setGamestate(GameState.INGAME);
+                Game.instance.startNewGame();
                 break;
             default:
                 System.out.println("Not supported action: " + this.action);
                 break;
-            
         }
-        
     }
     
-    public void onHover() {
-        this.isHovering = true;
-    }
-    
-    public Color getFontColor() {
-        return fontColor;
-    }
-    public void setFontColor(Color fontColor) {
-        this.fontColor = fontColor;
-    }
-    public int getFontSize() {
-        return fontSize;
-    }
-    public void setFontSize(int fontSize) {
-        this.fontSize = fontSize;
-    }
-
-    public Color getBgColor() {
-        return bgColor;
-    }
-
-    public void setBgColor(Color bgColor) {
-        this.bgColor = bgColor;
-    }
-
-    public ButtonAction getAction() {
-        return action;
-    }
-
-    public void setAction(ButtonAction action) {
-        this.action = action;
-    }
-    
+    // ------- GETTERS & SETTERS --------
+    public void onHover() { this.isHovering = true; }
+    public Color getFontColor() { return fontColor; }
+    public void setFontColor(Color fontColor) { this.fontColor = fontColor; }
+    public int getFontSize() { return fontSize; }
+    public void setFontSize(int fontSize) { this.fontSize = fontSize; }
+    public Color getBgColor() { return bgColor; }
+    public void setBgColor(Color bgColor) { this.bgColor = bgColor; }
+    public ButtonAction getAction() { return action; }
+    public void setAction(ButtonAction action) { this.action = action; }
 }

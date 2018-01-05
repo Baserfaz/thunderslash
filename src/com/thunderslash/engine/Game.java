@@ -36,7 +36,7 @@ public class Game extends Canvas implements Runnable {
                              
     public static final double FRAME_CAP           = 60.0;                             
 
-    public static final String SPRITESHEETNAME     = "images/spritesheet.png";           
+    public static final String SPRITESHEETNAME     = "/images/spritesheet.png";           
     public static final String FRAMICONPATH        = "/images/icon.png";      
     public static final String LEVELFOLDER         = "/levels/";
     
@@ -127,15 +127,6 @@ public class Game extends Canvas implements Runnable {
         this.renderer = new Renderer();
         
         this.gamestate = GameState.MAINMENU;
-        
-        // create world
-        this.world = new World();
-        
-        // initiate first level
-        this.world.initializeRoom(Game.instance.currentRoomIndex);
-        
-        // create mock up player actor
-        actorManager.createPlayerInstance("Player", SpriteType.PLAYER, 4);
         
         // start game thread
         start();
@@ -239,11 +230,34 @@ public class Game extends Canvas implements Runnable {
             this.camera.tick();
         } else if(this.gamestate == GameState.MAINMENU) {
             this.guiElementManager.tick();
-            
+        } else if(this.gamestate == GameState.LOADING) {
+            // TODO
         }
     }
     
+    public void startNewGame() {
+        
+        System.out.println("-------- New Game --------");
+        
+        this.gamestate = GameState.LOADING;
+        
+        // create world
+        this.world = new World();
+        
+        // initiate first level
+        this.world.initializeRoom(Game.instance.currentRoomIndex);
+        
+        // create mock up player actor
+        actorManager.createPlayerInstance("Player", SpriteType.PLAYER, 4);
+        
+        Game.instance.setGamestate(GameState.INGAME);
+        
+    }
+    
     public static void main(String args[]) { new Game(); }
+    
+    // ----- GETTERS & SETTERS ------
+    
     public Window getWindow() { return this.window; }
     public Font getCustomFont() { return customFont; }
     public void setCustomFont(Font customFont) { this.customFont = customFont; }
@@ -253,64 +267,19 @@ public class Game extends Canvas implements Runnable {
     public void setSpriteCreator(SpriteCreator spriteCreator) { this.spriteCreator = spriteCreator; }
     public Handler getHandler() { return handler; }
     public void setHandler(Handler handler) { this.handler = handler; }
-
-    public ActorManager getActorManager() {
-        return this.actorManager;
-    }
-
-    public void setActorManager(ActorManager actorManager) {
-        this.actorManager = actorManager;
-    }
-
-    public World getWorld() {
-        return this.world;
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    public GameState getGamestate() {
-        return this.gamestate;
-    }
-
-    public void setGamestate(GameState gamestate) {
-        this.gamestate = gamestate;
-    }
-
-    public GuiRenderer getGuiRenderer() {
-        return this.guiRenderer;
-    }
-
-    public void setGuiRenderer(GuiRenderer guiRenderer) {
-        this.guiRenderer = guiRenderer;
-    }
-
-    public Point getMousePos() {
-        return this.mousePos;
-    }
-
-    public void setMousePos(Point mousePos) {
-        this.mousePos = mousePos;
-    }
-
-    public int getCurrentRoomIndex() {
-        return this.currentRoomIndex;
-    }
-
-    public void setCurrentRoomIndex(int currentRoomIndex) {
-        this.currentRoomIndex = currentRoomIndex;
-    }
-
-    public double getTimeBetweenFrames() {
-        return this.timeBetweenFrames * 0.000001;
-    }
-
-    public Animator getAnimator() {
-        return this.animator;
-    }
-
-    public GuiElementManager getGuiElementManager() {
-        return guiElementManager;
-    }
+    public ActorManager getActorManager() { return this.actorManager; }
+    public void setActorManager(ActorManager actorManager) { this.actorManager = actorManager; }
+    public World getWorld() { return this.world; }
+    public void setWorld(World world) { this.world = world; }
+    public GameState getGamestate() { return this.gamestate; }
+    public void setGamestate(GameState gamestate) { this.gamestate = gamestate; }
+    public GuiRenderer getGuiRenderer() { return this.guiRenderer; }
+    public void setGuiRenderer(GuiRenderer guiRenderer) { this.guiRenderer = guiRenderer; }
+    public Point getMousePos() { return this.mousePos; }
+    public void setMousePos(Point mousePos) { this.mousePos = mousePos; }
+    public int getCurrentRoomIndex() { return this.currentRoomIndex; }
+    public void setCurrentRoomIndex(int currentRoomIndex) { this.currentRoomIndex = currentRoomIndex; }
+    public double getTimeBetweenFrames() { return this.timeBetweenFrames * 0.000001; }
+    public Animator getAnimator() { return this.animator; }
+    public GuiElementManager getGuiElementManager() { return guiElementManager;  }
 }

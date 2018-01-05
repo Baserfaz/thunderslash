@@ -24,8 +24,8 @@ public class World {
             LevelData data = LevelCreator.createLevel("testlevel2.png");
             Room room = new Room(i, data.getWidth(), data.getHeight(), data.getBlocks());
             this.rooms.add(room);
-            System.out.println("created room \'" + room.toString() +
-                    "\', block count: " + room.getBlocks().size());
+            System.out.println("Created room (lvl: " + i + ") \'" + room.toString() +
+                    "\', block count: " + room.getBlocks().size() + ".");
         }
     }
 

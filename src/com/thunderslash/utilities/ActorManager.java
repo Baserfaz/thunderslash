@@ -29,6 +29,33 @@ public class ActorManager {
         return enemy;
     }
     
+    public void movePlayerToSpawnPosition() {
+        
+        if(this.playerInstance == null) {
+            System.out.println("Player not yet instantiated!");
+            return;
+        }
+        
+        World world = Game.instance.getWorld();
+        
+        if(world.getCurrentRoomBlocks() == null) {
+            System.out.println("Room not yet loaded!");
+            return;
+        }
+        
+        // get the current room's spawnpoint coordinates.
+        Point spawnpos = new Point(0, 0);
+        for(Block block : world.getCurrentRoomBlocks()) {
+            if(block.getBlocktype() == BlockType.PLAYER_SPAWN) {
+                spawnpos = block.getWorldPosition();
+                break;
+            }
+        }
+        
+        this.playerInstance.setWorldPosition(spawnpos);
+        
+    }
+    
     public Player createPlayerInstance(String actorName, SpriteType spriteType, int health) {
         
         if(this.playerInstance != null) {

@@ -44,6 +44,26 @@ public class GuiRenderer {
         
         this.createGuiElements();
     }
+
+    public void renderLoading(Graphics g) {
+        
+        int size = 60;
+        int margin = 20;
+        
+        // set font 
+        Font font = Game.instance.getCustomFont().deriveFont(Font.PLAIN, size);
+        g.setFont(font);
+        
+        // calculate string width using this font context
+        String txt = "Loading";
+        int width = g.getFontMetrics().stringWidth(txt);
+        
+        // calculate postion on screen
+        int x = Game.CAMERA_WIDTH - width - margin;
+        int y = Game.CAMERA_HEIGHT - g.getFontMetrics().getHeight();
+        
+        this.renderString("Loading", x, y, Color.white, size, g);
+    }
     
     public void renderMenu(Graphics g) {
         this.renderMainmenuTitle(g);

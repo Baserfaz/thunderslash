@@ -292,7 +292,7 @@ public class LevelCreator {
         
         BufferedImage image = null;
         
-        System.out.println("Loading level data from path: " + Game.LEVELFOLDER + path);
+        System.out.println("Loading level data from path: \'" + Game.LEVELFOLDER + path + "\'");
 
         // get the sprite sheet
         try { image = ImageIO.read(LevelCreator.class.getResourceAsStream(Game.LEVELFOLDER + path)); }
