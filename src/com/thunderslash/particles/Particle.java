@@ -44,9 +44,7 @@ public class Particle {
             this.position.y += velocity.y;
             
         } else {
-            
             this.enabled = false;
-            
         }
     }
     
@@ -64,17 +62,14 @@ public class Particle {
     public void setAcceleration(Point acceleration) { this.acceleration = acceleration; }
     public Point getVelocity() { return velocity; }
     public void setVelocity(Point velocity) { this.velocity = velocity; }
-
     public void setVelocity(int ax, int ay) {
         this.velocity.x = ax;
         this.velocity.y = ay;
     }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public void setPosition(int x, int y) {
+        this.position.x = x;
+        this.position.y = y;
     }
 }

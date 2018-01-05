@@ -69,6 +69,7 @@ public class Emitter {
         
         for(int i = 0; i < n; i++) {
             Particle current = this.particles.get(i);
+            current.setPosition(this.x, this.y);
             current.setVelocity(ax, ay);
             current.enable();
         }
