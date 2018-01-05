@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 
 import com.thunderslash.data.Health;
 import com.thunderslash.data.Power;
@@ -28,10 +29,15 @@ public class GuiRenderer {
     
     private GuiElementManager guiManager;
     
+    private DecimalFormat df;
+    
     public GuiRenderer() {
     
         this.guiManager = Game.instance.getGuiElementManager();
         SpriteCreator sc = Game.instance.getSpriteCreator();
+        
+        df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
         
         int tintAmount = 3;
         
@@ -122,7 +128,8 @@ public class GuiRenderer {
             if(player == null) return;
             
             // create info strings
-            String info = "pos: " + player.getWorldPosition().toString() + "\n";
+            String info = "Frame time: " + this.df.format(Game.instance.getTimeBetweenFrames()) + "\n"; 
+            info += "pos: " + player.getWorldPosition().toString() + "\n";
             info += "input: " + player.getDirection().toString()+ "\n";
             info += "acceleration: " + player.getAcceleration().toString() + "\n";
             info += "velocity: " + player.getVelocity().toString() + "\n";
@@ -135,7 +142,7 @@ public class GuiRenderer {
     
     private void renderVersion(Graphics g, Camera cam) {
         Rectangle r = cam.getCameraBounds();
-        this.renderString("v0.1", r.width - 50, 20, Color.white, 20f, g);
+        this.renderString("v0.1", r.width - 50, r.height - 20, Color.white, 20f, g);
     }
     
     private void renderMainmenuTitle(Graphics g) {

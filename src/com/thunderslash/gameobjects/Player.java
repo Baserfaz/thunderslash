@@ -38,8 +38,8 @@ public class Player extends Actor {
     
     protected int castDamage = 3;
     
-    private boolean canCast       = true;
-    private double castCooldown   = 200.0;
+    private boolean canCast = true;
+    private double castCooldown = 200.0;
     
     public Player(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
