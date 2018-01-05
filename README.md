@@ -1,7 +1,7 @@
 # Thunderslash
 2D sidescroller game using Java and custom 2D engine.
 
-![bouncingenemy](https://user-images.githubusercontent.com/7894317/34470350-3dfd2bf6-ef38-11e7-9399-1498ac29ce11.png)
+![awesome](https://user-images.githubusercontent.com/7894317/34610287-24c80612-f229-11e7-8904-77549c275171.png)
 
 ## Introduction
 This is a 2D action sidescroller project, that is mainly developed as a programming excersice. 
