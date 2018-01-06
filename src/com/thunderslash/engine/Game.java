@@ -13,6 +13,7 @@ import com.thunderslash.engine.Renderer;
 import com.thunderslash.engine.Window;
 import com.thunderslash.enumerations.GameState;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.particles.EmitterManager;
 import com.thunderslash.ui.GuiElementManager;
 import com.thunderslash.utilities.ActorManager;
 import com.thunderslash.utilities.Animator;
@@ -91,6 +92,7 @@ public class Game extends Canvas implements Runnable {
     private Handler handler;
     private GuiRenderer guiRenderer;
     private GuiElementManager guiElementManager;
+    private EmitterManager emitterManager;
     private Renderer renderer;
     private GameState gamestate;
     
@@ -119,6 +121,7 @@ public class Game extends Canvas implements Runnable {
         this.window = new Window(Game.WIDTH, Game.HEIGHT, Game.TITLE, this);
         this.spriteCreator = new SpriteCreator(Game.SPRITESHEETNAME);
         this.guiElementManager = new GuiElementManager();
+        this.emitterManager = new EmitterManager();
         
         this.guiRenderer = new GuiRenderer();
         this.actorManager = new ActorManager();
@@ -221,6 +224,7 @@ public class Game extends Canvas implements Runnable {
         if(this.gamestate == GameState.INGAME) {
             handler.tickGameObjects(); 
             handler.tickAnimations();
+            handler.tickEmitters();
             this.camera.tick();
         } else if(this.gamestate == GameState.MAINMENU) {
             this.guiElementManager.tick();
@@ -276,4 +280,12 @@ public class Game extends Canvas implements Runnable {
     public double getTimeBetweenFrames() { return this.timeBetweenFrames * 0.000001; }
     public Animator getAnimator() { return this.animator; }
     public GuiElementManager getGuiElementManager() { return guiElementManager;  }
+
+    public EmitterManager getEmitterManager() {
+        return emitterManager;
+    }
+
+    public void setEmitterManager(EmitterManager emitterManager) {
+        this.emitterManager = emitterManager;
+    }
 }

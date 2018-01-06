@@ -1,6 +1,7 @@
 package com.thunderslash.engine;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.PhysicsObject;
 import com.thunderslash.gameobjects.Player;
+import com.thunderslash.particles.Emitter;
+import com.thunderslash.particles.Particle;
 import com.thunderslash.utilities.Animator;
 
 public class Handler {
@@ -21,6 +24,23 @@ public class Handler {
         for(int i = 0; i < objects.size(); i++) {
             GameObject current = objects.get(i);
             if(current != null) current.tick();
+        }
+    }
+    
+    public void tickEmitters() {
+        for(Emitter e : Game.instance.getEmitterManager().getEmitters()) {
+            e.tick();
+        }
+    }
+    
+    public void renderParticles(Graphics g) {
+        
+        List<Emitter> emitters = Game.instance.getEmitterManager().getEmitters();
+        
+        for(Emitter e : emitters) {
+            for (Particle p : e.getParticles()) {
+                p.render(g);
+            }
         }
     }
     
@@ -48,12 +68,34 @@ public class Handler {
         List<Block> waterBlocks = new ArrayList<Block>();
         List<Actor> actors = new ArrayList<Actor>();
         List<PhysicsObject> items = new ArrayList<PhysicsObject>();
+        
         Actor player = Game.instance.getActorManager().getPlayerInstance();
-        if(player == null) return;
+        Camera cam = Game.instance.getCamera();
+        if(player == null || cam == null) return;
+        
+        // optimizing render time
+        // -> only render things that are in cameras view.
+        Rectangle camView = (Rectangle) cam.getCameraBounds().clone();
+        
+        int size = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
+        
+        camView.x -= size;
+        camView.width += 2 * size;
+        
+        camView.y -= size;
+        camView.height += 2 * size;
+        
+        List<GameObject> objInView = new ArrayList<GameObject>();
+        for(int i = 0; i < this.objects.size(); i++) {
+            GameObject go = this.objects.get(i);
+            if(camView.contains(go.getHitboxCenter())) {
+                objInView.add(go);
+            }
+        }
         
         // render all game objects 
-        for(int i = 0; i < this.objects.size(); i++) {
-            GameObject current = this.objects.get(i);
+        for(int i = 0; i < objInView.size(); i++) {
+            GameObject current = objInView.get(i);
             
             if(current instanceof Player) continue;
             

@@ -12,6 +12,7 @@ import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.AnimationType;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.particles.Emitter;
 import com.thunderslash.utilities.AnimationCreator;
 import com.thunderslash.utilities.RenderUtils;
 
@@ -41,10 +42,13 @@ public class Player extends Actor {
     private boolean canCast = true;
     private double castCooldown = 200.0;
     
+    private Emitter playerEmitter;
+    
     public Player(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
     
         this.power = new Power();
+        this.playerEmitter = Game.instance.getEmitterManager().createEmitter();
         
         // set animations
         this.idleAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_IDLE);
@@ -156,6 +160,8 @@ public class Player extends Actor {
                 this.castTimer = 0.0;
                 this.actorState = ActorState.CASTING;
 
+                this.playerEmitter.emit(10, Direction.NORTH, this.hitboxCenter.x, this.hitboxCenter.y - this.hitbox.height / 2 - 10);
+                
                 List<GameObject> hits = this.checkHit(25, 25, 45);
                         
                 int spriteSize = (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) / 2;
@@ -237,4 +243,12 @@ public class Player extends Actor {
     
     public Power getPower() { return power; }
     public void setPower(Power power) { this.power = power; }
+
+    public Emitter getPlayerEmitter() {
+        return playerEmitter;
+    }
+
+    public void setPlayerEmitter(Emitter playerEmitter) {
+        this.playerEmitter = playerEmitter;
+    }
 }

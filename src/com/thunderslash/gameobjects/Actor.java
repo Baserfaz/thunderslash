@@ -146,8 +146,12 @@ public class Actor extends PhysicsObject {
             this.attackTimer = 0.0;
             this.actorState = ActorState.ATTACKING;
             
+            int attWidth = 25;
+            int attHeight = 30;
+            int attackDist = attWidth / 2;
+            
             // check if we hit something.
-            List<GameObject> hits = this.checkHit(3, 15, 30);
+            List<GameObject> hits = this.checkHit(-attackDist, attWidth + 10, attHeight);
             
             if(hits.isEmpty() == false) {
                 for(GameObject hit : hits) {

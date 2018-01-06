@@ -5,16 +5,17 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
+import com.thunderslash.utilities.Vector2;
 
 public class Particle {
 
     private Point position = new Point(0, 0);
-    private Point velocity = new Point(0, 0);
-    private Point acceleration = new Point(0, 0);
+    private Vector2 velocity = new Vector2(0f, 0f);
+    private Vector2 acceleration = new Vector2(0f, 0f);
     
     private BufferedImage img;
     private double currentLifeTime = 0.0;
-    private double maxLifeTime = 10.0;
+    private double maxLifeTime = 500.0;
     
     private boolean enabled = false;
     
@@ -27,6 +28,8 @@ public class Particle {
     public void enable() {
         this.enabled = true;
         this.currentLifeTime = 0.0;
+        this.velocity.x = 0f;
+        this.velocity.y = 0f;
     }
     
     public void tick() {
@@ -38,7 +41,7 @@ public class Particle {
             this.currentLifeTime += Game.instance.getTimeBetweenFrames();
             
             this.velocity.x += this.acceleration.x;
-            this.velocity.y += this.acceleration.y + Game.GRAVITY;
+            this.velocity.y += this.acceleration.y; //+ Game.GRAVITY;
             
             this.position.x += velocity.x;
             this.position.y += velocity.y;
@@ -58,10 +61,10 @@ public class Particle {
     public void setY(int y) { this.position.y = y; }
     public BufferedImage getImg() { return img; }
     public void setImg(BufferedImage img) { this.img = img; }
-    public Point getAcceleration() { return acceleration; }
-    public void setAcceleration(Point acceleration) { this.acceleration = acceleration; }
-    public Point getVelocity() { return velocity; }
-    public void setVelocity(Point velocity) { this.velocity = velocity; }
+    public Vector2 getAcceleration() { return acceleration; }
+    public void setAcceleration(Vector2 acceleration) { this.acceleration = acceleration; }
+    public Vector2 getVelocity() { return velocity; }
+    public void setVelocity(Vector2 velocity) { this.velocity = velocity; }
     public void setVelocity(int ax, int ay) {
         this.velocity.x = ax;
         this.velocity.y = ay;
