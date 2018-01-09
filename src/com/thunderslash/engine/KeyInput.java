@@ -42,21 +42,8 @@ public class KeyInput extends KeyAdapter {
         else if(Game.instance.getGamestate() == GameState.INGAME) handleKeysInGame(e);
 
         // debugging keys
-        if(key == KeyEvent.VK_F1) {
-            Game.drawDebugInfo = !Game.drawDebugInfo;
-        } else if(key == KeyEvent.VK_F2) {
-            Game.drawCameraRect = !Game.drawCameraRect;
-        } else if(key == KeyEvent.VK_F3) {
-            Game.drawCurrentBlock = !Game.drawCurrentBlock;
-        } else if(key == KeyEvent.VK_F4) {
-            Game.drawGameObjectRects = !Game.drawGameObjectRects;
-        } else if(key == KeyEvent.VK_F5) { 
-            Game.drawActorCollisionPoints = !Game.drawActorCollisionPoints;
-        } else if(key == KeyEvent.VK_F6) { 
-            Game.drawAttackBoxes = !Game.drawAttackBoxes;
-        } else if(key == KeyEvent.VK_F12) {
-            Game.isPaused = !Game.isPaused;
-        } else if(key == KeyEvent.VK_ESCAPE) {
+
+        if(key == KeyEvent.VK_ESCAPE) {
             System.exit(0);
         }
 
@@ -121,6 +108,23 @@ public class KeyInput extends KeyAdapter {
             } else if(cmd == "CAST") {
                 player.cast();
             }
+        }
+        
+        // debug keys ingame.
+        if(key == KeyEvent.VK_F1) {
+            Game.drawDebugInfo = !Game.drawDebugInfo;
+        } else if(key == KeyEvent.VK_F2) {
+            Game.drawCameraRect = !Game.drawCameraRect;
+        } else if(key == KeyEvent.VK_F3) {
+            Game.drawCurrentBlock = !Game.drawCurrentBlock;
+        } else if(key == KeyEvent.VK_F4) {
+            Game.drawGameObjectRects = !Game.drawGameObjectRects;
+        } else if(key == KeyEvent.VK_F5) { 
+            Game.drawActorCollisionPoints = !Game.drawActorCollisionPoints;
+        } else if(key == KeyEvent.VK_F6) { 
+            Game.drawAttackBoxes = !Game.drawAttackBoxes;
+        } else if(key == KeyEvent.VK_F12) {
+            Game.isPaused = !Game.isPaused;
         }
     }
 

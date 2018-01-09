@@ -222,10 +222,12 @@ public class Game extends Canvas implements Runnable {
 
     private void tick() { 
         if(this.gamestate == GameState.INGAME) {
-            handler.tickGameObjects(); 
-            handler.tickAnimations();
-            handler.tickEmitters();
-            this.camera.tick();
+            if(this.isPaused == false) {
+                handler.tickGameObjects(); 
+                handler.tickAnimations();
+                handler.tickEmitters();
+                this.camera.tick();
+            }
         } else if(this.gamestate == GameState.MAINMENU) {
             this.guiElementManager.tick();
         } else if(this.gamestate == GameState.LOADING) {

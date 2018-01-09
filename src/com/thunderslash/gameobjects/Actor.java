@@ -20,24 +20,14 @@ public class Actor extends PhysicsObject {
     protected Health HP;
     
     protected ActorState actorState = ActorState.IDLING;
-    protected Direction facingDirection = Direction.WEST;
+    protected Direction facingDirection = Direction.EAST;
     protected Rectangle attackBox;
     
     protected int attackDamage = 1;
     
-    private ActorState oldState;
-    
     protected boolean isStunned = false;
     protected double stunTimer = 0.0;
     protected double defaultStunDuration = 500.0;
-    
-    protected double attackCooldown = 200.0;
-    protected double defendCooldown = 200.0;
-    
-    protected boolean canAttack = true;
-    protected boolean canDefend = true;
-    
-    protected boolean allowCleaveAttacks = false;
     
     public Actor(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(worldPos, spriteType);
@@ -49,8 +39,6 @@ public class Actor extends PhysicsObject {
     public void tick() {
         
         this.handleStunState();
-        this.handleCooldowns();
-        this.handleActorStates();
         
         // change facing direction
         if(this.direction.x > 0f) this.facingDirection = Direction.EAST;
@@ -74,90 +62,6 @@ public class Actor extends PhysicsObject {
                 this.stunTimer = 0.0;
             } else {
                 this.stunTimer += Game.instance.getTimeBetweenFrames();
-            }
-        }
-    }
-    
-    private void handleActorStates() {
-        
-        // on state change.
-        if(this.actorState != this.oldState) { 
-            
-            // reset frame index when state changes.
-            this.currentAnimIndex = 0;
-            
-            // change animation speed when attacking.
-            if(this.actorState == ActorState.ATTACKING ||
-                    this.actorState == ActorState.DEFENDING) this.frameTime = this.attackFrameTime;
-            else if(this.actorState == ActorState.CASTING) this.frameTime = this.castFrameTime;
-            else this.frameTime = this.defaultFrameTime;
-        }
-        
-        // cache last frame's state
-        this.oldState = this.actorState;
-        
-    }
-    
-    private void handleCooldowns() {
-
-        double dt = Game.instance.getTimeBetweenFrames();
-        
-        if(this.attackTimer < this.attackCooldown) {
-            this.attackTimer += dt;
-            this.canAttack = false;
-        } else {
-            this.canAttack = true;
-        }
-        
-        if(this.defendTimer < this.defendCooldown) {
-            this.defendTimer += dt;
-            this.canDefend = false;
-        } else {
-            this.canDefend = true;
-        }
-        
-    }
-    
-    public void defend() {
-        if(this.canDefend) {
-            
-            this.defendTimer = 0.0;
-            this.actorState = ActorState.DEFENDING;
-            
-            // check if we hit something
-            List<GameObject> hits = this.checkHit(3, 10, 30);
-            
-            if(hits.isEmpty() == false) {
-                for(GameObject hit : hits) {
-                    if(hit instanceof Enemy) {
-                        Enemy enemy = (Enemy) hit;
-                        enemy.isStunned = true;
-                    }
-                    
-                    if(this.allowCleaveAttacks == false) break;
-                }
-            }
-        }
-    }
-    
-    public void attack() {
-        if(this.canAttack) {
-            
-            this.attackTimer = 0.0;
-            this.actorState = ActorState.ATTACKING;
-            
-            int attWidth = 25;
-            int attHeight = 30;
-            int attackDist = attWidth / 2;
-            
-            // check if we hit something.
-            List<GameObject> hits = this.checkHit(-attackDist, attWidth + 10, attHeight);
-            
-            if(hits.isEmpty() == false) {
-                for(GameObject hit : hits) {
-                    if(hit instanceof Actor) ((Actor)hit).getHP().takeDamage(this.attackDamage);
-                    if(this.allowCleaveAttacks == false) break;
-                }
             }
         }
     }

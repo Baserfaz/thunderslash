@@ -24,15 +24,10 @@ public abstract class GameObject {
     protected boolean isVisible = true;
     
     // animation
+    protected double frameTime = 0.0;
     protected double defaultFrameTime = 50.0;
-    protected double attackFrameTime = 25.0;
-    protected double castFrameTime = 40.0;
     
     // dont touch
-    protected double frameTime = 0.0;
-    protected double attackTimer = Double.POSITIVE_INFINITY;
-    protected double defendTimer = Double.POSITIVE_INFINITY;
-    protected double castTimer = Double.POSITIVE_INFINITY;
     protected double currentFrameTime = 0.0;
     protected int currentAnimIndex = 0;
     

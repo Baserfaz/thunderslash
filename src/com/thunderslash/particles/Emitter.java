@@ -1,7 +1,6 @@
 package com.thunderslash.particles;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +14,7 @@ public class Emitter {
 
     private int x, y;
     private List<Particle> particles;
-    
-    private BufferedImage img;
+    private BufferedImage smokeImg;
     
     public Emitter() {
         this.x = 0;
@@ -24,12 +22,7 @@ public class Emitter {
         this.particles = new ArrayList<Particle>();
     
         SpriteCreator sc = Game.instance.getSpriteCreator();
-        this.img = sc.CreateCustomSizeSprite(20, 6 * 32, 5, 5);
-        
-        // preload n amount of particles
-        for(int i = 0; i < 20; i++) {
-            this.particles.add(new Particle(this.x, this.y, this.img));
-        }
+        this.smokeImg = sc.CreateCustomSizeSprite(19, 6 * 32, 5, 5);
     }
     
     public void tick() {
@@ -49,20 +42,43 @@ public class Emitter {
         this.x = x;
         this.y = y;
         
-        if(n > this.particles.size()) {
-            int more = n - this.particles.size();
-            for(int i = 0; i < more; i++) {
-                this.particles.add(new Particle(this.x, this.y, this.img));
-            }
-        }
-        
         Vector2 accel = this.getAcceleration(dir);
+        float forceMult = 1.5f;
+        
+        // left to right
+        float startXAccel = -0.25f;
+        float currentXAccel = startXAccel;
+        double stepSize = Math.abs(startXAccel * 2) / n;
+        
+        float additionalYAccel = 0f;
         
         for(int i = 0; i < n; i++) {
-            Particle current = this.particles.get(i);
-            current.setPosition(this.x, this.y);
-            current.setAcceleration(accel);
+            Particle current = new Particle(this.x, this.y, this.smokeImg);
+            this.particles.add(current);
+            
+            // add Y acceleration when the current
+            // particle is near zero.
+            // -> creates a dome effect.
+            // TODO: atm. this is linear and creates a pyramid shape.
+            if(currentXAccel < 0) {
+                additionalYAccel = startXAccel - currentXAccel;
+            } else if(currentXAccel > 0) {
+                additionalYAccel = currentXAccel - Math.abs(startXAccel);
+            }
+                
+            additionalYAccel *= 4f;
+            
             current.enable();
+            current.setPosition(this.x, this.y);
+            current.setAcceleration(new Vector2(accel.x + currentXAccel, (accel.y * forceMult) + additionalYAccel));
+            
+            currentXAccel += stepSize; 
+            
+            // close to zero 
+            // -> center particle
+            if(currentXAccel < 0.05f && currentXAccel > -0.05f) {
+                currentXAccel = 0.0f;
+            }
         }
     }
     

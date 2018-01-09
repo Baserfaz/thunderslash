@@ -15,7 +15,7 @@ public class Particle {
     
     private BufferedImage img;
     private double currentLifeTime = 0.0;
-    private double maxLifeTime = 500.0;
+    private double maxLifeTime;
     
     private boolean enabled = false;
     
@@ -23,6 +23,7 @@ public class Particle {
         this.position.x = x;
         this.position.y = y;
         this.img = img;
+        this.maxLifeTime = 2500; //Math.random() * 2500f;
     }
 
     public void enable() {
@@ -30,6 +31,8 @@ public class Particle {
         this.currentLifeTime = 0.0;
         this.velocity.x = 0f;
         this.velocity.y = 0f;
+        this.acceleration.x = 0f;
+        this.acceleration.y = 0f;
     }
     
     public void tick() {
@@ -41,10 +44,12 @@ public class Particle {
             this.currentLifeTime += Game.instance.getTimeBetweenFrames();
             
             this.velocity.x += this.acceleration.x;
-            this.velocity.y += this.acceleration.y; //+ Game.GRAVITY;
+            this.velocity.y += this.acceleration.y + Game.GRAVITY;
             
             this.position.x += velocity.x;
             this.position.y += velocity.y;
+            
+            this.acceleration.y = 0f;
             
         } else {
             this.enabled = false;

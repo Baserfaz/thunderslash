@@ -1,6 +1,7 @@
 package com.thunderslash.engine;
 
 import com.thunderslash.gameobjects.GameObject;
+import com.thunderslash.utilities.Mathf;
 import com.thunderslash.utilities.Util;
 
 import java.awt.Point;
@@ -48,6 +49,12 @@ public class Camera {
                 this.Update((int)camX, (int)camY);
             }
         }
+    }
+    
+    public void nudge(int xmax, int ymax) {
+        int x = (int) (this.cameraBounds.x + (Mathf.randomRange(-1, 1) * xmax));
+        int y = (int) (this.cameraBounds.y + (Mathf.randomRange(-1, 1) * ymax));
+        this.Update(x, y);
     }
     
     // ------ GETTERS & SETTERS -------
