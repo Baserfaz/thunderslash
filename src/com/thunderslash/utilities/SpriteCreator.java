@@ -220,6 +220,11 @@ public class SpriteCreator {
                 pos.y = 3;
                 break;
                 
+            case BACKGROUND_TILE_03:
+                pos.x = 4;
+                pos.y = 3;
+                break;
+                
             case NONE:
                 pos.x = 0;
                 pos.y = 0;

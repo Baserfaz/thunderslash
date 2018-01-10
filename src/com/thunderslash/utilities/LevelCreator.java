@@ -163,6 +163,7 @@ public class LevelCreator {
         for(Block block : room.getBlocks()) {
             if(block.getBlocktype() != BlockType.NOT_ASSIGNED) {
                 if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BACKGROUND_TILE_02;
+                else if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BACKGROUND_TILE_03;
                 else spriteType = SpriteType.BACKGROUND_TILE_01;
                 blocks.add(new Block(block.getWorldPosition(), block.getGridPosition(), BlockType.BACKGROUND, spriteType));
             }

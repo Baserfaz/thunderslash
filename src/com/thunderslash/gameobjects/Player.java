@@ -19,7 +19,6 @@ import com.thunderslash.utilities.RenderUtils;
 public class Player extends Actor {
     
     private Power power;
-    private Emitter playerEmitter;
     private GameObject focusedObject;
     
     private ActorState oldState;
@@ -28,57 +27,50 @@ public class Player extends Actor {
     private Animation walkAnim;
     private Animation fallAnim;
     private Animation attackAnim;
-    private Animation defendAnim;
     private Animation castAnim;
     private Animation jumpAnim;
     
+    private BufferedImage frame;
+    
     private double attackTimer = Double.POSITIVE_INFINITY;
-    private double defendTimer = Double.POSITIVE_INFINITY;
     private double castTimer = Double.POSITIVE_INFINITY;
 
-    private double attackFrameTime = 25.0;
-    private double castFrameTime = 40.0;
+    private double attackFrameTime = 100.0;
+    private double castFrameTime = 100.0;
     
     private double attackCooldown = 200.0;
-    private double defendCooldown = 200.0;
     private double castCooldown = 200.0;
     
     private boolean canAttack = true;
-    private boolean canDefend = true;
     private boolean canCast = true;
     private boolean allowCleaveAttacks = false;
     
     private boolean isInvulnerable = false;
     
     private double invulnerabilityTimer = 0.0;
-    private double invulnerableTime = 100.0;
+    private double invulnerableTime = 150.0;
     
-    private double actionPollingCooldown = 50;
-    private double currentPollingTimer = 0.0;
-    
-    private int castDamage = 3;
+    private double collisionPollingCooldown = 50;
+    private double currentCollisionPollingTimer = 0.0;
     
     public Player(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
     
         this.power = new Power();
-        this.playerEmitter = Game.instance.getEmitterManager().createEmitter();
         
         // set animations
         this.idleAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_IDLE);
         this.walkAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_WALK);
         this.fallAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_FALL);
         this.attackAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_ATTACK);
-        this.defendAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_DEFEND);
         this.castAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_CAST);
         this.jumpAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_JUMP);
         
         // set animation timers / cooldowns
         this.attackCooldown = this.attackFrameTime * this.attackAnim.getAnimationLength();
-        this.defendCooldown = this.attackFrameTime * this.defendAnim.getAnimationLength();
         this.castCooldown   = this.castFrameTime   * this.castAnim.getAnimationLength();
         
-        // set stuff
+        // set player specific variables
         this.maxVerticalSpeed    = 5.5f   * Game.SPRITESIZEMULT;
         this.maxHorizontalSpeed  = 1f     * Game.SPRITESIZEMULT;
         this.maxVerticalAccel    = 0.22f  * Game.SPRITESIZEMULT;
@@ -88,17 +80,28 @@ public class Player extends Actor {
         this.friction            = 0.10f  * Game.SPRITESIZEMULT;
         this.collisionDistance   = 50f    * Game.SPRITESIZEMULT;
         
+        this.frame = this.defaultStaticSprite;
+        
     }
     
     public void tick() {
-        this.checkGameObjectCollisions();
+        this.checktCollisionsWithGameObjects();
+        this.handleAnimationSpeedChanges();
         this.updateActorState();
         this.handleCooldowns();
-        this.handleActorStates();
+        this.updateAnimationFrame();
         super.tick();
     }
     
     public void render(Graphics g) {
+        if(this.facingDirection == Direction.EAST) {
+            g.drawImage(this.frame, this.worldPosition.x, this.worldPosition.y, null);
+        } else if(this.facingDirection == Direction.WEST) {
+            RenderUtils.renderSpriteFlippedHorizontally(this.frame, this.worldPosition, g);
+        }
+    }
+
+    private void updateAnimationFrame() {
         
         BufferedImage frame = null;
         Animation currentAnim = null;
@@ -115,9 +118,6 @@ public class Player extends Actor {
         } else if(this.actorState == ActorState.ATTACKING) {
             frame = this.attackAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.attackAnim;
-        } else if(this.actorState == ActorState.DEFENDING) {
-            frame = this.defendAnim.getFrame(this.currentAnimIndex);
-            currentAnim = this.defendAnim;
         } else if(this.actorState == ActorState.CASTING) {
             frame = this.castAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.castAnim;
@@ -126,29 +126,22 @@ public class Player extends Actor {
             currentAnim = this.jumpAnim;
         }
 
-        // updates animation index
+        // updates animation index & fallback to static sprite
         if(currentAnim != null) this.calculateAnimations(currentAnim);
-        
-        // fallback to default static sprite
         if(frame == null) frame = this.defaultStaticSprite;
         
-        // render current sprite
-        if(this.facingDirection == Direction.EAST) {
-            g.drawImage(frame, this.worldPosition.x, this.worldPosition.y, null);
-        } else if(this.facingDirection == Direction.WEST) {
-            RenderUtils.renderSpriteFlippedHorizontally(frame, this.worldPosition, g);
-        }
+        this.frame = frame;
     }
-
-    private void handleActorStates() {
+    
+    private void handleAnimationSpeedChanges() {
         
-        // on state change.
+        // on state change:
         if(this.actorState != this.oldState) { 
             
             // reset frame index when state changes.
             this.currentAnimIndex = 0;
             
-            // change animation speed when attacking.
+            // change animation speed according to the state
             if(this.actorState == ActorState.ATTACKING ||
                     this.actorState == ActorState.DEFENDING) this.frameTime = this.attackFrameTime;
             else if(this.actorState == ActorState.CASTING) this.frameTime = this.castFrameTime;
@@ -171,13 +164,6 @@ public class Player extends Actor {
             this.canAttack = true;
         }
         
-        if(this.defendTimer < this.defendCooldown) {
-            this.defendTimer += dt;
-            this.canDefend = false;
-        } else {
-            this.canDefend = true;
-        }
-        
         if(this.castTimer < this.castCooldown) {
             this.castTimer += dt;
             this.canCast = false;
@@ -188,46 +174,32 @@ public class Player extends Actor {
     }
     
     private void updateActorState() {
-        
         if(this.HP.isDead()) this.actorState = ActorState.DEAD;
         else if(this.canCast == false) this.actorState = ActorState.CASTING;
         else if(this.canAttack == false) this.actorState = ActorState.ATTACKING;
-        else if(this.canDefend == false) this.actorState = ActorState.DEFENDING;
         else if(this.velocity.y < 0f) this.actorState = ActorState.JUMPING;
         else if(this.velocity.y > 0f) this.actorState = ActorState.FALLING;
         else if(this.direction.x > 0f || this.direction.x < 0f) this.actorState = ActorState.WALKING;
         else if(this.velocity.x == 0f && this.velocity.y == 0f ||
                 this.acceleration.x == 0f && this.acceleration.y == 0f) this.actorState = ActorState.IDLING;
-        
     }
     
     public void cast() {
-        
-        if(this.canCast && this instanceof Player) {
-            Player player = (Player) this;
-            
-            if(player.getPower().getCurrentPower() > 0) {
-                
-                player.getPower().addCurrentPower(-1);
-                
+        if(this.canCast) {
+            if(this.getPower().getCurrentPower() > 0) {
+                this.getPower().addCurrentPower(-1);
                 this.castTimer = 0.0;
                 this.actorState = ActorState.CASTING;
-                
-                List<GameObject> hits = this.checkHit(25, 25, 45);
-                        
-                int spriteSize = (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) / 2;
-                
-                // create animation
-                Game.instance.getAnimator().play(AnimationType.LIGHTNING_STRIKE,
-                        (this.attackBox.x + this.attackBox.width / 2) - spriteSize,
-                        this.attackBox.y - spriteSize);
-                
-                if(hits.isEmpty() == false) {    
-                    for(GameObject hit : hits) {
-                        if(hit instanceof Enemy) {
-                           ((Actor) hit).getHP().takeDamage(this.castDamage);
-                        }
-                    }
+            }
+        }
+    }
+    
+    private void doCastAction() {
+        List<GameObject> hits = this.checkHit(25, 25, 45);
+        if(hits.isEmpty() == false) {    
+            for(GameObject hit : hits) {
+                if(hit instanceof Enemy) {
+                   ((Actor) hit).getHP().takeDamage(1);
                 }
             }
         }
@@ -244,60 +216,38 @@ public class Player extends Actor {
         }
     }
     
-    public void defend() {
-        if(this.canDefend) {
-            
-            this.defendTimer = 0.0;
-            this.actorState = ActorState.DEFENDING;
-            
-            // check if we hit something
-            List<GameObject> hits = this.checkHit(3, 10, 30);
-            
-            if(hits.isEmpty() == false) {
-                for(GameObject hit : hits) {
-                    if(hit instanceof Enemy) {
-                        Enemy enemy = (Enemy) hit;
-                        enemy.isStunned = true;
-                    }
-                    
+    public void attack() {
+        if(this.canAttack) {
+            this.attackTimer = 0.0;
+            this.actorState = ActorState.ATTACKING;
+        }
+    }
+    
+    private void doAttackAction() {
+        
+        int attWidth = 25;
+        int attHeight = 30;
+        int attackDist = attWidth / 2;
+        
+        // check if we hit something.
+        List<GameObject> hits = this.checkHit(-attackDist, attWidth + 10, attHeight);
+        
+        if(hits.isEmpty() == false) {
+            for(GameObject hit : hits) {
+                if(hit instanceof Enemy) {
+                    ((Enemy)hit).getHP().takeDamage(this.attackDamage);
                     if(this.allowCleaveAttacks == false) break;
                 }
             }
         }
+        
     }
     
-    public void attack() {
-        if(this.canAttack) {
-            
-            this.attackTimer = 0.0;
-            this.actorState = ActorState.ATTACKING;
-            
-            int attWidth = 25;
-            int attHeight = 30;
-            int attackDist = attWidth / 2;
-            
-            // check if we hit something.
-            List<GameObject> hits = this.checkHit(-attackDist, attWidth + 10, attHeight);
-            
-            if(hits.isEmpty() == false) {
-                for(GameObject hit : hits) {
-                    if(hit instanceof Enemy) {
-                        ((Enemy)hit).getHP().takeDamage(this.attackDamage);
-                        if(this.allowCleaveAttacks == false) break;
-                    }
-                }
-            }
-        }
-    }
-    
-    private void checkGameObjectCollisions() {
-        
-        // every n millisecond check collisions with GOs.
-        
-        if(this.currentPollingTimer > this.actionPollingCooldown) {
+    private void checktCollisionsWithGameObjects() {
+        if(this.currentCollisionPollingTimer > this.collisionPollingCooldown) {
             
             this.focusedObject = null;
-            this.currentPollingTimer = 0.0;
+            this.currentCollisionPollingTimer = 0.0;
             
             for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
                 if(go instanceof Chest && ((Chest)go).isOpen() == false) {
@@ -307,10 +257,6 @@ public class Player extends Actor {
                     go.hasFocus = this.hitbox.intersects(go.getHitbox());
                     if(go.hasFocus) this.focusedObject = go;
                 } else if(go instanceof Enemy) {
-                    
-                    // when the player takes damage,
-                    // set the player to invulnerability state,
-                    // where the player doesn't take recurring damage.
                     
                     if(this.isInvulnerable) {
                         
@@ -334,18 +280,10 @@ public class Player extends Actor {
             }
             
         } else {
-            this.currentPollingTimer += Game.instance.getTimeBetweenFrames();
+            this.currentCollisionPollingTimer += Game.instance.getTimeBetweenFrames();
         }
     }
     
     public Power getPower() { return power; }
     public void setPower(Power power) { this.power = power; }
-
-    public Emitter getPlayerEmitter() {
-        return playerEmitter;
-    }
-
-    public void setPlayerEmitter(Emitter playerEmitter) {
-        this.playerEmitter = playerEmitter;
-    }
 }

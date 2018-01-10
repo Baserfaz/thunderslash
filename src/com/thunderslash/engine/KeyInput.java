@@ -23,7 +23,6 @@ public class KeyInput extends KeyAdapter {
         this.keyBinds.put(KeyEvent.VK_W, "JUMP");
         this.keyBinds.put(KeyEvent.VK_S, "DOWN");
         this.keyBinds.put(KeyEvent.VK_SPACE, "ATTACK");
-        this.keyBinds.put(KeyEvent.VK_V, "DEFEND");
         this.keyBinds.put(KeyEvent.VK_E, "ACTION");
         this.keyBinds.put(KeyEvent.VK_F, "CAST");
     }
@@ -103,8 +102,6 @@ public class KeyInput extends KeyAdapter {
                 player.setDirection(new Vector2(dir.x, -1f));
             } else if(cmd == "ACTION") {
                 player.action();
-            } else if(cmd == "DEFEND") {
-                //player.defend();
             } else if(cmd == "CAST") {
                 player.cast();
             }
