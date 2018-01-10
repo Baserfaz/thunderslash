@@ -215,6 +215,11 @@ public class SpriteCreator {
                 pos.y = 3;
                 break;
             
+            case BACKGROUND_TILE_02:
+                pos.x = 3;
+                pos.y = 3;
+                break;
+                
             case NONE:
                 pos.x = 0;
                 pos.y = 0;
@@ -291,8 +296,8 @@ public class SpriteCreator {
                 break;
                 
             case SPIKES:
-                pos.x = 3;
-                pos.y = 3;
+                pos.x = 4;
+                pos.y = 2;
                 break;
                 
             case LIGHT_CIRCLE:

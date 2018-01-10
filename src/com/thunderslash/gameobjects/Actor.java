@@ -49,9 +49,9 @@ public class Actor extends PhysicsObject {
     
     public void render(Graphics g) {
         if(this.facingDirection == Direction.EAST) {
-            g.drawImage(this.sprite, this.worldPosition.x, this.worldPosition.y, null);
+            g.drawImage(this.defaultStaticSprite, this.worldPosition.x, this.worldPosition.y, null);
         } else if(this.facingDirection == Direction.WEST) {
-            RenderUtils.renderSpriteFlippedHorizontally(sprite, this.worldPosition, g);
+            RenderUtils.renderSpriteFlippedHorizontally(defaultStaticSprite, this.worldPosition, g);
         } 
     }
     

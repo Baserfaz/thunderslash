@@ -23,39 +23,17 @@ public class World {
         for(int i = 0; i < Game.WORLD_ROOM_COUNT; i++) {
             LevelData data = LevelCreator.createLevel("testlevel2.png");
             Room room = new Room(i, data.getWidth(), data.getHeight(), data.getBlocks());
+            room.setBackground(LevelCreator.createBackground(room));
             this.rooms.add(room);
+            
             System.out.println("Created room (lvl: " + i + ") \'" + room.toString() +
                     "\', block count: " + room.getBlocks().size() + ".");
         }
     }
-
+    
     public void initializeRoom(int index) {
         try { this.setCurrentRoomBlocks(LevelCreator.calculateSprites(this.rooms.get(index).getBlocks())); }
         catch (IndexOutOfBoundsException e) { System.out.println(e); }
-    }
-
-    public List<Block> getCurrentRoomBlocks() {
-        return currentRoomBlocks;
-    }
-
-    public void setCurrentRoomBlocks(List<Block> roomBlocks) {
-        this.currentRoomBlocks = roomBlocks;
-    }
-    
-    public Room getCurrentRoom() {
-        return rooms.get(Game.instance.getCurrentRoomIndex());
-    }
-    
-    public Room getRoom(int index) {
-        return rooms.get(index);
-    }
-    
-    public List<Room> getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
     }
     
     public NeighborData getNeighbors(Block block) {
@@ -69,7 +47,7 @@ public class World {
                         BlockType.PLATFORM, BlockType.EXIT, BlockType.HURT,
                         BlockType.WATER));
         
-        for(Block b : this.getRoom(Game.instance.getCurrentRoomIndex()).getBlocks()) {
+        for(Block b : this.getCurrentRoom().getBlocks()) {
             
             if(b.getIsEnabled() == false) continue;
             
@@ -98,5 +76,12 @@ public class World {
         }
         return data;
     }
-
+    
+    // ----- GETTERS & SETTERS -------
+    public List<Block> getCurrentRoomBlocks() { return currentRoomBlocks; }
+    public void setCurrentRoomBlocks(List<Block> roomBlocks) { this.currentRoomBlocks = roomBlocks; }
+    public Room getCurrentRoom() { return rooms.get(Game.instance.getCurrentRoomIndex()); }
+    public Room getRoom(int index) { return rooms.get(index); }
+    public List<Room> getRooms() { return rooms; }
+    public void setRooms(List<Room> rooms) { this.rooms = rooms; }
 }

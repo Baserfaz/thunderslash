@@ -30,6 +30,7 @@ public class Player extends Actor {
     private Animation attackAnim;
     private Animation defendAnim;
     private Animation castAnim;
+    private Animation jumpAnim;
     
     private double attackTimer = Double.POSITIVE_INFINITY;
     private double defendTimer = Double.POSITIVE_INFINITY;
@@ -70,6 +71,7 @@ public class Player extends Actor {
         this.attackAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_ATTACK);
         this.defendAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_DEFEND);
         this.castAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_CAST);
+        this.jumpAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_JUMP);
         
         // set animation timers / cooldowns
         this.attackCooldown = this.attackFrameTime * this.attackAnim.getAnimationLength();
@@ -119,13 +121,16 @@ public class Player extends Actor {
         } else if(this.actorState == ActorState.CASTING) {
             frame = this.castAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.castAnim;
+        } else if(this.actorState == ActorState.JUMPING) {
+            frame = this.jumpAnim.getFrame(this.currentAnimIndex);
+            currentAnim = this.jumpAnim;
         }
 
         // updates animation index
         if(currentAnim != null) this.calculateAnimations(currentAnim);
         
         // fallback to default static sprite
-        if(frame == null) frame = this.sprite;
+        if(frame == null) frame = this.defaultStaticSprite;
         
         // render current sprite
         if(this.facingDirection == Direction.EAST) {

@@ -22,12 +22,7 @@ public class Crystal extends GameObject {
     
     public Crystal(Point worldPos, SpriteType type) {
         super(worldPos, type);
-        
-        // modify animation speed
-        this.frameTime = 150.0;
-        
         SpriteCreator sc = Game.instance.getSpriteCreator();
-        
         this.questionMark = sc.CreateCustomSizeSprite(0, 6 * 32 + 6, 4, 9);
         this.bounceAnim = AnimationCreator.createAnimation(AnimationType.CRYSTAL_BOUNCE);
         this.usedSprite = sc.CreateSprite(SpriteType.CRYSTAL_USED);

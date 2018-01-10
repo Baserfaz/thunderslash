@@ -30,6 +30,7 @@ public class Game extends Canvas implements Runnable {
     public static final int HEIGHT                 = 720;
 
     public static final String TITLE               = "Project Thunderslash";
+    public static final String VERSION             = "v. 0.1a";
 
     public static final int CAMERA_WIDTH           = Game.WIDTH;
     public static final int CAMERA_HEIGHT          = Game.HEIGHT;
@@ -48,7 +49,7 @@ public class Game extends Canvas implements Runnable {
     public static final String CUSTOMFONTEXTENSION = ".ttf";			               
     public static final String CUSTOMFONTFOLDER    = "coders_crux";		               
     
-    public static final int LINEHEIGHT			   = 2;						           
+    public static final int TEXT_LINEHEIGHT		   = 2;						           
 
     public static final int WORLD_ROOM_COUNT       = 1;
     
@@ -222,7 +223,7 @@ public class Game extends Canvas implements Runnable {
 
     private void tick() { 
         if(this.gamestate == GameState.INGAME) {
-            if(this.isPaused == false) {
+            if(Game.isPaused == false) {
                 handler.tickGameObjects(); 
                 handler.tickAnimations();
                 handler.tickEmitters();

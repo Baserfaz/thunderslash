@@ -14,31 +14,35 @@ public class AnimationCreator {
         
         switch(animType) {
             case PLAYER_IDLE:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 0, 5));
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 0, 4));
                 break;
                 
             case PLAYER_WALK:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 1, 5));
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 1, 2));
                 break;
             
             case PLAYER_FALL:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 4, 4));
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 4, 2));
+                break;
+                
+            case PLAYER_JUMP:
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 6, 2));
                 break;
                 
             case PLAYER_ATTACK:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 2, 9));
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 2, 2));
                 break;
                 
             case PLAYER_CAST:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 6, 7));
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 6, 2));
                 break;
                 
             case PLAYER_DEFEND:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 3, 7));
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 3, 2));
                 break;
                 
             case CRYSTAL_BOUNCE:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 8, 7));
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 8, 4));
                 break;
                 
             case LIGHTNING_STRIKE:

@@ -28,7 +28,7 @@ public class Chest extends PhysicsObject {
         if(this.isOpen) {
             g.drawImage(this.openSprite, worldPosition.x, worldPosition.y, null);
         } else {
-            g.drawImage(this.sprite, worldPosition.x, worldPosition.y, null);
+            g.drawImage(this.defaultStaticSprite, worldPosition.x, worldPosition.y, null);
         }
         
         if(this.hasFocus) {

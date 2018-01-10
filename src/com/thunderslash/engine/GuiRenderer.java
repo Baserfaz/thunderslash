@@ -142,7 +142,7 @@ public class GuiRenderer {
     
     private void renderVersion(Graphics g, Camera cam) {
         Rectangle r = cam.getCameraBounds();
-        this.renderString("v0.1", r.width - 50, r.height - 20, Color.white, 20f, g);
+        this.renderString(Game.VERSION, r.width - 70, r.height - 30, Color.white, 20f, g);
     }
     
     private void renderMainmenuTitle(Graphics g) {
@@ -199,7 +199,7 @@ public class GuiRenderer {
         
         for (String line : msg.split("\n")) {
             g2d.drawString(line, xx, yy);
-            yy += g.getFontMetrics().getHeight() + Game.LINEHEIGHT;
+            yy += g.getFontMetrics().getHeight() + Game.TEXT_LINEHEIGHT;
         }
     }
 }

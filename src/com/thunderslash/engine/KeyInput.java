@@ -129,6 +129,6 @@ public class KeyInput extends KeyAdapter {
     }
 
     private void handleKeysInMenu(KeyEvent e) {
-        int key = e.getKeyCode();   
+        // int key = e.getKeyCode();   
     }
 }

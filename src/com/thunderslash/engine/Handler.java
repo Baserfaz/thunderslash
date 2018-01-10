@@ -9,6 +9,7 @@ import com.thunderslash.data.Animation;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
+import com.thunderslash.gameobjects.Crystal;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.PhysicsObject;
 import com.thunderslash.gameobjects.Player;
@@ -52,13 +53,8 @@ public class Handler {
         }
         
         for(int i = animator.getCurrentAnims().size() - 1; i >= 0; i--) {
-            
             Animation anim = animator.getCurrentAnims().get(i);
-            
-            if(anim.getHasFinished()) {
-                animator.removeAnim(anim);
-            }
-            
+            if(anim.getHasFinished()) animator.removeAnim(anim);
         }
     }
     
@@ -66,15 +62,21 @@ public class Handler {
         
         // references
         List<Block> waterBlocks = new ArrayList<Block>();
+        List<Block> backgroundBlocks = new ArrayList<Block>();
+        List<Block> solidBlocks = new ArrayList<Block>();
         List<Actor> actors = new ArrayList<Actor>();
         List<PhysicsObject> items = new ArrayList<PhysicsObject>();
+        List<Crystal> crystals = new ArrayList<Crystal>();
         
         Actor player = Game.instance.getActorManager().getPlayerInstance();
         Camera cam = Game.instance.getCamera();
         if(player == null || cam == null) return;
         
-        // optimizing render time
-        // -> only render things that are in cameras view.
+        Block levelStart = null;
+        Block levelEnd = null;
+        
+        // --------------------- calculate objs that camera sees ------------------------
+        
         Rectangle camView = (Rectangle) cam.getCameraBounds().clone();
         
         int size = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
@@ -93,6 +95,8 @@ public class Handler {
             }
         }
         
+        // ---------------------- RENDER ---------------------------------
+        
         // render all game objects 
         for(int i = 0; i < objInView.size(); i++) {
             GameObject current = objInView.get(i);
@@ -101,55 +105,48 @@ public class Handler {
             
             // get actors
             if(current instanceof Actor) {
-                Actor actor = (Actor) current;
-                actors.add(actor);
+                actors.add((Actor) current);
                 continue;
-            }
-            
-            // get water blocks
-            if(current instanceof Block) {
-                Block block = (Block) current;
-                if(block.getBlocktype() == BlockType.WATER) {
-                    waterBlocks.add(block);
-                    continue;
-                }
             }
             
             // get physicsObjects
             if(current instanceof PhysicsObject) {
-                PhysicsObject obj = (PhysicsObject) current;
-                items.add(obj);
+                items.add((PhysicsObject) current);
                 continue;
             }
             
-            // nothing special -> just render it
-            if(current.getIsVisible()) {
-                current.render(g);
+            // get crystals
+            if(current instanceof Crystal) {
+                crystals.add((Crystal)current);
+                continue;
+            }
+            
+            // get blocks
+            if(current instanceof Block) {
+                Block block = (Block) current;
+                BlockType type = block.getBlocktype();
+                if(type == BlockType.WATER) waterBlocks.add(block);
+                else if(type == BlockType.BACKGROUND) backgroundBlocks.add((Block) current);
+                else if(type == BlockType.EXIT) levelEnd = block;
+                else if(type == BlockType.PLAYER_SPAWN) levelStart = block;
+                else solidBlocks.add(block);
             }
         }
         
-        // render items
-        for(PhysicsObject obj : items) {
-            obj.render(g);
-        }
-        
-        // render other actors
-        for(Actor actor : actors) {
-            actor.render(g);
-        }
-        
+        // render queue: back to front
+        for(Block b : backgroundBlocks) { b.render(g); }
+        if(levelStart != null) levelStart.render(g);
+        if(levelEnd != null) levelEnd.render(g);
+        for(Crystal c : crystals) { c.render(g); }
+        for(PhysicsObject obj : items) { obj.render(g); }
+        for(Actor actor : actors) { actor.render(g); }
         player.render(g);
-        
-        // render water
-        for(Block block : waterBlocks) {
-            block.render(g);
-        }
+        for(Block block : waterBlocks) { block.render(g); }
+        for(Block block : solidBlocks) { block.render(g); }
     }
 
     public void AddObject(GameObject go) { this.objects.add(go); }	
     public void RemoveObject(GameObject go) { this.objects.remove(go); }
-
     public List<GameObject> getObjects() { return objects; }
     public void setObjects(List<GameObject> objects) { this.objects = objects; }
-
 }

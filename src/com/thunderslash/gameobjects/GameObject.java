@@ -12,7 +12,7 @@ import com.thunderslash.enumerations.SpriteType;
 public abstract class GameObject {
 
     protected Point worldPosition;
-    protected BufferedImage sprite;
+    protected BufferedImage defaultStaticSprite;
     
     protected boolean hasFocus = false;
     
@@ -25,7 +25,7 @@ public abstract class GameObject {
     
     // animation
     protected double frameTime = 0.0;
-    protected double defaultFrameTime = 50.0;
+    protected double defaultFrameTime = 100.0;
     
     // dont touch
     protected double currentFrameTime = 0.0;
@@ -42,7 +42,7 @@ public abstract class GameObject {
                 Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT);
         
         // create sprite
-        this.sprite = Game.instance.getSpriteCreator().CreateSprite(type);
+        this.defaultStaticSprite = Game.instance.getSpriteCreator().CreateSprite(type);
         
         // add to handler
         Game.instance.getHandler().AddObject(this);
@@ -80,11 +80,11 @@ public abstract class GameObject {
     
     public void recalculateBoundingBox() {
                 
-        int[] pixels = sprite.getRGB(0, 0, sprite.getWidth(),
-                sprite.getHeight(), null, 0, sprite.getWidth());
+        int[] pixels = defaultStaticSprite.getRGB(0, 0, defaultStaticSprite.getWidth(),
+                defaultStaticSprite.getHeight(), null, 0, defaultStaticSprite.getWidth());
         
         int x = this.worldPosition.x, y = this.worldPosition.y;
-        int w = sprite.getWidth(), h = sprite.getHeight();
+        int w = defaultStaticSprite.getWidth(), h = defaultStaticSprite.getHeight();
         
         int largestX = 0;
         int smallestX = w;
@@ -137,9 +137,9 @@ public abstract class GameObject {
         this.hitbox.height = h;
     }
     
-    public void setSprite(BufferedImage i) { this.sprite = i; }
+    public void setSprite(BufferedImage i) { this.defaultStaticSprite = i; }
     
-    public BufferedImage getSprite() { return this.sprite; }
+    public BufferedImage getSprite() { return this.defaultStaticSprite; }
     
     public void addWorldPosition(float x, float y) { 
         this.worldPosition = new Point(this.worldPosition.x + Math.round(x),

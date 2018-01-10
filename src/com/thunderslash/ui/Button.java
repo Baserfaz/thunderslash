@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ButtonAction;
-import com.thunderslash.enumerations.GameState;
 import com.thunderslash.utilities.RenderUtils;
 
 public class Button extends GuiElement {

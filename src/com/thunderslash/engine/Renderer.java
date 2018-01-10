@@ -6,18 +6,13 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 
 import com.thunderslash.data.Animation;
-import com.thunderslash.data.Room;
-import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.GameState;
-import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.utilities.Animator;
-import com.thunderslash.utilities.SpriteCreator;
 
 public class Renderer {
 
@@ -79,7 +74,6 @@ public class Renderer {
         // move the camera
         g.translate(-r.x, -r.y);
         
-        this.renderBackground(g);
         handler.renderGameObjects(g);
         
         this.renderAnimations(g);
@@ -94,20 +88,6 @@ public class Renderer {
         if(this.animator.getCurrentAnims().isEmpty()) return;
         for(Animation anim : this.animator.getCurrentAnims()) {
             g.drawImage(anim.getCurrentFrame(), anim.getX(), anim.getY(), null);
-        }
-    }
-    
-    private void renderBackground(Graphics g) {
-        
-        Room room = Game.instance.getWorld().getCurrentRoom();
-        SpriteCreator spriteCreator = Game.instance.getSpriteCreator();
-        
-        BufferedImage img = spriteCreator.CreateSprite(SpriteType.BACKGROUND_TILE_01);
-        
-        for(Block block : room.getBlocks()) {
-            if(block.getBlocktype() != BlockType.NOT_ASSIGNED) {
-                g.drawImage(img, block.getWorldPosition().x, block.getWorldPosition().y, null);
-            }
         }
     }
     

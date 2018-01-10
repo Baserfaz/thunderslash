@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import com.thunderslash.data.LevelData;
 import com.thunderslash.data.NeighborData;
+import com.thunderslash.data.Room;
 import com.thunderslash.data.World;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.BlockType;
@@ -156,6 +157,19 @@ public class LevelCreator {
         return new LevelData(levelWidth, levelHeight, blocks);
     }
 
+    public static List<Block> createBackground(Room room) {
+        List<Block> blocks = new ArrayList<Block>();
+        SpriteType spriteType = SpriteType.BACKGROUND_TILE_01;
+        for(Block block : room.getBlocks()) {
+            if(block.getBlocktype() != BlockType.NOT_ASSIGNED) {
+                if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BACKGROUND_TILE_02;
+                else spriteType = SpriteType.BACKGROUND_TILE_01;
+                blocks.add(new Block(block.getWorldPosition(), block.getGridPosition(), BlockType.BACKGROUND, spriteType));
+            }
+        }
+        return blocks;
+    }
+    
     public static void createActor(int red, int green, int blue, int alpha, int x, int y) {
         
         Point pos = new Point(x, y);
@@ -176,7 +190,7 @@ public class LevelCreator {
             
             item = new Chest(new Point(x, y), SpriteType.CHEST_CLOSED);
             
-        // orange = cystal
+        // orange = crystal
         } else if(red == 251 && green == 154 && blue == 7 && alpha == 255) {
             
             item = new Crystal(new Point(x, y), SpriteType.CRYSTAL);

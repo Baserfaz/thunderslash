@@ -273,7 +273,7 @@ public class PhysicsObject extends GameObject {
         Point bc = points.get(10);
         Point br = points.get(11);
         
-        Point c = points.get(12);
+        // Point c = points.get(12);
         
         // only check collisions against these
         if(block.getBlocktype() == BlockType.SOLID || 

@@ -21,23 +21,14 @@ public class Block extends GameObject {
     public void tick() {}
     
     public void render(Graphics g) {
-        g.drawImage(sprite, worldPosition.x, worldPosition.y, null);
+        g.drawImage(defaultStaticSprite, worldPosition.x, worldPosition.y, null);
     }
-
-    public BlockType getBlocktype() {
-        return blockType;
-    }
-
-    public void setBlocktype(BlockType blocktype) {
-        this.blockType = blocktype;
-    }
-
-    public Point getGridPosition() {
-        return gridPosition;
-    }
-
-    public void setGridPosition(Point gridPosition) {
-        this.gridPosition = gridPosition;
-    }
+    
+    // ------------- GETTERS & SETTERS ----------------
+    
+    public BlockType getBlocktype() { return blockType; }
+    public void setBlocktype(BlockType blocktype) { this.blockType = blocktype; }
+    public Point getGridPosition() { return gridPosition; }
+    public void setGridPosition(Point gridPosition) { this.gridPosition = gridPosition; }
 }
 
