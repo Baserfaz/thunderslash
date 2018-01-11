@@ -42,10 +42,10 @@ public class GuiRenderer {
         int tintAmount = 3;
         
         // cache GUI sprites
-        this.heart = sc.CreateCustomSizeSprite(0, 6 * 32, 7, 6);
+        this.heart = sc.CreateCustomSizeSprite(0, 6 * 32, 7, 6, Game.SPRITESIZEMULT);
         this.tintedHeart = RenderUtils.tint(this.heart, true, tintAmount); 
         
-        this.powerSword = sc.CreateCustomSizeSprite(8, 6 * 32, 10, 6);
+        this.powerSword = sc.CreateCustomSizeSprite(8, 6 * 32, 10, 6, Game.SPRITESIZEMULT);
         this.tintedPowerSword = RenderUtils.tint(this.powerSword, true, tintAmount);
         
         this.createGuiElements();

@@ -16,14 +16,14 @@ public class Crystal extends GameObject {
     private boolean isUsed = false;
     
     private BufferedImage usedSprite;
-    private BufferedImage questionMark;
+    private BufferedImage exclamationMark;
     
     private Animation bounceAnim;
     
     public Crystal(Point worldPos, SpriteType type) {
         super(worldPos, type);
         SpriteCreator sc = Game.instance.getSpriteCreator();
-        this.questionMark = sc.CreateCustomSizeSprite(0, 6 * 32 + 6, 4, 9);
+        this.exclamationMark = sc.CreateCustomSizeSprite(5, 6 * 32 + 6, 1, 9, Game.SPRITESIZEMULT);
         this.bounceAnim = AnimationCreator.createAnimation(AnimationType.CRYSTAL_BOUNCE);
         this.usedSprite = sc.CreateSprite(SpriteType.CRYSTAL_USED);
     }
@@ -50,9 +50,9 @@ public class Crystal extends GameObject {
         }
         
         if(this.hasFocus) {
-            g.drawImage(this.questionMark,
-                    this.hitboxCenter.x - this.questionMark.getWidth() / 2,
-                    this.hitbox.y - this.questionMark.getHeight() - 30, null);
+            g.drawImage(this.exclamationMark,
+                    this.hitboxCenter.x - this.exclamationMark.getWidth() / 2,
+                    this.hitbox.y - this.exclamationMark.getHeight() - 30, null);
         }
         
     }

@@ -3,6 +3,8 @@ package com.thunderslash.particles;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thunderslash.gameobjects.GameObject;
+
 public class EmitterManager {
 
     private List<Emitter> emitters;
@@ -11,8 +13,8 @@ public class EmitterManager {
         this.emitters = new ArrayList<Emitter>();
     }
 
-    public Emitter createEmitter() {
-        Emitter e = new Emitter();
+    public Emitter createEmitter(GameObject parent) {
+        Emitter e = new Emitter(parent);
         this.emitters.add(e);
         return e;
     }

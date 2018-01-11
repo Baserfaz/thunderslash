@@ -23,11 +23,7 @@ public class AnimationCreator {
             
             case PLAYER_FALL:
                 animation = new Animation(spriteCreator.createMultipleSprites(8, 4, 3));
-                break;
-                
-            case PLAYER_JUMP:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 5, 4));
-                break;
+                break; 
                 
             case PLAYER_ATTACK:
                 animation = new Animation(spriteCreator.createMultipleSprites(8, 2, 2));

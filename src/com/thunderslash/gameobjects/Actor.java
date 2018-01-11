@@ -11,6 +11,7 @@ import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.particles.Emitter;
 import com.thunderslash.utilities.RenderUtils;
 import com.thunderslash.utilities.Vector2;
 
@@ -18,6 +19,8 @@ public class Actor extends PhysicsObject {
     
     protected String name;
     protected Health HP;
+    
+    protected Emitter particleEmitter;
     
     protected ActorState actorState = ActorState.IDLING;
     protected Direction facingDirection = Direction.EAST;
@@ -34,6 +37,7 @@ public class Actor extends PhysicsObject {
         
         this.name = name;
         this.HP = new Health(hp, this);
+        this.particleEmitter = Game.instance.getEmitterManager().createEmitter(this);
     }
     
     public void tick() {
@@ -108,4 +112,5 @@ public class Actor extends PhysicsObject {
     public void setCollisionDistance(float collisionDistance) { this.collisionDistance = collisionDistance; }
     public Rectangle getAttackBox() { return attackBox; }
     public void setAttackBox(Rectangle attackBox) { this.attackBox = attackBox; }
+    public Emitter getParticleEmitter() { return this.particleEmitter; }
 }

@@ -87,19 +87,18 @@ public class KeyInput extends KeyAdapter {
         if(player == null || player.getHP().isDead()) return;
         
         if(keyBinds.containsKey(key)) {
-            Vector2 dir = player.getDirection();
             String cmd = this.keyBinds.get(key);
             
             if(cmd == "RIGHT") {
-                player.setDirection(new Vector2(1f, dir.y));
+                player.right();
             } else if(cmd == "LEFT") {
-                player.setDirection(new Vector2(-1f, dir.y));
+                player.left();
             } else if(cmd == "JUMP") {
-                player.setDirection(new Vector2(dir.x, 1f));
+                player.jump();
             } else if(cmd == "ATTACK") {
                 player.attack();
             } else if(cmd == "DOWN") {
-                player.setDirection(new Vector2(dir.x, -1f));
+                player.drop();
             } else if(cmd == "ACTION") {
                 player.action();
             } else if(cmd == "CAST") {

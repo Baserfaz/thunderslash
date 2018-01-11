@@ -12,9 +12,9 @@ import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.AnimationType;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
-import com.thunderslash.particles.Emitter;
 import com.thunderslash.utilities.AnimationCreator;
 import com.thunderslash.utilities.RenderUtils;
+import com.thunderslash.utilities.Vector2;
 
 public class Player extends Actor {
     
@@ -28,7 +28,6 @@ public class Player extends Actor {
     private Animation fallAnim;
     private Animation attackAnim;
     private Animation castAnim;
-    private Animation jumpAnim;
     
     private BufferedImage frame;
     
@@ -64,7 +63,6 @@ public class Player extends Actor {
         this.fallAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_FALL);
         this.attackAnim = AnimationCreator.createAnimation(AnimationType.PLAYER_ATTACK);
         this.castAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_CAST);
-        this.jumpAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_JUMP);
         
         // set animation timers / cooldowns
         this.attackCooldown = this.attackFrameTime * this.attackAnim.getAnimationLength();
@@ -85,6 +83,9 @@ public class Player extends Actor {
     }
     
     public void tick() {
+        
+        //this.particleEmitter.emit(1);
+        
         this.checktCollisionsWithGameObjects();
         this.handleAnimationSpeedChanges();
         this.updateActorState();
@@ -118,12 +119,22 @@ public class Player extends Actor {
         } else if(this.actorState == ActorState.ATTACKING) {
             frame = this.attackAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.attackAnim;
+            
+            if(this.currentAnimIndex == this.attackAnim.getAnimationLength() - 1) {
+                this.doAttackAction();
+            }
+            
         } else if(this.actorState == ActorState.CASTING) {
             frame = this.castAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.castAnim;
+            
+            if(this.currentAnimIndex == this.castAnim.getAnimationLength() - 1) {
+                this.doCastAction();
+            }
+            
         } else if(this.actorState == ActorState.JUMPING) {
-            frame = this.jumpAnim.getFrame(this.currentAnimIndex);
-            currentAnim = this.jumpAnim;
+            frame = this.fallAnim.getFrame(this.currentAnimIndex);
+            currentAnim = this.fallAnim;
         }
 
         // updates animation index & fallback to static sprite
@@ -154,23 +165,19 @@ public class Player extends Actor {
     }
     
     private void handleCooldowns() {
-
         double dt = Game.instance.getTimeBetweenFrames();
-        
         if(this.attackTimer < this.attackCooldown) {
             this.attackTimer += dt;
             this.canAttack = false;
         } else {
             this.canAttack = true;
         }
-        
         if(this.castTimer < this.castCooldown) {
             this.castTimer += dt;
             this.canCast = false;
         } else {
             this.canCast = true;
         }
-        
     }
     
     private void updateActorState() {
@@ -183,6 +190,44 @@ public class Player extends Actor {
         else if(this.velocity.x == 0f && this.velocity.y == 0f ||
                 this.acceleration.x == 0f && this.acceleration.y == 0f) this.actorState = ActorState.IDLING;
     }
+    
+    private void checktCollisionsWithGameObjects() {
+        if(this.currentCollisionPollingTimer > this.collisionPollingCooldown) {
+            this.focusedObject = null;
+            this.currentCollisionPollingTimer = 0.0;
+            for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
+                if(go instanceof Chest && ((Chest)go).isOpen() == false) {
+                    go.hasFocus = this.hitbox.intersects(go.getHitbox());
+                    if(go.hasFocus) this.focusedObject = go;
+                } else if(go instanceof Crystal && ((Crystal)go).isUsed() == false) {
+                    go.hasFocus = this.hitbox.intersects(go.getHitbox());
+                    if(go.hasFocus) this.focusedObject = go;
+                } else if(go instanceof Enemy) {
+                    
+                    if(this.isInvulnerable) {
+                        if(this.invulnerabilityTimer < this.invulnerableTime) {
+                            this.invulnerabilityTimer += Game.instance.getTimeBetweenFrames();
+                        } else {
+                            this.isInvulnerable = false;
+                            this.invulnerabilityTimer = 0.0;
+                        }
+                    } else {
+                        Enemy enemy = (Enemy) go;    
+                        if(enemy.getHP().isDead() == false && this.hitbox.intersects(go.getHitbox())) {
+                            this.isInvulnerable = true;
+                            this.HP.takeDamage(1);
+                        }
+                    }
+                }
+            }
+        } else this.currentCollisionPollingTimer += Game.instance.getTimeBetweenFrames();
+    }
+    
+    // ---- PLAYER ACTIONS ----
+    public void jump() { this.setDirection(new Vector2(this.direction.x, 1f)); }
+    public void drop() { this.setDirection(new Vector2(this.direction.x, -1f)); }
+    public void left() { this.setDirection(new Vector2(-1f, this.direction.y)); }
+    public void right() { this.setDirection(new Vector2(1f, this.direction.y)); }
     
     public void cast() {
         if(this.canCast) {
@@ -234,56 +279,15 @@ public class Player extends Actor {
         
         if(hits.isEmpty() == false) {
             for(GameObject hit : hits) {
-                if(hit instanceof Enemy) {
+                if(hit instanceof Enemy && ((Enemy) hit).getHP().isDead() == false) {
                     ((Enemy)hit).getHP().takeDamage(this.attackDamage);
                     if(this.allowCleaveAttacks == false) break;
                 }
             }
         }
-        
     }
     
-    private void checktCollisionsWithGameObjects() {
-        if(this.currentCollisionPollingTimer > this.collisionPollingCooldown) {
-            
-            this.focusedObject = null;
-            this.currentCollisionPollingTimer = 0.0;
-            
-            for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
-                if(go instanceof Chest && ((Chest)go).isOpen() == false) {
-                    go.hasFocus = this.hitbox.intersects(go.getHitbox());
-                    if(go.hasFocus) this.focusedObject = go;
-                } else if(go instanceof Crystal && ((Crystal)go).isUsed() == false) {
-                    go.hasFocus = this.hitbox.intersects(go.getHitbox());
-                    if(go.hasFocus) this.focusedObject = go;
-                } else if(go instanceof Enemy) {
-                    
-                    if(this.isInvulnerable) {
-                        
-                        if(this.invulnerabilityTimer < this.invulnerableTime) {
-                            this.invulnerabilityTimer += Game.instance.getTimeBetweenFrames();
-                        } else {
-                            this.isInvulnerable = false;
-                            this.invulnerabilityTimer = 0.0;
-                        }
-                        
-                    } else {
-                        
-                        Enemy enemy = (Enemy) go;    
-                        if(enemy.getHP().isDead() == false && this.hitbox.intersects(go.getHitbox())) {
-                            this.isInvulnerable = true;
-                            this.HP.takeDamage(1);
-                        }
-                        
-                    }
-                }
-            }
-            
-        } else {
-            this.currentCollisionPollingTimer += Game.instance.getTimeBetweenFrames();
-        }
-    }
-    
+    // ---- GETTERS & SETTERS -----
     public Power getPower() { return power; }
     public void setPower(Power power) { this.power = power; }
 }

@@ -66,7 +66,7 @@ public class SpriteCreator {
 
     // uses the same spritesheet
     public BufferedImage CreateCustomSizeSprite(int startx, int starty, 
-            int spriteWidth, int spriteHeight) {
+            int spriteWidth, int spriteHeight, double sizeMult) {
 
         BufferedImage sprite = new BufferedImage(spriteWidth, spriteHeight, BufferedImage.TYPE_INT_ARGB);
         int[] spritePixelData = new int[sprite.getWidth() * sprite.getHeight()];
@@ -95,7 +95,7 @@ public class SpriteCreator {
         }
 
         AffineTransform tx = new AffineTransform();
-        tx.scale(Game.SPRITESIZEMULT, Game.SPRITESIZEMULT);
+        tx.scale(sizeMult, sizeMult);
 
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         sprite = op.filter(sprite, null);
