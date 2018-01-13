@@ -37,7 +37,7 @@ public class Camera {
             
             // apply camera smoothing
             camX -= (target.x + camX) * Game.CAMERA_SMOOTH_MULT;
-            camY -= (target.y + camY) * Game.CAMERA_SMOOTH_MULT;
+            camY -= (target.y + camY) * Game.CAMERA_SMOOTH_MULT * 2;
           
             // on first pass instantly 
             // focus on player, after that

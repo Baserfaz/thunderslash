@@ -225,6 +225,16 @@ public class SpriteCreator {
                 pos.y = 3;
                 break;
                 
+            case BACKGROUND_TILE_04:
+                pos.x = 5;
+                pos.y = 3;
+                break;
+                
+            case DAGGER_BACKGROUND:
+                pos.x = 0;
+                pos.y = 10;
+                break;
+                
             case NONE:
                 pos.x = 0;
                 pos.y = 0;

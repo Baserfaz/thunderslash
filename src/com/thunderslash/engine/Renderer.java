@@ -52,12 +52,12 @@ public class Renderer {
     }
     
     private void renderLoading(Graphics2D g) {
-        this.fillScreen(g, Color.black);
+        this.fillScreen(g, Color.white);
         this.guirenderer.renderLoading(g);        
     }
     
     private void renderMenu(Graphics2D g) {
-        this.fillScreen(g, Color.black);
+        this.fillScreen(g, Color.white);
         this.guirenderer.renderMenu(g);
     }
     
@@ -80,7 +80,7 @@ public class Renderer {
         handler.renderParticles(g);
         
         this.renderDebug(g);
-        this.guirenderer.renderIngameGui(g);
+        this.guirenderer.renderIngame(g);
         
     }
     

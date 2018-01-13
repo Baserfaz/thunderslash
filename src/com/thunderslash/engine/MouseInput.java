@@ -34,7 +34,7 @@ public class MouseInput implements MouseMotionListener, MouseListener {
         
         if(Game.instance.getGuiElementManager() == null) return;
         
-        List<GuiElement> elements = Game.instance.getGuiElementManager().getElements();
+        List<GuiElement> elements = Game.instance.getGuiElementManager().getMainmenuElements();
         if(elements.isEmpty()) return;
         
         for(GuiElement element : elements) {
@@ -67,7 +67,7 @@ public class MouseInput implements MouseMotionListener, MouseListener {
         
         // cache 
         Point mousePos = Game.instance.getMousePos();
-        List<GuiElement> elements = Game.instance.getGuiElementManager().getElements();
+        List<GuiElement> elements = Game.instance.getGuiElementManager().getMainmenuElements();
         
         if(elements.isEmpty() || mousePos == null) return;
         

@@ -19,19 +19,31 @@ public class KeyInput extends KeyAdapter {
         
         // bind keys
         this.keyBinds.put(KeyEvent.VK_A, "LEFT");
+        this.keyBinds.put(KeyEvent.VK_LEFT, "LEFT");
+        
         this.keyBinds.put(KeyEvent.VK_D, "RIGHT");
+        this.keyBinds.put(KeyEvent.VK_RIGHT, "RIGHT");
+        
         this.keyBinds.put(KeyEvent.VK_W, "JUMP");
+        this.keyBinds.put(KeyEvent.VK_UP, "JUMP");
+        
         this.keyBinds.put(KeyEvent.VK_S, "DOWN");
+        this.keyBinds.put(KeyEvent.VK_DOWN, "DOWN");
+        
         this.keyBinds.put(KeyEvent.VK_SPACE, "ATTACK");
+        
         this.keyBinds.put(KeyEvent.VK_E, "ACTION");
+        this.keyBinds.put(KeyEvent.VK_ENTER, "ACTION");
+        
         this.keyBinds.put(KeyEvent.VK_F, "CAST");
+        this.keyBinds.put(KeyEvent.VK_CONTROL, "CAST");
     }
 
     public void keyPressed(KeyEvent e) {
 
         // get the pressed key 
         int key = e.getKeyCode();
-
+        
         if(buttons.containsKey(key)) return;
         buttons.put(key, this.keyBinds.get(key));
 
@@ -40,18 +52,14 @@ public class KeyInput extends KeyAdapter {
         if(Game.instance.getGamestate() == GameState.MAINMENU) handleKeysInMenu(e);
         else if(Game.instance.getGamestate() == GameState.INGAME) handleKeysInGame(e);
 
-        // debugging keys
-
-        if(key == KeyEvent.VK_ESCAPE) {
-            System.exit(0);
-        }
-
+        // always check these keys 
+        if(key == KeyEvent.VK_ESCAPE) System.exit(0);
     }
 
     public void keyReleased(KeyEvent e) {
 
         Actor player = Game.instance.getActorManager().getPlayerInstance();
-        if(player == null) return;
+        if(player == null || player.getHP().isDead()) return;
         
         // cache direction
         Vector2 dir = player.getDirection();
@@ -82,27 +90,17 @@ public class KeyInput extends KeyAdapter {
 
     private void handleKeysInGame(KeyEvent e) {
         int key = e.getKeyCode();
-        
         Player player = Game.instance.getActorManager().getPlayerInstance();
-        if(player == null || player.getHP().isDead()) return;
-        
-        if(keyBinds.containsKey(key)) {
-            String cmd = this.keyBinds.get(key);
-            
-            if(cmd == "RIGHT") {
-                player.right();
-            } else if(cmd == "LEFT") {
-                player.left();
-            } else if(cmd == "JUMP") {
-                player.jump();
-            } else if(cmd == "ATTACK") {
-                player.attack();
-            } else if(cmd == "DOWN") {
-                player.drop();
-            } else if(cmd == "ACTION") {
-                player.action();
-            } else if(cmd == "CAST") {
-                player.cast();
+        if(player != null && player.getHP().isDead() == false) {
+            if(keyBinds.containsKey(key)) {
+                String cmd = this.keyBinds.get(key);
+                if(cmd == "RIGHT") player.right();
+                else if(cmd == "LEFT") player.left();
+                else if(cmd == "JUMP") player.jump();
+                else if(cmd == "ATTACK") player.attack();
+                else if(cmd == "DOWN") player.drop();
+                else if(cmd == "ACTION") player.action();
+                else if(cmd == "CAST") player.cast();
             }
         }
         

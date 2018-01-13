@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferStrategy;
 
+import com.thunderslash.data.Session;
 import com.thunderslash.data.World;
 import com.thunderslash.engine.Camera;
 import com.thunderslash.engine.Renderer;
@@ -59,7 +60,7 @@ public class Game extends Canvas implements Runnable {
     // DEBUG
 
     public static boolean drawDebugInfo                  = false;
-    public static final Color debugInfoColor             = Color.red;
+    public static final Color debugInfoColor             = Color.white;
     
     public static boolean drawCameraRect                 = false;
     public static final Color cameraRectColor            = Color.red;
@@ -77,6 +78,8 @@ public class Game extends Canvas implements Runnable {
     public static final Color attackBoxDrawColor         = Color.red;
     
     // -----------------------------
+    
+    public static int FPS = 0;
     
     private boolean isRunning = false;
     public static boolean isPaused = false;
@@ -101,6 +104,8 @@ public class Game extends Canvas implements Runnable {
     private World world;
     private ActorManager actorManager;
     private Point mousePos;
+
+    private Session session;
 
     public Game() {
 
@@ -188,7 +193,7 @@ public class Game extends Canvas implements Runnable {
                 this.tick();
                 
                 if(frameCounter >= SECOND) {
-                    this.window.SetCustomTitle("FPS: " + frames);
+                    Game.FPS = frames;
                     frames = 0;
                     frameCounter = 0;
                 }
@@ -228,11 +233,12 @@ public class Game extends Canvas implements Runnable {
                 handler.tickAnimations();
                 handler.tickEmitters();
                 this.camera.tick();
+                this.guiElementManager.tick(GameState.INGAME);
             }
         } else if(this.gamestate == GameState.MAINMENU) {
-            this.guiElementManager.tick();
+            this.guiElementManager.tick(GameState.MAINMENU);
         } else if(this.gamestate == GameState.LOADING) {
-            // TODO: animate?
+            this.guiElementManager.tick(GameState.LOADING);
         }
     }
     
@@ -251,6 +257,10 @@ public class Game extends Canvas implements Runnable {
         // create mock up player actor
         actorManager.createPlayerInstance("Player", SpriteType.PLAYER, 4);
         
+        // TODO: load session
+        // create session
+        this.session = new Session();
+        
         Game.instance.setGamestate(GameState.INGAME);
         
     }
@@ -258,7 +268,6 @@ public class Game extends Canvas implements Runnable {
     public static void main(String args[]) { new Game(); }
     
     // ----- GETTERS & SETTERS ------
-    
     public Window getWindow() { return this.window; }
     public Font getCustomFont() { return customFont; }
     public void setCustomFont(Font customFont) { this.customFont = customFont; }
@@ -283,12 +292,8 @@ public class Game extends Canvas implements Runnable {
     public double getTimeBetweenFrames() { return this.timeBetweenFrames * 0.000001; }
     public Animator getAnimator() { return this.animator; }
     public GuiElementManager getGuiElementManager() { return guiElementManager;  }
-
-    public EmitterManager getEmitterManager() {
-        return emitterManager;
-    }
-
-    public void setEmitterManager(EmitterManager emitterManager) {
-        this.emitterManager = emitterManager;
-    }
+    public EmitterManager getEmitterManager() { return emitterManager; }
+    public void setEmitterManager(EmitterManager emitterManager) { this.emitterManager = emitterManager; }
+    public Session getSession() { return session; }
+    public void setSession(Session session) { this.session = session; }
 }

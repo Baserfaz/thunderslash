@@ -31,9 +31,10 @@ public class Button extends GuiElement {
         
     }
     
-    public Button(int x, int y, BufferedImage img) {
+    public Button(int x, int y, BufferedImage img, ButtonAction action) {
         super(x, y, img.getWidth(), img.getHeight());
         this.img = img;
+        this.action = action;
     }
     
     public void render(Graphics g) {
@@ -41,15 +42,15 @@ public class Button extends GuiElement {
             
             if(this.img != null) {
                 
-                if(this.isHovering) RenderUtils.tint(this.img, true, 2);
-                else g.drawImage(this.img, this.x, this.y, null);
+                if(this.isHovering) g.drawImage(RenderUtils.tintWithColor(this.img, Color.white), (int)this.x, (int)this.y, null);
+                else g.drawImage(this.img, (int)this.x, (int)this.y, null);
                 
             } else {
                 
                 Font font = Game.instance.getCustomFont().deriveFont(Font.PLAIN, this.fontSize);
                 g.setFont(font);
                 
-                Rectangle r = new Rectangle(this.x, this.y, this.width, this.height);
+                Rectangle r = new Rectangle((int)this.x, (int)this.y, this.width, this.height);
                 
                 if(this.isHovering) g.setColor(this.bgColor.darker());
                 else g.setColor(this.bgColor);
@@ -70,21 +71,21 @@ public class Button extends GuiElement {
         }
     }
 
-    public void tick() {
-        if(this.isEnabled()) {}
-    }
+    public void tick() { if(this.isEnabled()) {} }
 
     public void onClick() {
-        switch(this.action) {
-            case EXIT:
-                System.exit(0);
-                break;
-            case PLAY:
-                Game.instance.startNewGame();
-                break;
-            default:
-                System.out.println("Not supported action: " + this.action);
-                break;
+        if(this.isEnabled) {
+            switch(this.action) {
+                case EXIT:
+                    System.exit(0);
+                    break;
+                case PLAY:
+                    Game.instance.startNewGame();
+                    break;
+                default:
+                    System.out.println("Not supported action: " + this.action);
+                    break;
+            }
         }
     }
     

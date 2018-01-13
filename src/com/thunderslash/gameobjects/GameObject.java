@@ -27,7 +27,6 @@ public abstract class GameObject {
     protected double frameTime = 0.0;
     protected double defaultFrameTime = 100.0;
     
-    // dont touch
     protected double currentFrameTime = 0.0;
     protected int currentAnimIndex = 0;
     
@@ -56,6 +55,11 @@ public abstract class GameObject {
         
     }
 
+    public abstract void tick();
+    public abstract void render(Graphics g);
+    
+    // -------------------------------------
+    
     protected void calculateAnimations(Animation anim) {
         double dt = Game.instance.getTimeBetweenFrames();
         if(this.currentFrameTime > this.frameTime) {
@@ -67,16 +71,6 @@ public abstract class GameObject {
         }
         this.currentFrameTime += dt;
     }
-    
-    public String getInfo() {
-        return "GameObject: " + this.toString() + " worldPos: (" +
-                this.getWorldPosition().x + ", " + this.getWorldPosition().y + ")";
-    }
-
-    public abstract void tick();
-    public abstract void render(Graphics g);
-    public Rectangle getHitbox() { return this.hitbox; }
-    public Point getHitboxCenter() { return this.hitboxCenter; }
     
     public void recalculateBoundingBox() {
                 
@@ -137,24 +131,27 @@ public abstract class GameObject {
         this.hitbox.height = h;
     }
     
-    public void setSprite(BufferedImage i) { this.defaultStaticSprite = i; }
-    
-    public BufferedImage getSprite() { return this.defaultStaticSprite; }
-    
+    public String getInfo() {
+        return "GameObject: " + this.toString() + " worldPos: (" +
+                this.getWorldPosition().x + ", " + this.getWorldPosition().y + ")";
+    }
+
     public void addWorldPosition(float x, float y) { 
         this.worldPosition = new Point(this.worldPosition.x + Math.round(x),
                 this.worldPosition.y + Math.round(y));
     }
     
+
+    public Rectangle getHitbox() { return this.hitbox; }
+    public Point getHitboxCenter() { return this.hitboxCenter; }
+    public void setSprite(BufferedImage i) { this.defaultStaticSprite = i; }
+    public BufferedImage getSprite() { return this.defaultStaticSprite; }
     public void setWorldPosition(int x, int y) { this.worldPosition = new Point(x, y); }
     public void setWorldPosition(Point pos) { this.worldPosition = pos; }
     public Point getWorldPosition() { return this.worldPosition; }
-    
     public boolean getIsVisible() { return this.isVisible; }
     public boolean getIsEnabled() { return this.isEnabled; }
-    
     public void setIsVisible(boolean b) { this.isVisible = b; }
     public void setIsEnabled(boolean b) { this.isEnabled = b; }
-
 
 }
