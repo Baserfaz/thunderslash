@@ -34,7 +34,7 @@ public class Player extends Actor {
     private double attackTimer = Double.POSITIVE_INFINITY;
     private double castTimer = Double.POSITIVE_INFINITY;
 
-    private double attackFrameTime = 100.0;
+    private double attackFrameTime = 50.0;
     private double castFrameTime = 100.0;
     
     private double attackCooldown = 200.0;
@@ -83,9 +83,6 @@ public class Player extends Actor {
     }
     
     public void tick() {
-        
-        //this.particleEmitter.emit(1);
-        
         this.checktCollisionsWithGameObjects();
         this.handleAnimationSpeedChanges();
         this.updateActorState();
@@ -120,7 +117,7 @@ public class Player extends Actor {
             frame = this.attackAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.attackAnim;
             
-            if(this.currentAnimIndex == this.attackAnim.getAnimationLength() - 1) {
+            if(this.currentAnimIndex == 4) {
                 this.doAttackAction();
             }
             
@@ -220,7 +217,9 @@ public class Player extends Actor {
                     }
                 }
             }
-        } else this.currentCollisionPollingTimer += Game.instance.getTimeBetweenFrames();
+        } else {
+            this.currentCollisionPollingTimer += Game.instance.getTimeBetweenFrames();
+        }
     }
     
     // ---- PLAYER ACTIONS ----

@@ -12,13 +12,21 @@ public class Enemy extends Actor {
     private double tickCooldown = 200.0;
     private double activationRange = 1000.0;
     
+    private int killScore = 100;
+    
     public Enemy(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
         
         // set enemy movement settings  
-        this.maxHorizontalAccel = 0.5f * Game.SPRITESIZEMULT;
-        this.maxHorizontalSpeed = 0.75f * Game.SPRITESIZEMULT;
+        this.maxHorizontalAccel = 5f;
+        this.maxHorizontalSpeed = 3f;
+        this.horizontalAccelMult = 3f;
+        
+        this.maxVerticalAccel = 10f;
+        this.maxVerticalSpeed = 10f;
+        
         this.friction = 0.1f;
+        this.jumpForce = -0.75f;
         
         // randomize tick cooldown for all enemies.
         this.tickCooldown += Mathf.randomRange(0.0, 300.0);
@@ -27,8 +35,9 @@ public class Enemy extends Actor {
 
     public void tick() {
          
-        if(this.HP.isDead()) this.resetInputs();
-        else {
+        if(this.HP.isDead()) {
+            this.resetInputs();
+        } else {
             
             if(this.tickTimer > this.tickCooldown) {
                 this.tickTimer = 0.0;
@@ -53,9 +62,11 @@ public class Enemy extends Actor {
         Player player = Game.instance.getActorManager().getPlayerInstance();
         Point p = player.getHitboxCenter();
         
-        if(p.distance(this.hitboxCenter) > this.activationRange) {
-            this.resetInputs();
-        } else {
+        if(p.distance(this.hitboxCenter) < this.activationRange) {
+            
+            // enemy is in range to be activated
+            
+            // TODO: different behaviours.
             
             // x position
             if(p.x < this.hitboxCenter.x) this.direction.x = -1;
@@ -63,6 +74,13 @@ public class Enemy extends Actor {
             
             // y position
             this.direction.y = 1;
+            
+        } else {
+            this.resetInputs();
         }
     }
+
+    // ---- GETTERS & SETTERS ----
+    public int getKillScore() { return killScore; }
+    public void setKillScore(int killScore) { this.killScore = killScore; }
 }

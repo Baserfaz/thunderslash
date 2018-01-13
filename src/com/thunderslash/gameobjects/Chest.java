@@ -13,6 +13,8 @@ import com.thunderslash.utilities.SpriteCreator;
 
 public class Chest extends PhysicsObject {
 
+    private int openingScore;
+    
     private boolean isOpen = false;
     
     private BufferedImage openSprite;
@@ -23,8 +25,10 @@ public class Chest extends PhysicsObject {
     public Chest(Point worldPos, SpriteType spriteType) {
         super(worldPos, spriteType);
         
-        SpriteCreator sc = Game.instance.getSpriteCreator();
+        this.openingScore = 50;
         
+        // cache sprites
+        SpriteCreator sc = Game.instance.getSpriteCreator();
         this.questionMark = sc.CreateCustomSizeSprite(0, 6 * 32 + 6, 4, 9, Game.SPRITESIZEMULT);
         this.openSprite = sc.CreateSprite(SpriteType.CHEST_OPEN);
         
@@ -53,8 +57,17 @@ public class Chest extends PhysicsObject {
         this.isOpen = true;
         this.hasFocus = false;
         this.particleEmitter.emit(30);
+        Game.instance.getSession().addScore(this.openingScore);
     }
     
     public boolean isOpen() { return isOpen; }
     public void setOpen(boolean isOpen) { this.isOpen = isOpen; }
+
+    public int getOpeningScore() {
+        return openingScore;
+    }
+
+    public void setOpeningScore(int openingScore) {
+        this.openingScore = openingScore;
+    }
 }

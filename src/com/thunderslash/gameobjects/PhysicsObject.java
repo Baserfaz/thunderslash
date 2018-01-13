@@ -23,7 +23,7 @@ public class PhysicsObject extends GameObject {
     protected float maxHorizontalAccel = 0.25f * Game.SPRITESIZEMULT;
     protected float horizontalAccelMult = 0.35f * Game.SPRITESIZEMULT;
     protected float jumpForce = -0.24f * Game.SPRITESIZEMULT;
-    protected float friction = 0.10f * Game.SPRITESIZEMULT;
+    protected float friction = 0.1f * Game.SPRITESIZEMULT;
     protected float collisionDistance = 50f * Game.SPRITESIZEMULT;
     protected float deaccelerationRate = 0.03f;
     
@@ -105,6 +105,7 @@ public class PhysicsObject extends GameObject {
         if(this.isGrounded) {
             
             if(this instanceof Actor) {
+                
                 // jumping
                 if(this.direction.y > 0f) {
                     this.acceleration.y = this.jumpForce;

@@ -141,7 +141,6 @@ public class GuiRenderer {
         // vars
         Health hp = player.getHP();
         Power power = player.getPower();
-        
         int x = 20;
         
         // render hp and power

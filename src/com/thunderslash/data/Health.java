@@ -33,12 +33,21 @@ public class Health {
             this.object.setSprite(sc.CreateSprite(SpriteType.PLAYER_DEAD));
         }
         
+        // add score
+        if(this.object instanceof Enemy) {
+            Game.instance.getSession().addScore(((Enemy) this.object).getKillScore());
+        }
+        
     }
     
     public void takeDamage(int amount) {
         if(this.isDead) return;
         this.currentHP -= amount;
         if(currentHP <= 0) { this.die(); }
+        
+        if(this.object instanceof Player) {
+            Game.instance.getSession().addScore(-amount * 10);
+        }
     }
 
     public void healDamage(int amount) {
@@ -47,21 +56,9 @@ public class Health {
         if(currentHP > maxHP) currentHP = maxHP;
     }
 
-    public int getCurrentHP() {
-        return currentHP;
-    }
-
-    public void setCurrentHP(int currentHP) {
-        this.currentHP = currentHP;
-    }
-
     public void setMaxHP(int amount) {
         this.maxHP = amount;
         if(this.maxHP > 10) this.maxHP = 10;
-    }
-  
-    public int getMaxHP() {
-        return this.maxHP;
     }
     
     public void subtractMaxHP(int amount) {
@@ -69,20 +66,12 @@ public class Health {
         if(this.maxHP < 1) this.maxHP = 1;
     }
     
-    public boolean isDead() {
-        return isDead;
-    }
-
-    public void setDead(boolean isDead) {
-        this.isDead = isDead;
-    }
-
-    public GameObject getObject() {
-        return object;
-    }
-
-    public void setObject(GameObject object) {
-        this.object = object;
-    }
-
+    // ---- GETTERS & SETTERS ----
+    public int getCurrentHP() { return currentHP; }
+    public void setCurrentHP(int currentHP) { this.currentHP = currentHP; }
+    public int getMaxHP() { return this.maxHP; }
+    public boolean isDead() { return isDead; }
+    public void setDead(boolean isDead) { this.isDead = isDead; }
+    public GameObject getObject() { return object; }
+    public void setObject(GameObject object) { this.object = object; }
 }

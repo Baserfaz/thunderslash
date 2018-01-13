@@ -10,4 +10,8 @@ public class Session {
 
     public int getScore() { return score; }
     public void setScore(int score) { this.score = score; }
+    public void addScore(int amount) { 
+        this.score += amount; 
+        if(this.score < 0) this.score = 0;
+    }
 }
