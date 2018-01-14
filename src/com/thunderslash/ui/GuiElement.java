@@ -26,63 +26,20 @@ public abstract class GuiElement {
     public abstract void onClick();
     public abstract void onHover();
     
-    public Rectangle getBounds() {
-        return new Rectangle((int)this.x, (int)this.y, this.width, this.height);
-    }
-    
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean isEnabled) {
-        this.isEnabled = isEnabled;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
-    }
-
-    public void setVisible(boolean isVisible) {
-        this.isVisible = isVisible;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-    
-    public void setIsHovering(boolean b) {
-        this.isHovering = b;
-    }
-    
-    public boolean getIsHovering() {
-        return this.isHovering;
-    }
+    // ---- GETTERS & SETTERS ----
+    public Rectangle getBounds() { return new Rectangle((int)this.x, (int)this.y, this.width, this.height); }
+    public float getX() { return x; }
+    public void setX(float x) { this.x = x; }
+    public float getY() { return y; }
+    public void setY(float y) { this.y = y; }
+    public boolean isEnabled() { return isEnabled; }
+    public void setEnabled(boolean isEnabled) { this.isEnabled = isEnabled; }
+    public boolean isVisible() { return isVisible; }
+    public void setVisible(boolean isVisible) { this.isVisible = isVisible; }
+    public int getWidth() { return width; }
+    public void setWidth(int width) { this.width = width; }
+    public int getHeight() { return height; }
+    public void setHeight(int height) { this.height = height; }
+    public void setIsHovering(boolean b) { this.isHovering = b; }
+    public boolean getIsHovering() { return this.isHovering; }
 }

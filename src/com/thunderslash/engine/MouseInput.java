@@ -28,7 +28,9 @@ public class MouseInput implements MouseMotionListener, MouseListener {
         for(GuiElement element : elements) {
             if(element.isEnabled()) {
                 if(element.getBounds().contains(mousePos)) {
-                    Game.instance.getSoundManager().play(SoundEffect.SELECT);
+                    if(Game.isMuted == false) {
+                        Game.instance.getSoundManager().play(SoundEffect.SELECT);
+                    }
                     element.onClick();
                     break;
                 }
@@ -55,46 +57,36 @@ public class MouseInput implements MouseMotionListener, MouseListener {
         Game.instance.setMousePos(e.getPoint());
         
         if(Game.instance.getGuiElementManager() == null) return;
-        
         List<GuiElement> elements = this.getElements(Game.instance.getGamestate());
-        
-        if(Game.instance.getGamestate() == null) return;
-        
         if(elements.isEmpty()) return;
         
         boolean hoveredOnSomething = false;
         
         for(GuiElement element : elements) {
             if(element.isEnabled()) {
-                
                 element.setIsHovering(false);
                 
                 if(element.getBounds().contains(e.getPoint())) {
-                    
                     hoveredOnSomething = true;
                     
-                    if(this.lastElementHovered != element) {
+                    if(this.lastElementHovered != element && Game.isMuted == false) {
                         Game.instance.getSoundManager().play(SoundEffect.HOVER);
                     }
                     
                     element.onHover();
-                    
                     this.lastElementHovered = element;
                     break;
                 }
             }
         }
         
-        // didnt hover on anything
-        if(hoveredOnSomething == false) {
-            this.lastElementHovered = null;
-        }
+        // if we didnt hover on anything
+        // then reset last element.
+        if(hoveredOnSomething == false) this.lastElementHovered = null;
         
     }
 
-    public void mouseDragged(MouseEvent e) {
-        Game.instance.setMousePos(e.getPoint());
-    }
+    public void mouseDragged(MouseEvent e) { Game.instance.setMousePos(e.getPoint()); }
 
     // not used
     public void mouseEntered(MouseEvent e) {}

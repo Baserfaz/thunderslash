@@ -33,7 +33,6 @@ public class GuiRenderer {
     private BufferedImage tintedHeart;
     private BufferedImage powerSword;
     private BufferedImage tintedPowerSword;
-    
     private BufferedImage playButtonSprite;
     private BufferedImage exitButtonSprite;
     private BufferedImage bgSprite;
@@ -69,21 +68,22 @@ public class GuiRenderer {
     private void createGuiElements() {
         this.createMainmenuElements();
         this.createLoadingElements();
-        this.createIngameElements();
         this.createPauseMenuElements();
     }
     
     private void createPauseMenuElements() {
         
-        int width = 200;
+        int width = 350;
         int height = 75;
-        
+        int margin = 10;
         int starty = 400;
         int xpos = (Game.CAMERA_WIDTH / 2) - width / 2;
         
+        Button resumeButton = new Button(xpos, starty, width, height, "Resume", Color.black, Color.white, 40, ButtonAction.RESUME);
+        Button exitButton = new Button(xpos, starty + height + margin, width, height, "Exit", Color.black, Color.white, 40, ButtonAction.EXIT);
         
-        Button resumeButton = new Button(xpos, starty, width, height, "Resume", Color.white, Color.black, 40, ButtonAction.RESUME);
         this.guiManager.addElementToPauseMenu(resumeButton);
+        this.guiManager.addElementToPauseMenu(exitButton);
         
     }
     
@@ -102,10 +102,6 @@ public class GuiRenderer {
         
         this.guiManager.addMultipleElementsToLoading(bg);
         
-    }
-    
-    private void createIngameElements() {
-        // TODO
     }
     
     private void createMainmenuElements() {
@@ -148,7 +144,7 @@ public class GuiRenderer {
     }
     
     public void renderPauseMenu(Graphics g) {
-        this.renderString("Paused", Game.CAMERA_WIDTH / 2, 100, Color.white, 50, ElementAlign.CENTER, g);
+        this.renderString("Paused", Game.CAMERA_WIDTH / 2, 100, Color.white, 60f, ElementAlign.CENTER, g);
         this.guiManager.render(g, GameState.PAUSEMENU);
     }
     
@@ -184,6 +180,14 @@ public class GuiRenderer {
             Actor player = Game.instance.getActorManager().getPlayerInstance();
             if(player == null) return;
             
+            // for some freaking reason we need to add 
+            // our offset position to the camera's position.
+            Camera cam = Game.instance.getCamera();
+            Rectangle r = cam.getCameraBounds();
+            
+            int x = r.x + 20;
+            int y = r.y + 150;
+            
             // create info strings
             String info = "---- SYSTEM ----\n";
             info += "frame time: " + this.df.format(Game.instance.getTimeBetweenFrames()) + "\n"; 
@@ -197,7 +201,7 @@ public class GuiRenderer {
             info += "isGrounded: " + player.isGrounded() + "\n";
             info += "state: " +  player.getActorState().toString() + "\n";
             
-            this.renderString(info, 20, 150, Game.debugInfoColor, 24f, ElementAlign.RIGHT, g);
+            this.renderString(info, x, y, Game.debugInfoColor, 24f, ElementAlign.RIGHT, g);
         }
     }
     
