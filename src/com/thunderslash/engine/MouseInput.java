@@ -39,6 +39,8 @@ public class MouseInput implements MouseMotionListener, MouseListener {
         
         List<GuiElement> elements = new ArrayList<GuiElement>();
         
+        if(Game.instance.getGamestate() == null) return;
+        
         switch(Game.instance.getGamestate()) {
         case INGAME:
             elements = Game.instance.getGuiElementManager().getIngameElements();

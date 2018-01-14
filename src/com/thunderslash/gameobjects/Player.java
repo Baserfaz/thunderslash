@@ -290,6 +290,9 @@ public class Player extends Actor {
                     // take damage
                     enemy.getHP().takeDamage(this.attackDamage);
                     
+                    // add knockback
+                    this.knockback(enemy, this.facingDirection);
+                    
                     // add score
                     if(enemy.getHP().isDead()) Game.instance.getSession().addScore(enemy.getKillScore());
                     

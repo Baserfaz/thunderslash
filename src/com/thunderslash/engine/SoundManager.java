@@ -18,6 +18,7 @@ public class SoundManager {
 
     private Mixer mixer;
     private Clip clip;
+    private Clip loopClip;
     
     private float baseVolumeLevel = -20f;
     
@@ -30,12 +31,50 @@ public class SoundManager {
         try { clip = (Clip)mixer.getLine(dataInfo); }
         catch(LineUnavailableException e) { e.printStackTrace(); }
         
+        try { loopClip = (Clip)mixer.getLine(dataInfo); }
+        catch(LineUnavailableException e) { e.printStackTrace(); }
+        
         System.out.println("Mixer: " + mixer.getMixerInfo() + " succesfully loaded!");
         
     }
 
     public void playLoop(SoundEffect effect) {
-        // TODO
+
+        if(loopClip.isOpen()) loopClip.close();
+        
+        String path = this.getPath(effect);
+        
+        if(path != null && path.length() > 0) {
+            
+            // load file
+            try {
+                URL soundURL = this.getClass().getResource(path);
+                AudioInputStream stream = AudioSystem.getAudioInputStream(soundURL);
+                loopClip.open(stream);
+            } 
+            catch(LineUnavailableException e) { e.printStackTrace(); }
+            catch(UnsupportedAudioFileException e) { e.printStackTrace(); }
+            catch(IOException e) { e.printStackTrace(); }
+            
+            // set volume
+            FloatControl volumeControl = (FloatControl) loopClip.getControl(FloatControl.Type.MASTER_GAIN);
+            volumeControl.setValue(this.baseVolumeLevel);
+            
+            // set to loop
+            loopClip.loop(Clip.LOOP_CONTINUOUSLY);
+            
+            // play file
+            loopClip.start();
+            
+        } else {
+            System.out.println("SoundManager::play: soundfile\'s path is invalid!");
+        }
+        
+    }
+    
+    public void stopLoop() {
+        this.loopClip.stop();
+        this.loopClip.close();
     }
     
     public void play(SoundEffect effect) {

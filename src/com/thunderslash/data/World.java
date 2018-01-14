@@ -29,6 +29,7 @@ public class World {
             System.out.println("Created room (lvl: " + i + ") \'" + room.toString() +
                     "\', block count: " + room.getBlocks().size() + ".");
         }
+        
     }
     
     public void initializeRoom(int index) {

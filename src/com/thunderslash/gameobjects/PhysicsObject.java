@@ -14,7 +14,7 @@ import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.Mathf;
 import com.thunderslash.utilities.Vector2;
 
-public class PhysicsObject extends GameObject {
+public abstract class PhysicsObject extends GameObject {
 
     // default values
     protected float maxVerticalSpeed = 5.5f * Game.SPRITESIZEMULT;
@@ -31,6 +31,7 @@ public class PhysicsObject extends GameObject {
     protected Vector2 acceleration = new Vector2();
     protected Vector2 direction = new Vector2();
     
+    private boolean lastFrameGrounded = false;
     private Block lastBlock = null;
     
     // collisions
@@ -48,12 +49,21 @@ public class PhysicsObject extends GameObject {
     }
     
     public void tick() {
+        
+        if(this.isGrounded && this.lastFrameGrounded != this.isGrounded) {
+            this.onLanding();
+        }
+        
         this.updateCollisions();
         this.move();
         this.updateHitbox();
     }
     
     public void render(Graphics g) {}
+    
+    private void onLanding() {
+        System.out.println("landed.");
+    }
     
     protected void knockback(GameObject target, Direction dir) {
         
@@ -64,6 +74,7 @@ public class PhysicsObject extends GameObject {
             
             if(dir == Direction.WEST) d = -1; 
             else if(dir == Direction.EAST) d = 1;
+            else System.out.println("Physicsobject::knockback: unsupported direction: " + dir);
             
             float xforce = 1f * d;
             float yforce = -0.5f;
@@ -202,6 +213,8 @@ public class PhysicsObject extends GameObject {
                 this.handlePhysicsObjectCollisions(go);
             }
         }
+        
+        this.lastFrameGrounded = this.isGrounded;
         
         if(Game.drawActorCollisionPoints) {
             this.collisionPoints = new ArrayList<Point>(collisionPoints);

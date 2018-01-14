@@ -113,6 +113,8 @@ public class Game extends Canvas implements Runnable {
         if(instance != null) return;
         Game.instance = this;
 
+        System.out.println("-------- Load engine resources --------");
+        
         // create object handler
         this.handler = new Handler();
 
@@ -143,7 +145,7 @@ public class Game extends Canvas implements Runnable {
         // start game thread
         start();
 
-        System.out.println("Game started succesfully!");
+        System.out.println("Engine resources loaded succesfully.");
     }
 
     public synchronized void start() {
@@ -247,7 +249,7 @@ public class Game extends Canvas implements Runnable {
     
     public void startNewGame() {
         
-        System.out.println("-------- New Game --------");
+        System.out.println("-------- Load levels --------");
         
         this.gamestate = GameState.LOADING;
         
@@ -260,11 +262,14 @@ public class Game extends Canvas implements Runnable {
         // create mock up player actor
         actorManager.createPlayerInstance("Player", SpriteType.PLAYER, 4);
         
-        // TODO: load session
+        System.out.println("Player created succesfully.");
+        
         // create session
         this.session = new Session();
         
         Game.instance.setGamestate(GameState.INGAME);
+        
+        System.out.println("-------- LOGS --------");
         
     }
     
