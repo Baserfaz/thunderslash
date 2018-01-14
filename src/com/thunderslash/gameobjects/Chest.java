@@ -1,14 +1,13 @@
 package com.thunderslash.gameobjects;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
+import com.thunderslash.enumerations.ParticleType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.particles.Emitter;
-import com.thunderslash.utilities.RenderUtils;
 import com.thunderslash.utilities.SpriteCreator;
 
 public class Chest extends PhysicsObject {
@@ -32,10 +31,7 @@ public class Chest extends PhysicsObject {
         this.questionMark = sc.CreateCustomSizeSprite(0, 6 * 32 + 6, 4, 9, Game.SPRITESIZEMULT);
         this.openSprite = sc.CreateSprite(SpriteType.CHEST_OPEN);
         
-        // create emitter and set it's sprite
-        BufferedImage particleSprite = sc.CreateCustomSizeSprite(19, 6 * 32, 5, 5, 1);
         this.particleEmitter = Game.instance.getEmitterManager().createEmitter(this);
-        this.particleEmitter.setSprite(RenderUtils.tintWithColor(particleSprite, Color.YELLOW));
     }
 
     public void render(Graphics g) {
@@ -53,21 +49,17 @@ public class Chest extends PhysicsObject {
         
     }
 
+    public void onLanding() {}
+    
     public void open() {
         this.isOpen = true;
         this.hasFocus = false;
-        this.particleEmitter.emit(30);
+        this.particleEmitter.emit(30, null, ParticleType.GOLD);
         Game.instance.getSession().addScore(this.openingScore);
     }
     
     public boolean isOpen() { return isOpen; }
     public void setOpen(boolean isOpen) { this.isOpen = isOpen; }
-
-    public int getOpeningScore() {
-        return openingScore;
-    }
-
-    public void setOpeningScore(int openingScore) {
-        this.openingScore = openingScore;
-    }
+    public int getOpeningScore() { return openingScore; }
+    public void setOpeningScore(int openingScore) { this.openingScore = openingScore; }
 }

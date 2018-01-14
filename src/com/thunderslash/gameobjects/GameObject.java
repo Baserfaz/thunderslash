@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import com.thunderslash.data.Animation;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.particles.Emitter;
 
 public abstract class GameObject {
 
@@ -29,6 +30,8 @@ public abstract class GameObject {
     
     protected double currentFrameTime = 0.0;
     protected int currentAnimIndex = 0;
+    
+    protected Emitter particleEmitter;
     
     public GameObject(Point worldPos, SpriteType type) {
 
@@ -52,6 +55,8 @@ public abstract class GameObject {
                 this.hitbox.y + this.hitbox.height / 2);
         
         this.frameTime = this.defaultFrameTime;
+        
+        this.particleEmitter = Game.instance.getEmitterManager().createEmitter(this);
         
     }
 

@@ -1,5 +1,6 @@
 package com.thunderslash.particles;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -7,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thunderslash.engine.Game;
+import com.thunderslash.enumerations.ParticleType;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.utilities.Mathf;
+import com.thunderslash.utilities.RenderUtils;
 import com.thunderslash.utilities.SpriteCreator;
 import com.thunderslash.utilities.Vector2;
 
@@ -16,23 +19,29 @@ public class Emitter {
 
     private int x = 0, y = 0;
     private List<Particle> particles;
-    private BufferedImage particleSprite;
     private GameObject parentObject;
-    
     private int defaultMaxParticleAmount = 50;
+    
+    // cached sprites
+    private BufferedImage defaultParticleSprite;
+    private BufferedImage goldParticleSprite;
+    private BufferedImage dustParticleSprite;
     
     public Emitter(GameObject parent) {
         this.particles = new ArrayList<Particle>();
         this.parentObject = parent;
         
+        // create cached sprites
         SpriteCreator sc = Game.instance.getSpriteCreator();
-        this.particleSprite = sc.CreateCustomSizeSprite(19, 6 * 32, 5, 5, 1);
+        this.defaultParticleSprite = sc.CreateCustomSizeSprite(19, 6 * 32, 5, 5, 1);
+        this.goldParticleSprite = RenderUtils.tintWithColor(this.defaultParticleSprite, Color.YELLOW);
+        this.dustParticleSprite = RenderUtils.tintWithColor(this.defaultParticleSprite, Color.black);
         
         Point pos = parent.getHitboxCenter();
         
         // populate particles list
         for(int i = 0; i < this.defaultMaxParticleAmount; i++) {
-            this.particles.add(new Particle(pos.x, pos.y, this.particleSprite));
+            this.particles.add(new Particle(pos.x, pos.y, this.defaultParticleSprite));
         }
     }
     
@@ -49,11 +58,15 @@ public class Emitter {
         for(Particle p : particles) { p.render(g); }
     }
     
-    public void emit(int n) {
+    public void emit(int n, Point offset, ParticleType particleType) {
         
         double horizontalMult = 0.5;
         double verticalMult = 2.0;
-                
+        
+        if(offset == null) offset = new Point(0, 0);
+        
+        BufferedImage img = this.getSpriteFromParticleType(particleType);
+        
         for(int i = 0; i < n; i++) {
             Particle current = this.getFreeParticle();
             if(current != null) {
@@ -63,11 +76,33 @@ public class Emitter {
                         (float) (Mathf.randomRange(-2.0, -1.0) * verticalMult));
                 
                 current.enable();
-                current.setPosition(this.x, this.y);
+                current.setPosition(this.x + offset.x, this.y + offset.y);
                 current.setAcceleration(accel);
-                current.setSprite(this.particleSprite);
+                current.setSprite(img);
             }
         }
+    }
+    
+    private BufferedImage getSpriteFromParticleType(ParticleType type) {
+        BufferedImage img = null;
+        
+        switch(type) {
+        case DUST:
+            img = this.dustParticleSprite;
+            break;
+        case GOLD:
+            img = this.goldParticleSprite;
+            break;
+        case DEFAULT:
+            img = this.defaultParticleSprite;
+            break;
+        default:
+            System.out.println("Emitter::getSpriteFromParticleType: unsupported particle type: " + type);
+            img = this.defaultParticleSprite;
+            break;
+        }
+        
+        return img;
     }
     
     private Particle getFreeParticle() {
@@ -82,7 +117,7 @@ public class Emitter {
     }
     // ----- SETTERS & GETTERS -----
     public int getMaxParticleAmount() { return this.defaultMaxParticleAmount; }
-    public void setSprite(BufferedImage sprite) { this.particleSprite = sprite; }
-    public BufferedImage getSprite() { return this.particleSprite; }
+    public void setSprite(BufferedImage sprite) { this.defaultParticleSprite = sprite; }
+    public BufferedImage getSprite() { return this.defaultParticleSprite; }
     public List<Particle> getParticles() { return this.particles; }
 }

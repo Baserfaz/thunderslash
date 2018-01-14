@@ -31,7 +31,7 @@ public abstract class PhysicsObject extends GameObject {
     protected Vector2 acceleration = new Vector2();
     protected Vector2 direction = new Vector2();
     
-    private boolean lastFrameGrounded = false;
+    private boolean lastGrounded = false;
     private Block lastBlock = null;
     
     // collisions
@@ -49,21 +49,22 @@ public abstract class PhysicsObject extends GameObject {
     }
     
     public void tick() {
+        this.updateCollisions();
         
-        if(this.isGrounded && this.lastFrameGrounded != this.isGrounded) {
+        if(this.lastGrounded == false && this.isGrounded && this instanceof Player) {
             this.onLanding();
         }
         
-        this.updateCollisions();
         this.move();
         this.updateHitbox();
+        
+        this.lastGrounded = this.isGrounded;
+        
     }
     
     public void render(Graphics g) {}
     
-    private void onLanding() {
-        System.out.println("landed.");
-    }
+    protected abstract void onLanding();
     
     protected void knockback(GameObject target, Direction dir) {
         
@@ -213,8 +214,6 @@ public abstract class PhysicsObject extends GameObject {
                 this.handlePhysicsObjectCollisions(go);
             }
         }
-        
-        this.lastFrameGrounded = this.isGrounded;
         
         if(Game.drawActorCollisionPoints) {
             this.collisionPoints = new ArrayList<Point>(collisionPoints);
