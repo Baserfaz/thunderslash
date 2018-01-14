@@ -70,6 +70,21 @@ public class GuiRenderer {
         this.createMainmenuElements();
         this.createLoadingElements();
         this.createIngameElements();
+        this.createPauseMenuElements();
+    }
+    
+    private void createPauseMenuElements() {
+        
+        int width = 200;
+        int height = 75;
+        
+        int starty = 400;
+        int xpos = (Game.CAMERA_WIDTH / 2) - width / 2;
+        
+        
+        Button resumeButton = new Button(xpos, starty, width, height, "Resume", Color.white, Color.black, 40, ButtonAction.RESUME);
+        this.guiManager.addElementToPauseMenu(resumeButton);
+        
     }
     
     private void createLoadingElements() {
@@ -95,7 +110,6 @@ public class GuiRenderer {
     
     private void createMainmenuElements() {
         int margin = 10;
-        
         int starty = 400;
         int xpos = Game.CAMERA_WIDTH / 2 - 175;
         
@@ -131,6 +145,11 @@ public class GuiRenderer {
         this.guiManager.render(g, GameState.MAINMENU);
         this.renderString(Game.TITLE, centerx, 200, Color.white, 60, ElementAlign.CENTER, g);
         this.renderString(Game.VERSION, centerx, 700, Color.white, 30, ElementAlign.CENTER, g);
+    }
+    
+    public void renderPauseMenu(Graphics g) {
+        this.renderString("Paused", Game.CAMERA_WIDTH / 2, 100, Color.white, 50, ElementAlign.CENTER, g);
+        this.guiManager.render(g, GameState.PAUSEMENU);
     }
     
     public void renderIngame(Graphics g) {
@@ -205,9 +224,6 @@ public class GuiRenderer {
         
         Graphics2D g2d = (Graphics2D) g;
         
-        Camera cam = Game.instance.getCamera();
-        Rectangle r = cam.getCameraBounds();
-        
         Font font = Game.instance.getCustomFont().deriveFont(Font.PLAIN, size);
         g2d.setColor(color);
         g2d.setFont(font);
@@ -230,8 +246,8 @@ public class GuiRenderer {
             break;
         }
         
-        int xx = r.x + x + offsetx;
-        int yy = r.y + y + offsety;
+        int xx =  x + offsetx;
+        int yy = y + offsety;
         
         for (String line : msg.split("\n")) {
             g2d.drawString(line, xx, yy);

@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ButtonAction;
+import com.thunderslash.enumerations.GameState;
 import com.thunderslash.utilities.RenderUtils;
 
 public class Button extends GuiElement {
@@ -81,6 +82,10 @@ public class Button extends GuiElement {
                     break;
                 case PLAY:
                     Game.instance.startNewGame();
+                    break;
+                case RESUME:
+                    Game.instance.setGamestate(GameState.INGAME);
+                    Game.isPaused = false;
                     break;
                 default:
                     System.out.println("Not supported action: " + this.action);

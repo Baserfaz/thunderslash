@@ -244,6 +244,8 @@ public class Game extends Canvas implements Runnable {
             this.guiElementManager.tick(GameState.MAINMENU);
         } else if(this.gamestate == GameState.LOADING) {
             this.guiElementManager.tick(GameState.LOADING);
+        } else if(this.gamestate == GameState.PAUSEMENU) {
+            this.guiElementManager.tick(GameState.PAUSEMENU);
         }
     }
     

@@ -124,11 +124,6 @@ public class Player extends Actor {
         } else if(this.actorState == ActorState.CASTING) {
             frame = this.castAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.castAnim;
-            
-            if(this.currentAnimIndex == this.castAnim.getAnimationLength() - 1) {
-                this.doCastAction();
-            }
-            
         } else if(this.actorState == ActorState.JUMPING) {
             frame = this.fallAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.fallAnim;
@@ -234,25 +229,13 @@ public class Player extends Actor {
                 this.getPower().addCurrentPower(-1);
                 this.castTimer = 0.0;
                 this.actorState = ActorState.CASTING;
+                this.doCastAction();
             }
         }
     }
     
     private void doCastAction() {
-        List<GameObject> hits = this.checkHit(25, 25, 45);
-        if(hits.isEmpty() == false) {    
-            for(GameObject hit : hits) {
-                if(hit instanceof Enemy) {
-                    Enemy enemy = (Enemy) hit;
-                    
-                    // take damage
-                    enemy.getHP().takeDamage(this.attackDamage);
-                    
-                    // add score
-                    if(enemy.getHP().isDead()) Game.instance.getSession().addScore(enemy.getKillScore());
-                }
-            }
-        }
+        // Game.instance.getHandler().AddObject(new Projectile(this.worldPosition, SpriteType.LIGHTNING_BOLT, this.facingDirection));
     }
     
     public void action() {

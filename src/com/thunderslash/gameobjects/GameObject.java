@@ -4,9 +4,13 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.List;
 
 import com.thunderslash.data.Animation;
 import com.thunderslash.engine.Game;
+import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.particles.Emitter;
 
@@ -64,6 +68,23 @@ public abstract class GameObject {
     public abstract void render(Graphics g);
     
     // -------------------------------------
+    
+    protected List<GameObject> getNearbyGameObjects(float distance, boolean allowBlocks) {
+        List<GameObject> objs = new ArrayList<GameObject>();
+        for(GameObject go : Game.instance.getHandler().getObjects()) {
+            if(go instanceof Player) continue;
+            if(allowBlocks == false && go instanceof Block) continue;
+            if(go.hitboxCenter.distance(this.hitboxCenter) < distance) objs.add(go); 
+        }
+        return objs;
+    }
+    
+    protected void updateHitbox() {
+        this.hitbox.x = this.worldPosition.x + this.hitboxSizes.x;
+        this.hitbox.y = this.worldPosition.y + this.hitboxSizes.y;
+        this.hitboxCenter = new Point(this.hitbox.x + this.hitbox.width / 2, 
+                this.hitbox.y + this.hitbox.height / 2);
+    }
     
     protected void calculateAnimations(Animation anim) {
         double dt = Game.instance.getTimeBetweenFrames();

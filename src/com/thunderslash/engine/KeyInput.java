@@ -49,11 +49,10 @@ public class KeyInput extends KeyAdapter {
 
         // -------------- HANDLE INPUTS ------------------
 
-        if(Game.instance.getGamestate() == GameState.MAINMENU) handleKeysInMenu(e);
-        else if(Game.instance.getGamestate() == GameState.INGAME) handleKeysInGame(e);
-
-        // always check these keys 
-        if(key == KeyEvent.VK_ESCAPE) System.exit(0);
+        if(Game.instance.getGamestate() == GameState.MAINMENU) this.handleKeysInMenu(e);
+        else if(Game.instance.getGamestate() == GameState.INGAME) this.handleKeysInGame(e);
+        else if(Game.instance.getGamestate() == GameState.PAUSEMENU) this.handleKeysInPauseMenu(e);
+        
     }
 
     public void keyReleased(KeyEvent e) {
@@ -91,6 +90,7 @@ public class KeyInput extends KeyAdapter {
     private void handleKeysInGame(KeyEvent e) {
         int key = e.getKeyCode();
         Player player = Game.instance.getActorManager().getPlayerInstance();
+        
         if(player != null && player.getHP().isDead() == false) {
             if(keyBinds.containsKey(key)) {
                 String cmd = this.keyBinds.get(key);
@@ -119,10 +119,26 @@ public class KeyInput extends KeyAdapter {
             Game.drawAttackBoxes = !Game.drawAttackBoxes;
         } else if(key == KeyEvent.VK_F12) {
             Game.isPaused = !Game.isPaused;
+        } else if(key == KeyEvent.VK_ESCAPE) {
+            Game.instance.setGamestate(GameState.PAUSEMENU);
+            Game.isPaused = true;
         }
     }
 
+    private void handleKeysInPauseMenu(KeyEvent e) {
+        int key = e.getKeyCode();
+        
+        if(key == KeyEvent.VK_ESCAPE) {
+            Game.instance.setGamestate(GameState.INGAME);
+            Game.isPaused = false;
+        }
+    }
+    
     private void handleKeysInMenu(KeyEvent e) {
-        // int key = e.getKeyCode();   
+        int key = e.getKeyCode();   
+        
+        if(key == KeyEvent.VK_ESCAPE) {
+            System.exit(0);
+        }
     }
 }

@@ -90,13 +90,6 @@ public abstract class PhysicsObject extends GameObject {
         }
     }
     
-    private void updateHitbox() {
-        this.hitbox.x = this.worldPosition.x + this.hitboxSizes.x;
-        this.hitbox.y = this.worldPosition.y + this.hitboxSizes.y;
-        this.hitboxCenter = new Point(this.hitbox.x + this.hitbox.width / 2, 
-                this.hitbox.y + this.hitbox.height / 2);
-    }
-    
     private void move() {
         
         this.handleCollisions();
@@ -363,16 +356,6 @@ public abstract class PhysicsObject extends GameObject {
                 }
             }
         }
-    }
-    
-    protected List<GameObject> getNearbyGameObjects(float distance, boolean allowBlocks) {
-        List<GameObject> objs = new ArrayList<GameObject>();
-        for(GameObject go : Game.instance.getHandler().getObjects()) {
-            if(go instanceof Player) continue;
-            if(allowBlocks == false && go instanceof Block) continue;
-            if(go.hitboxCenter.distance(this.hitboxCenter) < distance) objs.add(go); 
-        }
-        return objs;
     }
     
     protected List<Block> getNearbyBlocks(float colDist) {

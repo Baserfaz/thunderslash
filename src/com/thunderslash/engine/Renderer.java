@@ -37,6 +37,7 @@ public class Renderer {
         if(Game.instance.getGamestate() == GameState.INGAME) this.renderIngame(g2d);
         else if(Game.instance.getGamestate() == GameState.MAINMENU) this.renderMenu(g2d);
         else if(Game.instance.getGamestate() == GameState.LOADING) this.renderLoading(g2d);
+        else if(Game.instance.getGamestate() == GameState.PAUSEMENU) this.renderPauseMenu(g2d);
     }
     
     private void setRenderingHints(Graphics2D g2d) {
@@ -49,6 +50,11 @@ public class Renderer {
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+    }
+    
+    private void renderPauseMenu(Graphics2D g) {
+        //this.fillScreen(g, new Color(0, 0, 0, 255));
+        this.guirenderer.renderPauseMenu(g);
     }
     
     private void renderLoading(Graphics2D g) {

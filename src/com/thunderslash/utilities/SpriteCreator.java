@@ -235,6 +235,11 @@ public class SpriteCreator {
                 pos.y = 10;
                 break;
                 
+            case LIGHTNING_BOLT:
+                pos.x = 1;
+                pos.y = 6;
+                break;
+                
             case NONE:
                 pos.x = 0;
                 pos.y = 0;

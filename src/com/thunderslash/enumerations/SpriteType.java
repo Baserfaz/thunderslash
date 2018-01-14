@@ -18,6 +18,8 @@ public enum SpriteType {
     CRYSTAL, CRYSTAL_USED, 
     TORCH,
     
-    DAGGER_BACKGROUND
+    DAGGER_BACKGROUND, 
+    
+    LIGHTNING_BOLT
    
 }

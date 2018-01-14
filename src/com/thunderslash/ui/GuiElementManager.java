@@ -12,11 +12,13 @@ public class GuiElementManager {
     private List<GuiElement> mainmenuElements;
     private List<GuiElement> loadingElements;
     private List<GuiElement> ingameElements;
+    private List<GuiElement> pausemenuElements;
     
     public GuiElementManager() {
         this.mainmenuElements = new ArrayList<GuiElement>();
         this.loadingElements = new ArrayList<GuiElement>();
         this.ingameElements = new ArrayList<GuiElement>();
+        this.pausemenuElements = new ArrayList<GuiElement>();
     }
 
     public void render(Graphics g, GameState state) {
@@ -24,25 +26,8 @@ public class GuiElementManager {
         List<GuiElement> buttons = new ArrayList<GuiElement>();
         List<GuiElement> imagesBackground = new ArrayList<GuiElement>();
         List<GuiElement> imagesForeground = new ArrayList<GuiElement>();
-        
-        List<GuiElement> selectedList = new ArrayList<GuiElement>();
-        
-        switch(state) {
-        case INGAME:
-            selectedList = this.ingameElements;
-            break;
-        case LOADING:
-            selectedList = this.loadingElements;
-            break;
-        case MAINMENU:
-            selectedList = this.mainmenuElements;
-            break;
-        default:
-            System.out.println("GuiElementManager::render: Gamestate not supported!");
-            break;
-        }
-        
-        for(GuiElement e : selectedList) {
+                
+        for(GuiElement e : this.getGuiElementList(state)) {
             if(e instanceof Button) buttons.add(e);
             else if(e instanceof GuiImage) {
                 
@@ -63,6 +48,10 @@ public class GuiElementManager {
     }
     
     public void tick(GameState state) {
+        for(GuiElement e : this.getGuiElementList(state)) e.tick();
+    }
+    
+    private List<GuiElement> getGuiElementList(GameState state) {
         
         List<GuiElement> selectedList = new ArrayList<GuiElement>();
         
@@ -76,12 +65,15 @@ public class GuiElementManager {
         case MAINMENU:
             selectedList = this.mainmenuElements;
             break;
+        case PAUSEMENU:
+            selectedList = this.pausemenuElements;
+            break;
         default:
             System.out.println("GuiElementManager::render: Gamestate not supported!");
             break;
         }
         
-        for(GuiElement e : selectedList) e.tick();
+        return selectedList;
     }
     
     // ---- GETTERS & SETTERS ----
@@ -96,4 +88,10 @@ public class GuiElementManager {
     public void addElementToIngame(GuiElement element) { this.ingameElements.add(element); }
     public List<GuiElement> getIngameElements() { return ingameElements; }
     public void addMultipleElementsToIngame(List<GuiElement> ingameElements) { this.ingameElements.addAll(ingameElements); }
+    
+    public void addElementToPauseMenu(GuiElement element) { this.pausemenuElements.add(element); }
+    public List<GuiElement> getPausemenuElements() { return this.pausemenuElements; }
+    public void addMultipleElementsToPausemenu(List<GuiElement> elements) { this.pausemenuElements.addAll(elements); }
+    
+    
 }

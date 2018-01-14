@@ -3,6 +3,7 @@ package com.thunderslash.engine;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import com.thunderslash.data.Animation;
@@ -13,6 +14,7 @@ import com.thunderslash.gameobjects.Crystal;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.PhysicsObject;
 import com.thunderslash.gameobjects.Player;
+import com.thunderslash.gameobjects.Projectile;
 import com.thunderslash.gameobjects.VanityObject;
 import com.thunderslash.particles.Emitter;
 import com.thunderslash.particles.Particle;
@@ -38,12 +40,13 @@ public class Handler {
     public void renderParticles(Graphics g) {
         
         List<Emitter> emitters = Game.instance.getEmitterManager().getEmitters();
-        
-        for(Emitter e : emitters) {
-            for (Particle p : e.getParticles()) {
-                p.render(g);
+        try {
+            for(Emitter e : emitters) {
+                for (Particle p : e.getParticles()) {
+                    p.render(g);
+                }
             }
-        }
+        } catch(ConcurrentModificationException e) { }
     }
     
     public void tickAnimations() {
@@ -69,6 +72,7 @@ public class Handler {
         List<PhysicsObject> items = new ArrayList<PhysicsObject>();
         List<Crystal> crystals = new ArrayList<Crystal>();
         List<VanityObject> vanityObjects = new ArrayList<VanityObject>();
+        List<Projectile> projectiles = new ArrayList<Projectile>();
         
         Actor player = Game.instance.getActorManager().getPlayerInstance();
         Camera cam = Game.instance.getCamera();
@@ -92,6 +96,7 @@ public class Handler {
         List<GameObject> objInView = new ArrayList<GameObject>();
         for(int i = 0; i < this.objects.size(); i++) {
             GameObject go = this.objects.get(i);
+            if(go == null) continue;
             if(camView.contains(go.getHitboxCenter())) {
                 objInView.add(go);
             }
@@ -129,6 +134,12 @@ public class Handler {
                 continue;
             }
             
+            // get projectiles
+            if(current instanceof Projectile) {
+                projectiles.add((Projectile)current);
+                continue;
+            }
+            
             // get blocks
             if(current instanceof Block) {
                 Block block = (Block) current;
@@ -148,12 +159,14 @@ public class Handler {
         for(Crystal c : crystals) { c.render(g); }
         for(PhysicsObject obj : items) { obj.render(g); }
         for(VanityObject v : vanityObjects) { v.render(g); }
+        for(Projectile p : projectiles) { p.render(g); }
         for(Actor actor : actors) { actor.render(g); }
         player.render(g);
         for(Block block : waterBlocks) { block.render(g); }
         for(Block block : solidBlocks) { block.render(g); }
     }
 
+    // ---- GETTERS & SETTERS ----
     public void AddObject(GameObject go) { this.objects.add(go); }	
     public void RemoveObject(GameObject go) { this.objects.remove(go); }
     public List<GameObject> getObjects() { return objects; }

@@ -1,5 +1,5 @@
 package com.thunderslash.enumerations;
 
 public enum GameState {
-    INGAME, MAINMENU, LOADING
+    INGAME, MAINMENU, LOADING, PAUSEMENU
 }

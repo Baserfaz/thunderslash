@@ -15,20 +15,39 @@ public class MouseInput implements MouseMotionListener, MouseListener {
     
     private GuiElement lastElementHovered;
     
-    public void mousePressed(MouseEvent e) {
-        if(Game.instance.getGamestate() == GameState.MAINMENU) {
-            this.handleMousePressedInMenu(e);
-        } else if(Game.instance.getGamestate() == GameState.INGAME) {
-            this.handleMousePressedInGame(e);
-        }
-    }
+    public void mousePressed(MouseEvent e) {}
 
     public void mouseReleased(MouseEvent e) {
-        if(Game.instance.getGamestate() == GameState.MAINMENU) {
-            this.handleMouseReleaseInMenu(e);
-        } else if(Game.instance.getGamestate() == GameState.INGAME) {
-            this.handleMouseReleaseInGame(e);
+        
+        Point mousePos = Game.instance.getMousePos();
+        GameState state = Game.instance.getGamestate();
+        List<GuiElement> elements = this.getElements(state);
+        
+        if(elements.isEmpty() || mousePos == null) return;
+        
+        for(GuiElement element : elements) {
+            if(element.isEnabled()) {
+                if(element.getBounds().contains(mousePos)) {
+                    Game.instance.getSoundManager().play(SoundEffect.SELECT);
+                    element.onClick();
+                    break;
+                }
+            }
         }
+    }
+    
+    private List<GuiElement> getElements(GameState state) {
+        List<GuiElement> elements = new ArrayList<GuiElement>();
+        
+        if(state == GameState.MAINMENU) {
+            elements = Game.instance.getGuiElementManager().getMainmenuElements();
+        } else if(state == GameState.INGAME) {
+            elements = Game.instance.getGuiElementManager().getIngameElements();
+        } else if(state == GameState.PAUSEMENU) {
+            elements = Game.instance.getGuiElementManager().getPausemenuElements();
+        }
+        
+        return elements;
     }
 
     // hover effects on gui elements.
@@ -37,22 +56,9 @@ public class MouseInput implements MouseMotionListener, MouseListener {
         
         if(Game.instance.getGuiElementManager() == null) return;
         
-        List<GuiElement> elements = new ArrayList<GuiElement>();
+        List<GuiElement> elements = this.getElements(Game.instance.getGamestate());
         
         if(Game.instance.getGamestate() == null) return;
-        
-        switch(Game.instance.getGamestate()) {
-        case INGAME:
-            elements = Game.instance.getGuiElementManager().getIngameElements();
-            break;
-        case MAINMENU:
-            elements = Game.instance.getGuiElementManager().getMainmenuElements();
-            break;
-        default:
-            System.out.println("MouseInput::mouseMoved: unsupported gamestate \'" + Game.instance.getGamestate() + "\'");
-            break;
-        }
-
         
         if(elements.isEmpty()) return;
         
@@ -94,28 +100,4 @@ public class MouseInput implements MouseMotionListener, MouseListener {
     public void mouseEntered(MouseEvent e) {}
     public void mouseClicked(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
-
-    private void handleMouseReleaseInGame(MouseEvent e) {}
-    private void handleMousePressedInGame(MouseEvent e) {}
-    private void handleMousePressedInMenu(MouseEvent e) {}
-    
-    private void handleMouseReleaseInMenu(MouseEvent e) {
-        
-        // cache 
-        Point mousePos = Game.instance.getMousePos();
-        List<GuiElement> elements = Game.instance.getGuiElementManager().getMainmenuElements();
-        
-        if(elements.isEmpty() || mousePos == null) return;
-        
-        for(GuiElement element : elements) {
-            if(element.isEnabled()) {
-                if(element.getBounds().contains(mousePos)) {
-                    Game.instance.getSoundManager().play(SoundEffect.SELECT);
-                    element.onClick();
-                    break;
-                }
-            }
-        }
-        
-    }
 }
