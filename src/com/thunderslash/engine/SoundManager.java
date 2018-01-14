@@ -32,8 +32,6 @@ public class SoundManager {
         
         System.out.println("Mixer: " + mixer.getMixerInfo() + " succesfully loaded!");
         
-        //this.play(SoundEffect.SELECT);
-        
     }
 
     public void playLoop(SoundEffect effect) {
@@ -42,16 +40,9 @@ public class SoundManager {
     
     public void play(SoundEffect effect) {
         
-        String path = "";
+        if(clip.isOpen()) clip.close();
         
-        switch(effect) {
-        case SELECT:
-            path = "/sounds/select.wav";
-            break;
-        default:
-            System.out.println("SoundManager:: play: unsupported sound effect!");
-            break;
-        }
+        String path = this.getPath(effect);
         
         if(path != null && path.length() > 0) {
             
@@ -71,8 +62,29 @@ public class SoundManager {
             
             // play file
             clip.start();
+            
+        } else {
+            System.out.println("SoundManager::play: soundfile\'s path is invalid!");
+        }
+    }
+    
+    private String getPath(SoundEffect effect) {
+        
+        String path = "";
+        
+        switch(effect) {
+        case SELECT:
+            path = "/sounds/select.wav";
+            break;
+        case HOVER:
+            path = "/sounds/hover.wav";
+            break;
+        default:
+            System.out.println("SoundManager:: play: unsupported sound effect!");
+            break;
         }
         
+        return path;
     }
     
     public Mixer getMixer() { return mixer; }

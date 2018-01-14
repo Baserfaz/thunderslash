@@ -81,7 +81,7 @@ public class GuiRenderer {
         
         for(int y = 0; y < (Game.CAMERA_HEIGHT / spriteSize) + 3; y++) {
             for(int x = 0; x < Game.CAMERA_WIDTH / spriteSize; x++) {
-                bg.add(new GuiImage(x * spriteSize, y * spriteSize - spriteSize, bgSprite, DepthLevel.BACKGROUND));
+                bg.add(new GuiImage(x * spriteSize, y * spriteSize - spriteSize, bgSprite, DepthLevel.BACKGROUND, false));
             }
         }
         
@@ -109,7 +109,7 @@ public class GuiRenderer {
         
         for(int y = 0; y < (Game.CAMERA_HEIGHT / spriteSize) + 3; y++) {
             for(int x = 0; x < Game.CAMERA_WIDTH / spriteSize; x++) {
-                bg.add(new GuiImage(x * spriteSize, y * spriteSize - spriteSize, bgSprite, DepthLevel.BACKGROUND));
+                bg.add(new GuiImage(x * spriteSize, y * spriteSize - spriteSize, bgSprite, DepthLevel.BACKGROUND, false));
             }
         }
         

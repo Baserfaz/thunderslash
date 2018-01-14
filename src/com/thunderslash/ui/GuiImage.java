@@ -11,10 +11,11 @@ public class GuiImage extends GuiElement {
     private BufferedImage img;
     private DepthLevel deptLevel;
     
-    public GuiImage(int x, int y, BufferedImage img, DepthLevel deptLevel) {
+    public GuiImage(int x, int y, BufferedImage img, DepthLevel deptLevel, boolean isEnabled) {
         super(x, y, img.getWidth(), img.getHeight());
         this.img = img;
         this.deptLevel = deptLevel;
+        this.isEnabled = isEnabled;
     }
 
     public void render(Graphics g) {

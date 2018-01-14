@@ -299,4 +299,6 @@ public class Game extends Canvas implements Runnable {
     public void setEmitterManager(EmitterManager emitterManager) { this.emitterManager = emitterManager; }
     public Session getSession() { return session; }
     public void setSession(Session session) { this.session = session; }
+    public SoundManager getSoundManager() { return soundManager; }
+    public void setSoundManager(SoundManager soundManager) { this.soundManager = soundManager; }
 }
