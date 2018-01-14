@@ -350,6 +350,11 @@ public class SpriteCreator {
                 pos.y = 5;
                 break;
                 
+            case TORCH:
+                pos.x = 8;
+                pos.y = 9;
+                break;
+                
             default:
                 System.out.println("Could not find a sprite of spritetype:" + type);
                 break;

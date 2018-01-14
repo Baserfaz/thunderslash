@@ -26,7 +26,7 @@ public class AnimationCreator {
                 break; 
                 
             case PLAYER_ATTACK:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 2, 6));
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 2, 8));
                 break;
                 
             case PLAYER_CAST:

@@ -13,6 +13,7 @@ import com.thunderslash.gameobjects.Crystal;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.PhysicsObject;
 import com.thunderslash.gameobjects.Player;
+import com.thunderslash.gameobjects.VanityObject;
 import com.thunderslash.particles.Emitter;
 import com.thunderslash.particles.Particle;
 import com.thunderslash.utilities.Animator;
@@ -67,6 +68,7 @@ public class Handler {
         List<Actor> actors = new ArrayList<Actor>();
         List<PhysicsObject> items = new ArrayList<PhysicsObject>();
         List<Crystal> crystals = new ArrayList<Crystal>();
+        List<VanityObject> vanityObjects = new ArrayList<VanityObject>();
         
         Actor player = Game.instance.getActorManager().getPlayerInstance();
         Camera cam = Game.instance.getCamera();
@@ -121,6 +123,12 @@ public class Handler {
                 continue;
             }
             
+            // get vanity objects
+            if(current instanceof VanityObject) {
+                vanityObjects.add((VanityObject)current);
+                continue;
+            }
+            
             // get blocks
             if(current instanceof Block) {
                 Block block = (Block) current;
@@ -139,6 +147,7 @@ public class Handler {
         if(levelEnd != null) levelEnd.render(g);
         for(Crystal c : crystals) { c.render(g); }
         for(PhysicsObject obj : items) { obj.render(g); }
+        for(VanityObject v : vanityObjects) { v.render(g); }
         for(Actor actor : actors) { actor.render(g); }
         player.render(g);
         for(Block block : waterBlocks) { block.render(g); }

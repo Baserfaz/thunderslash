@@ -243,7 +243,13 @@ public class Player extends Actor {
         if(hits.isEmpty() == false) {    
             for(GameObject hit : hits) {
                 if(hit instanceof Enemy) {
-                   ((Actor) hit).getHP().takeDamage(1);
+                    Enemy enemy = (Enemy) hit;
+                    
+                    // take damage
+                    enemy.getHP().takeDamage(this.attackDamage);
+                    
+                    // add score
+                    if(enemy.getHP().isDead()) Game.instance.getSession().addScore(enemy.getKillScore());
                 }
             }
         }
@@ -279,7 +285,16 @@ public class Player extends Actor {
         if(hits.isEmpty() == false) {
             for(GameObject hit : hits) {
                 if(hit instanceof Enemy && ((Enemy) hit).getHP().isDead() == false) {
-                    ((Enemy)hit).getHP().takeDamage(this.attackDamage);
+                    Enemy enemy = (Enemy) hit;
+                    
+                    // take damage
+                    enemy.getHP().takeDamage(this.attackDamage);
+                    
+                    // add score
+                    if(enemy.getHP().isDead()) Game.instance.getSession().addScore(enemy.getKillScore());
+                    
+                    // if cleave attacks are allowed then we are going to hit
+                    // all our hit objects.
                     if(this.allowCleaveAttacks == false) break;
                 }
             }

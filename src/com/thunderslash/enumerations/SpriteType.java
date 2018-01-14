@@ -16,6 +16,7 @@ public enum SpriteType {
     CHEST_CLOSED, CHEST_OPEN,
     ENEMY_SLIME, ENEMY_SLIME_DEAD,
     CRYSTAL, CRYSTAL_USED, 
+    TORCH,
     
     DAGGER_BACKGROUND
    

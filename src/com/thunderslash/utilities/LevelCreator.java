@@ -20,6 +20,7 @@ import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.Chest;
 import com.thunderslash.gameobjects.Crystal;
 import com.thunderslash.gameobjects.GameObject;
+import com.thunderslash.gameobjects.Torch;
 import com.thunderslash.gameobjects.Trap;
 
 public class LevelCreator {
@@ -150,6 +151,8 @@ public class LevelCreator {
                     // create actors
                     LevelCreator.createActor(red, green, blue, alpha, pos.x, pos.y);
                     
+                    // create vanity objects
+                    LevelCreator.createVanityObjects(block);
                 }
             }
         }
@@ -199,6 +202,22 @@ public class LevelCreator {
         }
         
         return item;
+    }
+    
+    public static void createVanityObjects(Block block) {
+        
+        // create torches around the exit and spawns.
+        if(block.getBlocktype() == BlockType.EXIT || block.getBlocktype() == BlockType.PLAYER_SPAWN) {
+            
+            int x = block.getWorldPosition().x;
+            int y = block.getWorldPosition().y;
+            
+            int spriteSize = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
+            
+            new Torch(new Point(x - spriteSize, y));
+            new Torch(new Point(x + spriteSize, y));
+        }
+        
     }
     
     public static List<Block> calculateSprites(List<Block> blocks) {

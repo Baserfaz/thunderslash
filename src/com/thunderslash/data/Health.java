@@ -32,12 +32,6 @@ public class Health {
         } else if(this.object instanceof Player) {
             this.object.setSprite(sc.CreateSprite(SpriteType.PLAYER_DEAD));
         }
-        
-        // add score
-        if(this.object instanceof Enemy) {
-            Game.instance.getSession().addScore(((Enemy) this.object).getKillScore());
-        }
-        
     }
     
     public void takeDamage(int amount) {
@@ -45,9 +39,8 @@ public class Health {
         this.currentHP -= amount;
         if(currentHP <= 0) { this.die(); }
         
-        if(this.object instanceof Player) {
-            Game.instance.getSession().addScore(-amount * 10);
-        }
+        // subtract score
+        if(this.object instanceof Player) Game.instance.getSession().addScore(-amount * 10);
     }
 
     public void healDamage(int amount) {

@@ -97,6 +97,7 @@ public class Game extends Canvas implements Runnable {
     private GuiRenderer guiRenderer;
     private GuiElementManager guiElementManager;
     private EmitterManager emitterManager;
+    private SoundManager soundManager;
     private Renderer renderer;
     private GameState gamestate;
     
@@ -128,6 +129,8 @@ public class Game extends Canvas implements Runnable {
         this.spriteCreator = new SpriteCreator(Game.SPRITESHEETNAME);
         this.guiElementManager = new GuiElementManager();
         this.emitterManager = new EmitterManager();
+        
+        this.soundManager = new SoundManager();
         
         this.guiRenderer = new GuiRenderer();
         this.actorManager = new ActorManager();
