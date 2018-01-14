@@ -300,13 +300,18 @@ public class SpriteCreator {
                 pos.y = 3;
                 break;
                 
-            case GATE_CLOSED:
+            case WALL_FULL:
                 pos.x = 2;
                 pos.y = 4;
                 break;
                 
-            case GATE_OPEN:
+            case GATE_CLOSED:
                 pos.x = 3;
+                pos.y = 4;
+                break;
+                
+            case GATE_OPEN:
+                pos.x = 4;
                 pos.y = 4;
                 break;
                 

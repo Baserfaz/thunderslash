@@ -310,6 +310,8 @@ public class LevelCreator {
             } else if(sw) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_CORNER), 1));
+            } else {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_FULL));
             }
             
             // we changed sprite, so
