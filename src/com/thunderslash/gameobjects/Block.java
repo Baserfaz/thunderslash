@@ -21,7 +21,7 @@ public class Block extends GameObject {
     public void tick() {}
     
     public void render(Graphics g) {
-        g.drawImage(defaultStaticSprite, worldPosition.x, worldPosition.y, null);
+        if(this.isVisible) g.drawImage(defaultStaticSprite, worldPosition.x, worldPosition.y, null);
     }
     
     // ------------- GETTERS & SETTERS ----------------

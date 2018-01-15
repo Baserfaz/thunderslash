@@ -49,17 +49,18 @@ public abstract class PhysicsObject extends GameObject {
     }
     
     public void tick() {
-        this.updateCollisions();
-        
-        if(this.lastGrounded == false && this.isGrounded && this instanceof Player) {
-            this.onLanding();
+        if(this.isEnabled) {
+            this.updateCollisions();
+            
+            if(this.lastGrounded == false && this.isGrounded && this instanceof Player) {
+                this.onLanding();
+            }
+            
+            this.move();
+            this.updateHitbox();
+            
+            this.lastGrounded = this.isGrounded;
         }
-        
-        this.move();
-        this.updateHitbox();
-        
-        this.lastGrounded = this.isGrounded;
-        
     }
     
     public void render(Graphics g) {}

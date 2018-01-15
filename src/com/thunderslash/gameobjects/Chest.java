@@ -35,16 +35,18 @@ public class Chest extends PhysicsObject {
     }
 
     public void render(Graphics g) {
-        if(this.isOpen) {
-            g.drawImage(this.openSprite, worldPosition.x, worldPosition.y, null);
-        } else {
-            g.drawImage(this.defaultStaticSprite, worldPosition.x, worldPosition.y, null);
-        }
-        
-        if(this.hasFocus) {
-            g.drawImage(this.questionMark,
-                    this.hitboxCenter.x - this.questionMark.getWidth() / 2,
-                    this.hitbox.y - this.questionMark.getHeight() - 30, null);
+        if(this.isVisible) {
+            if(this.isOpen) {
+                g.drawImage(this.openSprite, worldPosition.x, worldPosition.y, null);
+            } else {
+                g.drawImage(this.defaultStaticSprite, worldPosition.x, worldPosition.y, null);
+            }
+            
+            if(this.hasFocus) {
+                g.drawImage(this.questionMark,
+                        this.hitboxCenter.x - this.questionMark.getWidth() / 2,
+                        this.hitbox.y - this.questionMark.getHeight() - 30, null);
+            }
         }
         
     }
@@ -52,10 +54,12 @@ public class Chest extends PhysicsObject {
     public void onLanding() {}
     
     public void open() {
-        this.isOpen = true;
-        this.hasFocus = false;
-        this.particleEmitter.emit(30, null, ParticleType.GOLD);
-        Game.instance.getSession().addScore(this.openingScore);
+        if(this.isEnabled) {
+            this.isOpen = true;
+            this.hasFocus = false;
+            this.particleEmitter.emit(30, null, ParticleType.GOLD);
+            Game.instance.getSession().addScore(this.openingScore);
+        }
     }
     
     public boolean isOpen() { return isOpen; }

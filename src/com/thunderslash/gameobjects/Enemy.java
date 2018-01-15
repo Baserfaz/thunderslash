@@ -34,22 +34,23 @@ public class Enemy extends Actor {
     }
 
     public void tick() {
-         
-        if(this.HP.isDead()) {
-            this.resetInputs();
-        } else {
+         if(this.isEnabled) {
+             if(this.HP.isDead()) {
+                 this.resetInputs();
+             } else {
+                
+                 if(this.tickTimer > this.tickCooldown) {
+                     this.tickTimer = 0.0;
+                     this.doBehaviour();
+                 } else {
+                     this.resetInputs();
+                     this.tickTimer += Game.instance.getTimeBetweenFrames();
+                 }
+             }
             
-            if(this.tickTimer > this.tickCooldown) {
-                this.tickTimer = 0.0;
-                this.doBehaviour();
-            } else {
-                this.resetInputs();
-                this.tickTimer += Game.instance.getTimeBetweenFrames();
-            }
-        }
-        
-        // always tick physics
-        super.tick();
+             // always tick physics
+             super.tick();
+         }
     }
     
     private void resetInputs() {

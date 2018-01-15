@@ -13,28 +13,44 @@ import com.thunderslash.utilities.LevelCreator;
 
 public class World {
 
+    private Room currentRoom;
     private List<Block> currentRoomBlocks;
     private List<Room> rooms;
     
     public World() {
         this.rooms = new ArrayList<Room>();
         this.currentRoomBlocks = new ArrayList<Block>();
+        this.currentRoom = null;
+        
+        String lvl0 = "testlevel.png";
+        String lvl1 = "testlevel2.png";
         
         for(int i = 0; i < Game.WORLD_ROOM_COUNT; i++) {
-            LevelData data = LevelCreator.createLevel("testlevel2.png");
-            Room room = new Room(i, data.getWidth(), data.getHeight(), data.getBlocks());
-            room.setBackground(LevelCreator.createBackground(room));
+            
+            String path = "";
+            if(i == 0) path = lvl0;
+            else if(i == 1) path = lvl1;
+            
+            LevelData data = LevelCreator.createLevel(path);
+            Room room = new Room(i, data);
+            room.getData().setBackground(LevelCreator.createBackground(room));
             this.rooms.add(room);
             
             System.out.println("Created room (lvl: " + i + ") \'" + room.toString() +
-                    "\', block count: " + room.getBlocks().size() + ".");
+                    "\', block count: " + room.getData().getBlocks().size() + ".");
         }
         
     }
     
     public void initializeRoom(int index) {
-        try { this.setCurrentRoomBlocks(LevelCreator.calculateSprites(this.rooms.get(index).getBlocks())); }
-        catch (IndexOutOfBoundsException e) { System.out.println(e); }
+        
+        // deactivate previous room
+        if(this.currentRoom != null) this.currentRoom.deactivateRoom();
+        
+        Room room = this.rooms.get(index);
+        room.activateRoom();
+        this.setCurrentRoomBlocks(LevelCreator.calculateSprites(room.getData().getBlocks()));
+        this.currentRoom = room;
     }
     
     public NeighborData getNeighbors(Block block) {
@@ -48,7 +64,7 @@ public class World {
                         BlockType.PLATFORM, BlockType.EXIT, BlockType.HURT,
                         BlockType.WATER));
         
-        for(Block b : this.getCurrentRoom().getBlocks()) {
+        for(Block b : this.getCurrentRoom().getData().getBlocks()) {
             
             if(b.getIsEnabled() == false) continue;
             

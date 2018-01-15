@@ -83,26 +83,30 @@ public class Player extends Actor {
     }
     
     public void tick() {
-        this.checktCollisionsWithGameObjects();
-        this.handleAnimationSpeedChanges();
-        this.updateActorState();
-        this.handleCooldowns();
-        this.updateAnimationFrame();
-        
-        // dont allow movement while attacking/casting
-        if(this.actorState == ActorState.ATTACKING ||
-                this.actorState == ActorState.CASTING) {
-            this.direction = new Vector2();
+        if(this.isEnabled) {
+            this.checktCollisionsWithGameObjects();
+            this.handleAnimationSpeedChanges();
+            this.updateActorState();
+            this.handleCooldowns();
+            this.updateAnimationFrame();
+            
+            // dont allow movement while attacking/casting
+            if(this.actorState == ActorState.ATTACKING ||
+                    this.actorState == ActorState.CASTING) {
+                this.direction = new Vector2();
+            }
+            
+            super.tick();
         }
-        
-        super.tick();
     }
     
     public void render(Graphics g) {
-        if(this.facingDirection == Direction.EAST) {
-            g.drawImage(this.frame, this.worldPosition.x, this.worldPosition.y, null);
-        } else if(this.facingDirection == Direction.WEST) {
-            RenderUtils.renderSpriteFlippedHorizontally(this.frame, this.worldPosition, g);
+        if(this.isVisible) {
+            if(this.facingDirection == Direction.EAST) {
+                g.drawImage(this.frame, this.worldPosition.x, this.worldPosition.y, null);
+            } else if(this.facingDirection == Direction.WEST) {
+                RenderUtils.renderSpriteFlippedHorizontally(this.frame, this.worldPosition, g);
+            }
         }
     }
 

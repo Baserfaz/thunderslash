@@ -1,35 +1,47 @@
 package com.thunderslash.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
+import com.thunderslash.gameobjects.GameObject;
+import com.thunderslash.gameobjects.VanityObject;
 
 public class Room {
 
     private int index;
     private int width, height;
-    private List<Block> blocks;
-    private List<Block> background;
+    private LevelData data;
     
-    public Room(int index, int width, int height, List<Block> tiles) {
-        this.blocks = tiles;
+    public Room(int index, LevelData data) {
         this.index = index;
-        this.width = width;
-        this.height = height;
-        this.background = new ArrayList<Block>();
+        this.width = 0;
+        this.height = 0;
+        this.data = data;
+    }
+    
+    public void activateRoom() {
+        for(Block b : this.data.getBlocks()) { if(b != null) b.activate(); }
+        for(Block b : this.data.getBackground()) { if(b != null) b.activate(); }
+        for(VanityObject v : this.data.getVanityObjects()) { if(v != null) v.activate(); }
+        for(Actor a : this.data.getActors()) { if(a != null) a.activate(); }
+        for(GameObject i : this.data.getItems()) { if(i != null) i.activate(); }
+    }
+    
+    public void deactivateRoom() {
+        for(Block b : this.data.getBlocks()) { if(b != null) b.deactivate(); }
+        for(Block b : this.data.getBackground()) { if(b != null) b.deactivate(); }
+        for(VanityObject v : this.data.getVanityObjects()) { if(v != null) v.deactivate(); }
+        for(Actor a : this.data.getActors()) { if(a != null) a.deactivate(); }
+        for(GameObject i : this.data.getItems()) { if(i != null) i.deactivate(); }
     }
     
     // ---------------- GETTERS & SETTERS -------------------
-    
-    public List<Block> getBlocks() { return blocks; }
-    public void setBlocks(List<Block> blocks) { this.blocks = blocks; }
     public int getIndex() { return index; }
     public void setIndex(int index) { this.index = index; }
     public int getWidth() { return width; }
     public void setWidth(int width) { this.width = width; }
     public int getHeight() { return height; }
     public void setHeight(int height) { this.height = height; }
-    public List<Block> getBackground() { return background; }
-    public void setBackground(List<Block> background) { this.background = background; }
+    public LevelData getData() { return data; }
+    public void setData(LevelData data) { this.data = data; }
+
 }

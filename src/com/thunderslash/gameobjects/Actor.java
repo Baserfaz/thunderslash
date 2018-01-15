@@ -10,7 +10,6 @@ import com.thunderslash.data.Health;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.Direction;
-import com.thunderslash.enumerations.ParticleType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.particles.Emitter;
 import com.thunderslash.utilities.RenderUtils;
@@ -39,22 +38,25 @@ public class Actor extends PhysicsObject {
     }
     
     public void tick() {
-        
-        this.handleStunState();
-        
-        // change facing direction
-        if(this.direction.x > 0f) this.facingDirection = Direction.EAST;
-        else if(this.direction.x < 0f) this.facingDirection = Direction.WEST;
-        
-        super.tick();
+        if(this.isEnabled) {
+            this.handleStunState();
+            
+            // change facing direction
+            if(this.direction.x > 0f) this.facingDirection = Direction.EAST;
+            else if(this.direction.x < 0f) this.facingDirection = Direction.WEST;
+            
+            super.tick();
+        }
     }
     
     public void render(Graphics g) {
-        if(this.facingDirection == Direction.EAST) {
-            g.drawImage(this.defaultStaticSprite, this.worldPosition.x, this.worldPosition.y, null);
-        } else if(this.facingDirection == Direction.WEST) {
-            RenderUtils.renderSpriteFlippedHorizontally(defaultStaticSprite, this.worldPosition, g);
-        } 
+        if(this.isVisible) {
+            if(this.facingDirection == Direction.EAST) {
+                g.drawImage(this.defaultStaticSprite, this.worldPosition.x, this.worldPosition.y, null);
+            } else if(this.facingDirection == Direction.WEST) {
+                RenderUtils.renderSpriteFlippedHorizontally(defaultStaticSprite, this.worldPosition, g);
+            } 
+        }
     }
     
     public void onLanding() {}

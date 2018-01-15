@@ -5,12 +5,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import com.thunderslash.data.Animation;
 import com.thunderslash.engine.Game;
-import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.particles.Emitter;
 
@@ -25,8 +23,8 @@ public abstract class GameObject {
     protected Rectangle hitboxSizes;
     protected Point hitboxCenter;
     
-    protected boolean isEnabled = true;
-    protected boolean isVisible = true;
+    protected boolean isEnabled = false;
+    protected boolean isVisible = false;
     
     // animation
     protected double frameTime = 0.0;
@@ -67,7 +65,7 @@ public abstract class GameObject {
     public abstract void tick();
     public abstract void render(Graphics g);
     
-    // -------------------------------------
+    // ------------------ Helppers -------------------
     
     protected List<GameObject> getNearbyGameObjects(float distance, boolean allowBlocks) {
         List<GameObject> objs = new ArrayList<GameObject>();
@@ -167,7 +165,7 @@ public abstract class GameObject {
                 this.worldPosition.y + Math.round(y));
     }
     
-
+    // ---- GETTERS & SETTERS ----
     public Rectangle getHitbox() { return this.hitbox; }
     public Point getHitboxCenter() { return this.hitboxCenter; }
     public void setSprite(BufferedImage i) { this.defaultStaticSprite = i; }
@@ -179,5 +177,15 @@ public abstract class GameObject {
     public boolean getIsEnabled() { return this.isEnabled; }
     public void setIsVisible(boolean b) { this.isVisible = b; }
     public void setIsEnabled(boolean b) { this.isEnabled = b; }
+    
+    public void activate() { 
+        this.isVisible = true;
+        this.isEnabled = true;
+    }
+    
+    public void deactivate() {
+        this.isVisible = false;
+        this.isEnabled = false;
+    }
 
 }

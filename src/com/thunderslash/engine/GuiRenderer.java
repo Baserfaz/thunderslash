@@ -164,9 +164,12 @@ public class GuiRenderer {
         this.renderHUDSprite(g, x, 60, 10,
                 power.getMaxPower(), power.getCurrentPower(), this.powerSword, this.tintedPowerSword);
         
+        Camera cam = Game.instance.getCamera();
+        Rectangle r = cam.getCameraBounds();
+        
         // render score
         this.renderString(Game.instance.getSession().getScore() + "",
-                Game.CAMERA_WIDTH - 20, 70, Color.white, 50f, ElementAlign.LEFT, g);
+                r.x + r.width - 20, r.y + 70, Color.white, 50f, ElementAlign.LEFT, g);
         
         this.guiManager.render(g, GameState.INGAME);
         

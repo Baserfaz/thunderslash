@@ -16,18 +16,23 @@ import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.Chest;
 import com.thunderslash.gameobjects.Crystal;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.Torch;
 import com.thunderslash.gameobjects.Trap;
+import com.thunderslash.gameobjects.VanityObject;
 
 public class LevelCreator {
     
     public static LevelData createLevel(String path) {
         
         List<Block> blocks = new ArrayList<Block>();
+        List<VanityObject> vanityObjects = new ArrayList<VanityObject>();
+        List<GameObject> items = new ArrayList<GameObject>();
+        List<Actor> actors = new ArrayList<Actor>();
         
         LevelData data = LevelCreator.importLevelData(path);
         int levelWidth = data.getWidth();
@@ -48,8 +53,6 @@ public class LevelCreator {
             // vars
             Point pos = new Point(0, 0);
             Point gridPos = new Point(0, 0);
-            boolean isEnabled = true;
-            boolean isVisible = true;
             BlockType blockType = BlockType.NOT_ASSIGNED;
             SpriteType spriteType = SpriteType.NONE;
             
@@ -75,8 +78,6 @@ public class LevelCreator {
                 
                 // no sprite
                 found = true;
-                isEnabled = true;
-                isVisible = true;
                 blockType = BlockType.PLAYER_SPAWN;
                 spriteType = SpriteType.GATE_CLOSED;
             
@@ -139,31 +140,27 @@ public class LevelCreator {
                     
                     Block block = new Block(pos, gridPos, blockType, spriteType);
                     
-                    // set block settings
-                    block.setIsEnabled(isEnabled);
-                    block.setIsVisible(isVisible);
-                    
                     blocks.add(block);
                     
                     // create item
-                    LevelCreator.createItem(red, green, blue, alpha, pos.x, pos.y);
+                    items.add(LevelCreator.createItem(red, green, blue, alpha, pos.x, pos.y));
                     
                     // create actors
-                    LevelCreator.createActor(red, green, blue, alpha, pos.x, pos.y);
+                    actors.add(LevelCreator.createActor(red, green, blue, alpha, pos.x, pos.y));
                     
                     // create vanity objects
-                    LevelCreator.createVanityObjects(block);
+                    vanityObjects.addAll(LevelCreator.createVanityObjects(block));
                 }
             }
         }
         
-        return new LevelData(levelWidth, levelHeight, blocks);
+        return new LevelData(levelWidth, levelHeight, blocks, vanityObjects, items, actors);
     }
 
     public static List<Block> createBackground(Room room) {
         List<Block> blocks = new ArrayList<Block>();
         SpriteType spriteType = SpriteType.BACKGROUND_TILE_01;
-        for(Block block : room.getBlocks()) {
+        for(Block block : room.getData().getBlocks()) {
             if(block.getBlocktype() != BlockType.NOT_ASSIGNED) {
                 if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BACKGROUND_TILE_02;
                 else if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BACKGROUND_TILE_03;
@@ -174,16 +171,17 @@ public class LevelCreator {
         return blocks;
     }
     
-    public static void createActor(int red, int green, int blue, int alpha, int x, int y) {
+    public static Actor createActor(int red, int green, int blue, int alpha, int x, int y) {
         
+        Actor actor = null;
         Point pos = new Point(x, y);
         
         // red = enemy spawn
         if(red == 255 && green == 0 && blue == 0 && alpha == 255) {
-            Game.instance.getActorManager().createEnemyInstance("Slime",
-                    pos, SpriteType.ENEMY_SLIME, 1);
+            actor = Game.instance.getActorManager().createEnemyInstance("Slime", pos, SpriteType.ENEMY_SLIME, 1);
         }
         
+        return actor;
     }
     
     public static GameObject createItem(int red, int green, int blue, int alpha, int x, int y) {
@@ -204,7 +202,9 @@ public class LevelCreator {
         return item;
     }
     
-    public static void createVanityObjects(Block block) {
+    public static List<VanityObject> createVanityObjects(Block block) {
+        
+        List<VanityObject> objs = new ArrayList<VanityObject>();
         
         // create torches around the exit and spawns.
         if(block.getBlocktype() == BlockType.EXIT || block.getBlocktype() == BlockType.PLAYER_SPAWN) {
@@ -214,10 +214,11 @@ public class LevelCreator {
             
             int spriteSize = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
             
-            new Torch(new Point(x - spriteSize, y));
-            new Torch(new Point(x + spriteSize, y));
+            objs.add(new Torch(new Point(x - spriteSize, y)));
+            objs.add(new Torch(new Point(x + spriteSize, y)));
         }
         
+        return objs;
     }
     
     public static List<Block> calculateSprites(List<Block> blocks) {

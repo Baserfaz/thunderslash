@@ -29,30 +29,33 @@ public class Crystal extends GameObject {
     }
 
     public void use() {
-        this.isUsed = true;
-        this.hasFocus = false;
+        if(this.isEnabled) {
+            this.isUsed = true;
+            this.hasFocus = false;
+        }
     }
     
     public void tick() {}
 
     public void render(Graphics g) {
-        
-        BufferedImage frame = null;
-
-        if(this.isUsed) frame = this.usedSprite;
-        else frame = this.bounceAnim.getFrame(this.currentAnimIndex);
-        
-        // updates animation index
-        this.calculateAnimations(this.bounceAnim);
-        
         if(this.isVisible) {
-            g.drawImage(frame, this.worldPosition.x, this.worldPosition.y, null);
-        }
-        
-        if(this.hasFocus) {
-            g.drawImage(this.exclamationMark,
-                    this.hitboxCenter.x - this.exclamationMark.getWidth() / 2,
-                    this.hitbox.y - this.exclamationMark.getHeight() - 30, null);
+            BufferedImage frame = null;
+    
+            if(this.isUsed) frame = this.usedSprite;
+            else frame = this.bounceAnim.getFrame(this.currentAnimIndex);
+            
+            // updates animation index
+            this.calculateAnimations(this.bounceAnim);
+            
+            if(this.isVisible) {
+                g.drawImage(frame, this.worldPosition.x, this.worldPosition.y, null);
+            }
+            
+            if(this.hasFocus) {
+                g.drawImage(this.exclamationMark,
+                        this.hitboxCenter.x - this.exclamationMark.getWidth() / 2,
+                        this.hitbox.y - this.exclamationMark.getHeight() - 30, null);
+            }
         }
         
     }
