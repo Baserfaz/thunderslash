@@ -88,6 +88,13 @@ public class Player extends Actor {
         this.updateActorState();
         this.handleCooldowns();
         this.updateAnimationFrame();
+        
+        // dont allow movement while attacking/casting
+        if(this.actorState == ActorState.ATTACKING ||
+                this.actorState == ActorState.CASTING) {
+            this.direction = new Vector2();
+        }
+        
         super.tick();
     }
     
@@ -117,9 +124,7 @@ public class Player extends Actor {
             frame = this.attackAnim.getFrame(this.currentAnimIndex);
             currentAnim = this.attackAnim;
             
-            if(this.currentAnimIndex == 4) {
-                this.doAttackAction();
-            }
+            if(this.currentAnimIndex == 4) this.doAttackAction();
             
         } else if(this.actorState == ActorState.CASTING) {
             frame = this.castAnim.getFrame(this.currentAnimIndex);
@@ -145,8 +150,7 @@ public class Player extends Actor {
             this.currentAnimIndex = 0;
             
             // change animation speed according to the state
-            if(this.actorState == ActorState.ATTACKING ||
-                    this.actorState == ActorState.DEFENDING) this.frameTime = this.attackFrameTime;
+            if(this.actorState == ActorState.ATTACKING) this.frameTime = this.attackFrameTime;
             else if(this.actorState == ActorState.CASTING) this.frameTime = this.castFrameTime;
             else this.frameTime = this.defaultFrameTime;
         }
