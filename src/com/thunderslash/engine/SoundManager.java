@@ -1,112 +1,60 @@
 package com.thunderslash.engine;
 
-import java.io.IOException;
 import java.net.URL;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Mixer;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import com.thunderslash.enumerations.SoundEffect;
 
+import kuusisto.tinysound.Sound;
+import kuusisto.tinysound.TinySound;
+
 public class SoundManager {
 
-    private Mixer mixer;
-    private Clip clip;
-    private Clip loopClip;
+        Sound hover = null;
+        Sound select= null;
     
-    private float baseVolumeLevel = -20f;
+      public SoundManager() {
+          TinySound.init();
+          TinySound.setGlobalVolume(0.1f);
+          this.loadSounds();
+      }
     
-    public SoundManager() {
-        
-        Mixer.Info[] mixInfos = AudioSystem.getMixerInfo();
-        mixer = AudioSystem.getMixer(mixInfos[0]);
-        DataLine.Info dataInfo = new DataLine.Info(Clip.class, null);
-        
-        try { clip = (Clip)mixer.getLine(dataInfo); }
-        catch(LineUnavailableException e) { e.printStackTrace(); }
-        
-        try { loopClip = (Clip)mixer.getLine(dataInfo); }
-        catch(LineUnavailableException e) { e.printStackTrace(); }
-        
-        System.out.println("Mixer: " + mixer.getMixerInfo() + " succesfully loaded!");
-        
-    }
-
-    public void playLoop(SoundEffect effect) {
-
-        if(loopClip.isOpen()) loopClip.close();
-        
-        String path = this.getPath(effect);
-        
-        if(path != null && path.length() > 0) {
-            
-            // load file
-            try {
-                URL soundURL = this.getClass().getResource(path);
-                AudioInputStream stream = AudioSystem.getAudioInputStream(soundURL);
-                loopClip.open(stream);
-            } 
-            catch(LineUnavailableException e) { e.printStackTrace(); }
-            catch(UnsupportedAudioFileException e) { e.printStackTrace(); }
-            catch(IOException e) { e.printStackTrace(); }
-            
-            // set volume
-            FloatControl volumeControl = (FloatControl) loopClip.getControl(FloatControl.Type.MASTER_GAIN);
-            volumeControl.setValue(this.baseVolumeLevel);
-            
-            // set to loop
-            loopClip.loop(Clip.LOOP_CONTINUOUSLY);
-            
-            // play file
-            loopClip.start();
-            
-        } else {
-            System.out.println("SoundManager::play: soundfile\'s path is invalid!");
-        }
-        
-    }
     
-    public void stopLoop() {
-        this.loopClip.stop();
-        this.loopClip.close();
-    }
-    
-    public void play(SoundEffect effect) {
-        
-        if(clip.isOpen()) clip.close();
-        
-        String path = this.getPath(effect);
-        
-        if(path != null && path.length() > 0) {
-            
-            // load file
-            try {
-                URL soundURL = this.getClass().getResource(path);
-                AudioInputStream stream = AudioSystem.getAudioInputStream(soundURL);
-                clip.open(stream);
-            } 
-            catch(LineUnavailableException e) { e.printStackTrace(); }
-            catch(UnsupportedAudioFileException e) { e.printStackTrace(); }
-            catch(IOException e) { e.printStackTrace(); }
-            
-            // set volume
-            FloatControl volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            volumeControl.setValue(this.baseVolumeLevel);
-            
-            // play file
-            clip.start();
-            
-        } else {
-            System.out.println("SoundManager::play: soundfile\'s path is invalid!");
-        }
-    }
-    
+      private void loadSounds() {
+          for(SoundEffect effect : SoundEffect.values()) {
+              
+              String path = this.getPath(effect);
+              URL soundURL = this.getClass().getResource(path);
+              
+            switch(effect) {
+            case HOVER:
+                this.hover = TinySound.loadSound(soundURL);
+                break;
+            case SELECT:
+                this.select = TinySound.loadSound(soundURL);
+                break;
+            default:
+                System.out.println("SoundManager::loadSounds: soundeffect not supported: " + effect);
+                break;
+              }
+          }
+      }
+      
+      public void playSound(SoundEffect effect) {
+          
+          switch(effect) {
+        case HOVER:
+            this.hover.play();
+            break;
+        case SELECT:
+            this.select.play();
+            break;
+        default:
+            System.out.println("SoundManager::playSound: soundeffect not supported: " + effect);
+            break;
+          }
+          
+      }
+      
     private String getPath(SoundEffect effect) {
         
         String path = "";
@@ -125,9 +73,4 @@ public class SoundManager {
         
         return path;
     }
-    
-    public Mixer getMixer() { return mixer; }
-    public void setMixer(Mixer mixer) { this.mixer = mixer; }
-    public Clip getCurrentClip() { return clip; }
-    public void setCurrentClip(Clip currentClip) { this.clip = currentClip; }
 }

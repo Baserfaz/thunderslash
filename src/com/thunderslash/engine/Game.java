@@ -83,7 +83,7 @@ public class Game extends Canvas implements Runnable {
     
     private boolean isRunning = false;
     public static boolean isPaused = false;
-    public static boolean isMuted = true;
+    public static boolean isMuted = false;
     
     private int currentRoomIndex = 0;
     private double timeBetweenFrames = 0.0;
