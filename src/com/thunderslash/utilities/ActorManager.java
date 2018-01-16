@@ -32,28 +32,10 @@ public class ActorManager {
     public void movePlayerToSpawnPosition() {
         
         if(this.playerInstance == null) {
-            System.out.println("Player not yet instantiated!");
+            System.out.println("Player not yet instantiated: execute createPlayerInstance first!");
             return;
         }
-        
-        World world = Game.instance.getWorld();
-        
-        if(world.getCurrentRoomBlocks() == null) {
-            System.out.println("Room not yet loaded!");
-            return;
-        }
-        
-        // get the current room's spawnpoint coordinates.
-        Point spawnpos = new Point(0, 0);
-        for(Block block : world.getCurrentRoomBlocks()) {
-            if(block.getBlocktype() == BlockType.PLAYER_SPAWN) {
-                spawnpos = block.getWorldPosition();
-                break;
-            }
-        }
-        
-        this.playerInstance.setWorldPosition(spawnpos);
-        
+        this.playerInstance.setWorldPosition(this.getSpawnPointPosition());
     }
     
     public Player createPlayerInstance(String actorName, SpriteType spriteType, int health) {
@@ -63,24 +45,8 @@ public class ActorManager {
             return null;
         }
         
-        World world = Game.instance.getWorld();
-        
-        if(world.getCurrentRoomBlocks() == null) {
-            System.out.println("room not yet loaded!");
-            return null;
-        }
-        
-        // get the current room's spawnpoint coordinates.
-        Point spawnpos = new Point(0, 0);
-        for(Block block : world.getCurrentRoomBlocks()) {
-            if(block.getBlocktype() == BlockType.PLAYER_SPAWN) {
-                spawnpos = block.getWorldPosition();
-                break;
-            }
-        }
-        
         // create player object
-        Player player = new Player(actorName, spawnpos, spriteType, health);
+        Player player = new Player(actorName, this.getSpawnPointPosition(), spriteType, health);
         
         // set variables
         this.playerInstance = player;
@@ -90,7 +56,25 @@ public class ActorManager {
         
         return player;
     }
-
+    
+    private Point getSpawnPointPosition() {
+        World world = Game.instance.getWorld();
+        
+        if(world.getCurrentRoomBlocks() == null) {
+            System.out.println("Room not yet loaded!");
+            return null;
+        }
+        
+        Point spawnpos = new Point(0, 0);
+        for(Block block : world.getCurrentRoomBlocks()) {
+            if(block.getBlocktype() == BlockType.PLAYER_SPAWN) {
+                spawnpos = block.getWorldPosition();
+                break;
+            }
+        }
+        return spawnpos;
+    }
+    
     public void removeActor(Actor go) {
         for(Actor actor : actorInstances) {
             if(actor.equals(go)) {
@@ -99,20 +83,10 @@ public class ActorManager {
             }
         }
     }
-
-    public List<Actor> getActorInstances() {
-        return actorInstances;
-    }
-
-    public void setActorInstances(List<Actor> actorInstances) {
-        actorInstances.addAll(actorInstances);
-    }
-
-    public Player getPlayerInstance() {
-        return playerInstance;
-    }
-
-    public void setPlayerInstance(Player playerInstance) {
-        this.playerInstance = playerInstance;
-    }
+    
+    // ---- GETTERS & SETTERS ----
+    public List<Actor> getActorInstances() { return actorInstances; }
+    public void setActorInstances(List<Actor> actorInstances) { actorInstances.addAll(actorInstances); }
+    public Player getPlayerInstance() { return playerInstance; }
+    public void setPlayerInstance(Player playerInstance) { this.playerInstance = playerInstance; }
 }

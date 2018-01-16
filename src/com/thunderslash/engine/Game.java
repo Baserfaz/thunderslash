@@ -100,7 +100,9 @@ public class Game extends Canvas implements Runnable {
     private EmitterManager emitterManager;
     private SoundManager soundManager;
     private Renderer renderer;
+    
     private GameState gamestate;
+    private GameState lastGameState;
     
     private Animator animator;
     private World world;
@@ -142,6 +144,7 @@ public class Game extends Canvas implements Runnable {
         this.renderer = new Renderer();
         
         this.gamestate = GameState.MAINMENU;
+        this.lastGameState = this.gamestate;
         
         // start game thread
         start();
@@ -233,6 +236,10 @@ public class Game extends Canvas implements Runnable {
     }
 
     private void tick() { 
+        
+        // handle gamestate change.
+        if(this.lastGameState != this.gamestate) this.onGameStateChange();
+        
         if(this.gamestate == GameState.INGAME) {
             if(Game.isPaused == false) {
                 handler.tickGameObjects(); 
@@ -248,6 +255,12 @@ public class Game extends Canvas implements Runnable {
         } else if(this.gamestate == GameState.PAUSEMENU) {
             this.guiElementManager.tick(GameState.PAUSEMENU);
         }
+        
+        this.lastGameState = this.gamestate;
+    }
+    
+    private void onGameStateChange() {
+        this.guiElementManager.activateGuiElementsInGameState(this.gamestate);
     }
     
     public void startNewGame() {
@@ -262,7 +275,6 @@ public class Game extends Canvas implements Runnable {
         // initiate first level
         this.world.initializeRoom(Game.instance.currentRoomIndex);
         
-        // create mock up player actor
         actorManager.createPlayerInstance("Player", SpriteType.PLAYER, 4);
         
         System.out.println("Player created succesfully.");

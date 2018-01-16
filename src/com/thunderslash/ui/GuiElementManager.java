@@ -51,6 +51,23 @@ public class GuiElementManager {
         for(GuiElement e : this.getGuiElementList(state)) e.tick();
     }
     
+    public void activateGuiElementsInGameState(GameState state) {
+        this.deactivateAllElements();
+        for(GuiElement e : getGuiElementList(state)) { 
+            e.isEnabled = true; 
+            e.isVisible = true;
+        }
+    }
+    
+    private void deactivateAllElements() {
+        for(GameState s : GameState.values()) {
+            for(GuiElement e : this.getGuiElementList(s)) {
+                e.isEnabled = false;
+                e.isVisible = false;
+            }
+        }
+    }
+    
     private List<GuiElement> getGuiElementList(GameState state) {
         
         List<GuiElement> selectedList = new ArrayList<GuiElement>();

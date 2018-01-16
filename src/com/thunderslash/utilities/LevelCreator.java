@@ -206,7 +206,7 @@ public class LevelCreator {
         
         List<VanityObject> objs = new ArrayList<VanityObject>();
         
-        // create torches around the exit and spawns.
+        // create torches around the exit and player spawn.
         if(block.getBlocktype() == BlockType.EXIT || block.getBlocktype() == BlockType.PLAYER_SPAWN) {
             
             int x = block.getWorldPosition().x;

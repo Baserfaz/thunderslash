@@ -204,6 +204,70 @@ public class SpriteCreator {
         return sprite;
     }
 
+    // tiles one sprite multiple times creating one large tiled sprite.
+    public BufferedImage createTiledSprite(BufferedImage tileSprite, int widthMultiplier, int heightMultiplier) {
+        
+        if(widthMultiplier <= 0 || heightMultiplier <= 0) {
+            System.out.println("Multipliers need to be greater than zero!");
+            return null;
+        }
+        
+        // in pixels
+        int width = tileSprite.getWidth() * widthMultiplier;
+        int height = tileSprite.getHeight() * heightMultiplier;
+        
+        // create new img
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        
+        // get tileSprites pixels
+        int[] spritePixelData = tileSprite.getRGB(0, 0, tileSprite.getWidth(), tileSprite.getHeight(), null, 0, tileSprite.getWidth());
+        int[] resultPixels = new int[img.getWidth() * img.getHeight()];
+        int index = 0;
+        
+        // multiply on x-axis
+        for(int y = 0; y < tileSprite.getHeight(); y++) {
+            // get row of pixels
+            int[] row = this.getPixelInRow(y, spritePixelData, tileSprite.getWidth());
+            
+            // multiply the selected row pixels
+            for(int a = 0; a < widthMultiplier; a++) {
+                for(int i = 0; i < row.length; i++) {
+                    resultPixels[index] = row[i];
+                    index += 1;
+                }
+            }
+        }
+        // copy our current array of pixels into temporary one,
+        // that we are going to multiply.
+        int[] xAxisResultPixels = new int[index];
+        System.arraycopy(resultPixels, 0, xAxisResultPixels, 0, index);
+        
+        // multiply on y-axis
+        for(int a = 0; a < heightMultiplier - 1; a++) {
+            for(int i = 0; i < xAxisResultPixels.length; i++) {
+                resultPixels[index] = xAxisResultPixels[i];
+                index += 1;
+            }
+        }
+        
+        // here we have the multiplied pixels 
+        // and we just put them into our img.
+        img.setRGB(0, 0, img.getWidth(), img.getHeight(), resultPixels, 0, img.getWidth());
+        
+        return img;
+    }
+    
+    private int[] getPixelInRow(int y, int[] data, int width) {
+        
+        int[] pixels = new int[width];
+        int pos = 0;
+        for(int x = 0; x < width; x++) {
+            pixels[pos] = data[y * width + x];
+            pos += 1;
+        }
+        return pixels;
+    }
+    
     private Point getSpriteCoordinates(SpriteType type) {
 
         Point pos = new Point(0, 0);

@@ -16,6 +16,7 @@ import com.thunderslash.enumerations.ButtonAction;
 import com.thunderslash.enumerations.DepthLevel;
 import com.thunderslash.enumerations.ElementAlign;
 import com.thunderslash.enumerations.GameState;
+import com.thunderslash.enumerations.GuiAnimationType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Player;
@@ -40,14 +41,15 @@ public class GuiRenderer {
     private GuiElementManager guiManager;
     
     private DecimalFormat df;
+    private SpriteCreator sc;
     
     public GuiRenderer() {
     
         this.guiManager = Game.instance.getGuiElementManager();
-        SpriteCreator sc = Game.instance.getSpriteCreator();
+        this.sc = Game.instance.getSpriteCreator();
         
-        df = new DecimalFormat();
-        df.setMaximumFractionDigits(2);
+        this.df = new DecimalFormat();
+        this.df.setMaximumFractionDigits(2);
         
         int tintAmount = 3;
         
@@ -88,20 +90,7 @@ public class GuiRenderer {
     }
     
     private void createLoadingElements() {
-     
-        // create background
-        List<GuiElement> bg = new ArrayList<GuiElement>();
-        
-        int spriteSize = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
-        
-        for(int y = 0; y < (Game.CAMERA_HEIGHT / spriteSize) + 3; y++) {
-            for(int x = 0; x < Game.CAMERA_WIDTH / spriteSize; x++) {
-                bg.add(new GuiImage(x * spriteSize, y * spriteSize - spriteSize, bgSprite, DepthLevel.BACKGROUND, false));
-            }
-        }
-        
-        this.guiManager.addMultipleElementsToLoading(bg);
-        
+        this.guiManager.addMultipleElementsToLoading(this.createScrollingBackground(GuiAnimationType.SCROLL_DOWN));
     }
     
     private void createMainmenuElements() {
@@ -112,21 +101,30 @@ public class GuiRenderer {
         Button playButton = new Button(xpos, starty, this.playButtonSprite, ButtonAction.PLAY);
         Button exitButton = new Button(xpos, starty + this.exitButtonSprite.getHeight() + margin, this.exitButtonSprite, ButtonAction.EXIT);
         
-        // create background
-        List<GuiElement> bg = new ArrayList<GuiElement>();
-        
-        int spriteSize = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
-        
-        for(int y = 0; y < (Game.CAMERA_HEIGHT / spriteSize) + 3; y++) {
-            for(int x = 0; x < Game.CAMERA_WIDTH / spriteSize; x++) {
-                bg.add(new GuiImage(x * spriteSize, y * spriteSize - spriteSize, bgSprite, DepthLevel.BACKGROUND, false));
-            }
-        }
-        
         // add elements to list
         this.guiManager.addElementToMainmenu(playButton);
         this.guiManager.addElementToMainmenu(exitButton);
-        this.guiManager.addMultipleElementsToMainmenu(bg);
+        this.guiManager.addMultipleElementsToMainmenu(this.createScrollingBackground(GuiAnimationType.SCROLL_DOWN));
+    }
+    
+    private List<GuiElement> createScrollingBackground(GuiAnimationType animType) {
+        List<GuiElement> elems = new ArrayList<GuiElement>();
+        
+        // calculate needed tile imgs to fill the screen.
+        int xamount = Game.CAMERA_WIDTH / bgSprite.getWidth();
+        int yamount = Game.CAMERA_HEIGHT / bgSprite.getHeight() + 3;
+                
+        BufferedImage tiledImg = sc.createTiledSprite(this.bgSprite, xamount, yamount);
+        //BufferedImage tiledImg2 = sc.createTiledSprite(sc.CreateSprite(SpriteType.DAGGER_BACKGROUND), xamount, yamount);
+        
+        // minimum of two images are needed to create a scroll effect.
+        GuiImage gimg = new GuiImage(0, 0, tiledImg, DepthLevel.BACKGROUND, animType);
+        GuiImage gimg2 = new GuiImage(0, -tiledImg.getHeight(), tiledImg, DepthLevel.BACKGROUND, animType);    
+        
+        elems.add(gimg);
+        elems.add(gimg2);
+        
+        return elems;
     }
     
     // ----- RENDERING -----

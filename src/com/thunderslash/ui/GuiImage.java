@@ -5,17 +5,22 @@ import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.DepthLevel;
+import com.thunderslash.enumerations.GuiAnimationType;
 
 public class GuiImage extends GuiElement {
 
     private BufferedImage img;
     private DepthLevel deptLevel;
+    private GuiAnimationType guiAnimType;
     
-    public GuiImage(int x, int y, BufferedImage img, DepthLevel deptLevel, boolean isEnabled) {
+    private float speed = 2f;
+    
+    public GuiImage(int x, int y, BufferedImage img, DepthLevel deptLevel, GuiAnimationType animType) {
         super(x, y, img.getWidth(), img.getHeight());
         this.img = img;
         this.deptLevel = deptLevel;
-        this.isEnabled = isEnabled;
+        this.guiAnimType = animType;
+        this.isEnabled = false;
     }
 
     public void render(Graphics g) {
@@ -24,22 +29,23 @@ public class GuiImage extends GuiElement {
 
     public void tick() {
         
-        int spriteSize = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
-        float speed = 2f;
+        if(this.guiAnimType == GuiAnimationType.SCROLL_DOWN) this.scrollDown();
+        else if(this.guiAnimType == GuiAnimationType.SCROLL_UP) this.scrollUp();
         
-        if(this.deptLevel == DepthLevel.FOREGROUND) this.y += speed;
-        else if(this.deptLevel == DepthLevel.BACKGROUND) this.y += speed / 2;
-        
-        if(this.y > Game.HEIGHT + spriteSize) this.y = -spriteSize;
     }
     
-    public void onClick() {
-        if(this.isEnabled) {}
+    private void scrollUp() {
+        this.y -= speed;
+        if(this.y + this.img.getHeight() < 0) this.y += this.img.getHeight() * 2;
     }
     
-    public void onHover() {
-        if(this.isEnabled) {}
+    private void scrollDown() {
+        this.y += speed;
+        if(this.y > Game.HEIGHT) this.y += -this.img.getHeight() * 2;
     }
+    
+    public void onClick() { if(this.isEnabled) {} }
+    public void onHover() { if(this.isEnabled) {} }
 
     // ----- GETTERS & SETTERS -----
     public BufferedImage getImg() { return img; }
