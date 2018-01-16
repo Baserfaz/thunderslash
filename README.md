@@ -37,6 +37,7 @@ The **major** features are:
 * diverse enemies: hopping slimes, walking skeletons, charging tanks, ranged enemies etc.
 * tweaking gameplay feeling: screenshake, precise animations, tight controls, persistent objects etc.
 * implement a main gameplay mechanic, which for now is unknown??.
+* respawning enemies?
 * ~~implementing support for fore- and background sprites ~~
 * ~~actions correspond the animation frame (e.g. jump and attack only on a certain frame of the animation)~~
 * ~~GUI-elements: images, buttons, strings~~
