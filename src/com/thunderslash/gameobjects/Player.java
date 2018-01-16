@@ -196,6 +196,7 @@ public class Player extends Actor {
             this.focusedObject = null;
             this.currentCollisionPollingTimer = 0.0;
             for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, false)) {
+                
                 if(go instanceof Chest && ((Chest)go).isOpen() == false) {
                     go.hasFocus = this.hitbox.intersects(go.getHitbox());
                     if(go.hasFocus) this.focusedObject = go;
@@ -216,6 +217,9 @@ public class Player extends Actor {
                         if(enemy.getHP().isDead() == false && this.hitbox.intersects(go.getHitbox())) {
                             this.isInvulnerable = true;
                             this.HP.takeDamage(1);
+                            
+                            System.out.println("HIT AN ENEMY! OUCH");
+                            
                         }
                     }
                 }

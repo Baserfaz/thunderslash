@@ -13,11 +13,14 @@ public class LevelData {
     private int width;
     private int height;
     private int[] pixels;
+    
     private List<Block> blocks;
     private List<Block> background;
     private List<VanityObject> vanityObjects;
     private List<GameObject> items;
     private List<Actor> actors;
+    
+    private List<GameObject> gameObjects;
     
     public LevelData(int width, int height, List<Block> blocks, 
             List<VanityObject> vanityObjects, List<GameObject> items, List<Actor> actors) {
@@ -55,5 +58,6 @@ public class LevelData {
     public void setActors(List<Actor> actors) { this.actors = actors; }
     public List<Block> getBackground() { return background; }
     public void setBackground(List<Block> background) { this.background = background; }
+    public List<GameObject> getGameObjects() { return this.gameObjects; }
     
 }

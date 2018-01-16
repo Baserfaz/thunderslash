@@ -18,7 +18,7 @@ public class AnimationCreator {
                 break;
                 
             case PLAYER_WALK:
-                animation = new Animation(spriteCreator.createMultipleSprites(8, 1, 2));
+                animation = new Animation(spriteCreator.createMultipleSprites(8, 1, 4));
                 break;
             
             case PLAYER_FALL:

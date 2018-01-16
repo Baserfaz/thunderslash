@@ -23,7 +23,7 @@ public class Crystal extends GameObject {
     public Crystal(Point worldPos, SpriteType type) {
         super(worldPos, type);
         SpriteCreator sc = Game.instance.getSpriteCreator();
-        this.exclamationMark = sc.CreateCustomSizeSprite(5, 6 * 32 + 6, 1, 9, Game.SPRITESIZEMULT);
+        this.exclamationMark = sc.CreateCustomSizeSprite(13, 6 * 32 + 16, 4, 16, 2);
         this.bounceAnim = AnimationCreator.createAnimation(AnimationType.CRYSTAL_BOUNCE);
         this.usedSprite = sc.CreateSprite(SpriteType.CRYSTAL_USED);
     }

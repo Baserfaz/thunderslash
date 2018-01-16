@@ -68,8 +68,7 @@ public class Projectile extends GameObject {
                 } 
                 
                 if(hit) {
-                    this.isVisible = false;
-                    this.isEnabled = false;
+                    go.deactivate();
                     Game.instance.getHandler().RemoveObject(this);
                 }
             }

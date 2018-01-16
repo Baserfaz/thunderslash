@@ -28,7 +28,7 @@ public class Chest extends PhysicsObject {
         
         // cache sprites
         SpriteCreator sc = Game.instance.getSpriteCreator();
-        this.questionMark = sc.CreateCustomSizeSprite(0, 6 * 32 + 6, 4, 9, Game.SPRITESIZEMULT);
+        this.questionMark = sc.CreateCustomSizeSprite(0, 6 * 32 + 16, 10, 16, 2);
         this.openSprite = sc.CreateSprite(SpriteType.CHEST_OPEN);
         
         this.particleEmitter = Game.instance.getEmitterManager().createEmitter(this);

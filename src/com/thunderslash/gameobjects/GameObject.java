@@ -69,10 +69,13 @@ public abstract class GameObject {
     
     protected List<GameObject> getNearbyGameObjects(float distance, boolean allowBlocks) {
         List<GameObject> objs = new ArrayList<GameObject>();
+        
         for(GameObject go : Game.instance.getHandler().getObjects()) {
-            if(go instanceof Player) continue;
-            if(allowBlocks == false && go instanceof Block) continue;
-            if(go.hitboxCenter.distance(this.hitboxCenter) < distance) objs.add(go); 
+            if(go.isEnabled) {
+                if(go instanceof Player) continue;
+                if(allowBlocks == false && go instanceof Block) continue;
+                if(go.hitboxCenter.distance(this.hitboxCenter) < distance) objs.add(go); 
+            }
         }
         return objs;
     }

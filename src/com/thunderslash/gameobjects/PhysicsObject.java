@@ -64,7 +64,6 @@ public abstract class PhysicsObject extends GameObject {
     }
     
     public void render(Graphics g) {}
-    
     protected abstract void onLanding();
     
     protected void knockback(GameObject target, Direction dir) {
@@ -199,8 +198,6 @@ public abstract class PhysicsObject extends GameObject {
         List<Point> collisionPoints = this.createCollisionPoints();
         
         for(GameObject go : this.getNearbyGameObjects(this.collisionDistance, true)) {
-
-            if(go.isEnabled == false) continue;
             
             if(go instanceof Block) {
                 this.handleBlockCollisions(go, collisionPoints);
@@ -303,6 +300,11 @@ public abstract class PhysicsObject extends GameObject {
                             Trap trap = (Trap) block;
                             if(this instanceof Actor) {
                                 ((Actor)this).getHP().takeDamage(trap.getDamage());
+                                
+                                if(this instanceof Player) {
+                                    System.out.println("HIT A TRAP! OUCH");
+                                }
+                                
                             }
                         }
                         
