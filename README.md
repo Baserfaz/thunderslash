@@ -19,10 +19,12 @@ This game mechanic is inspired by F2P MMORPG Dofus' Iop class spells: Intimidati
 Perhaps the main character could throw ranged, horizontal lightning hammers or something similar.  
 
 ## Features
-The game uses custom iteratively developed 2D-engine and this project presents multiple new features to it.
-The new features are so far (11.01.2018):
+The game uses custom, iteratively developed 2D-engine.
 * tile based sprite system
-* engine creates automatically hitboxes for different sized sprites
+* animation support
+* rendering and updating gameobjects
+* mouse and keyboard input support
+* automatic hitbox generation
 * Physics: simple physics (e.g. gravity)
 * collision detection with static environment
 * camera: smooth follow and optimized rendering
@@ -38,6 +40,7 @@ The **major** features are:
 * tweaking gameplay feeling: screenshake, precise animations, tight controls, persistent objects etc.
 * implement a main gameplay mechanic, which for now is unknown??.
 * respawning enemies?
+* ~~sound system~~
 * ~~implementing support for fore- and background sprites ~~
 * ~~actions correspond the animation frame (e.g. jump and attack only on a certain frame of the animation)~~
 * ~~GUI-elements: images, buttons, strings~~
@@ -69,6 +72,9 @@ low priority features:
 * resizeable window: currently 720p to ease the development
 * ~~scolling background gui effect~~
 * ~~simple mainmenu, pause menu and loading screen~~
+
+## Used libraries
+* [TinySound](https://github.com/finnkuusisto/TinySound)
 
 ## Contribution
 Heikki Heiskanen - design & implementation
