@@ -52,9 +52,7 @@ public abstract class PhysicsObject extends GameObject {
         if(this.isEnabled) {
             this.updateCollisions();
             
-            if(this.lastGrounded == false && this.isGrounded && this instanceof Player) {
-                this.onLanding();
-            }
+            if(this.lastGrounded == false && this.isGrounded) this.onLanding();
             
             this.move();
             this.updateHitbox();

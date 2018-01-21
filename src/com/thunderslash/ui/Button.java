@@ -65,7 +65,7 @@ public class Button extends GuiElement {
                 int centerX = (r.x + r.width / 2) - txtWidth / 2;
                 int centerY = (r.y + txtHeight + r.height / 2) - txtHeight / 2;
                 
-                // render text inside it
+                // render text inside the button rectangle
                 g.setColor(this.fontColor);
                 g.drawString(this.txt, centerX, centerY);
             }
@@ -77,7 +77,7 @@ public class Button extends GuiElement {
     public void onClick() {
         if(this.isEnabled) {
             switch(this.action) {
-                case EXIT:
+                case EXIT_TO_OS:
                     System.exit(0);
                     break;
                 case PLAY:

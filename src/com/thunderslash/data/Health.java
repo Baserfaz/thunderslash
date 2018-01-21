@@ -1,7 +1,9 @@
 package com.thunderslash.data;
 
 import com.thunderslash.engine.Game;
+import com.thunderslash.enumerations.GameState;
 import com.thunderslash.enumerations.SpriteType;
+import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Enemy;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.Player;
@@ -24,13 +26,12 @@ public class Health {
     private void die() {
         this.isDead = true;
         
-        SpriteCreator sc = Game.instance.getSpriteCreator();
-        
-        // change the objects sprite to dead
-        if(this.object instanceof Enemy) {
-            this.object.setSprite(sc.CreateSprite(SpriteType.ENEMY_SLIME_DEAD));
-        } else if(this.object instanceof Player) {
-            this.object.setSprite(sc.CreateSprite(SpriteType.PLAYER_DEAD));
+        if(this.object instanceof Player) {
+            ((Player)this.object).onDeath();
+        } else if(this.object instanceof Enemy) { 
+            ((Enemy)this.object).onDeath();
+        } else {
+            System.out.println("Health::die: not supported for type: " + this.object.getClass().getTypeName());
         }
     }
     

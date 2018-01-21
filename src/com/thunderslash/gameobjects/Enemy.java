@@ -1,10 +1,12 @@
 package com.thunderslash.gameobjects;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.Mathf;
+import com.thunderslash.utilities.RenderUtils;
 
 public class Enemy extends Actor {
     
@@ -51,6 +53,12 @@ public class Enemy extends Actor {
              // always tick physics
              super.tick();
          }
+    }
+    
+    public void onDeath() {
+        BufferedImage img = Game.instance.getSpriteCreator().CreateSprite(SpriteType.ENEMY_SLIME_DEAD);
+        img = RenderUtils.tint(img, true, 2);
+        this.setSprite(img);
     }
     
     private void resetInputs() {

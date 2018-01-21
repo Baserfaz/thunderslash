@@ -289,6 +289,8 @@ public class LevelCreator {
             } else if(e) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED), 1));
+            } else if(sw && se && nw && ne) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_FOUR_CORNER));
             } else if(nw && ne) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_TWO_CORNER), 3));

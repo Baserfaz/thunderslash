@@ -31,13 +31,15 @@ public class Renderer {
     public void preRender(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
+        GameState gamestate = Game.instance.getGamestate();
         
         this.setRenderingHints(g2d);
         
-        if(Game.instance.getGamestate() == GameState.INGAME) this.renderIngame(g2d);
-        else if(Game.instance.getGamestate() == GameState.MAINMENU) this.renderMenu(g2d);
-        else if(Game.instance.getGamestate() == GameState.LOADING) this.renderLoading(g2d);
-        else if(Game.instance.getGamestate() == GameState.PAUSEMENU) this.renderPauseMenu(g2d);
+        if(gamestate == GameState.INGAME) this.renderIngame(g);
+        else if(gamestate== GameState.MAINMENU) this.renderMenu(g);
+        else if(gamestate == GameState.LOADING) this.renderLoading(g);
+        else if(gamestate == GameState.PAUSEMENU) this.renderPauseMenu(g);
+        else if(gamestate == GameState.GAME_OVER) this.renderGameOver(g);
     }
     
     private void setRenderingHints(Graphics2D g2d) {
@@ -52,22 +54,27 @@ public class Renderer {
         g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
     }
     
-    private void renderPauseMenu(Graphics2D g) {
-        //this.fillScreen(g, new Color(0, 0, 0, 255));
+    private void renderGameOver(Graphics g) {
+        this.guirenderer.renderGameOver(g);
+    }
+    
+    private void renderPauseMenu(Graphics g) {
         this.guirenderer.renderPauseMenu(g);
     }
     
-    private void renderLoading(Graphics2D g) {
+    private void renderLoading(Graphics g) {
         this.fillScreen(g, Color.white);
         this.guirenderer.renderLoading(g);        
     }
     
-    private void renderMenu(Graphics2D g) {
+    private void renderMenu(Graphics g) {
         this.fillScreen(g, Color.white);
         this.guirenderer.renderMenu(g);
     }
     
-    private void renderIngame(Graphics2D g) {
+    private void renderIngame(Graphics g) {
+        
+        Graphics2D g2d = (Graphics2D) g;
         
         Rectangle r = cam.getCameraBounds();
         
@@ -75,18 +82,18 @@ public class Renderer {
         this.fillScreen(g, new Color(40, 27, 91, 255));
         
         // set zoom level
-        g.scale(1, 1);
+        g2d.scale(1, 1);
 
         // move the camera
-        g.translate(-r.x, -r.y);
+        g2d.translate(-r.x, -r.y);
         
-        handler.renderGameObjects(g);
+        handler.renderGameObjects(g2d);
         
-        this.renderAnimations(g);
-        handler.renderParticles(g);
+        this.renderAnimations(g2d);
+        handler.renderParticles(g2d);
         
-        this.renderDebug(g);
-        this.guirenderer.renderIngame(g);
+        this.renderDebug(g2d);
+        this.guirenderer.renderIngame(g2d);
         
     }
     

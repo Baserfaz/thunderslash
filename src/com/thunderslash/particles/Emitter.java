@@ -7,9 +7,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thunderslash.data.Animation;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ParticleType;
 import com.thunderslash.gameobjects.GameObject;
+import com.thunderslash.utilities.AnimationCreator;
 import com.thunderslash.utilities.Mathf;
 import com.thunderslash.utilities.RenderUtils;
 import com.thunderslash.utilities.SpriteCreator;
@@ -27,6 +29,9 @@ public class Emitter {
     private BufferedImage goldParticleSprite;
     private BufferedImage dustParticleSprite;
     
+    // cached animations
+    private Animation dustCloudAnimation;
+    
     public Emitter(GameObject parent) {
         this.particles = new ArrayList<Particle>();
         this.parentObject = parent;
@@ -37,11 +42,14 @@ public class Emitter {
         this.goldParticleSprite = RenderUtils.tintWithColor(this.defaultParticleSprite, Color.YELLOW);
         this.dustParticleSprite = RenderUtils.tintWithColor(this.defaultParticleSprite, Color.black);
         
+        // create cached animations
+        this.dustCloudAnimation = AnimationCreator.createDustCloudAnimation();
+        
         Point pos = parent.getHitboxCenter();
         
         // populate particles list
         for(int i = 0; i < this.defaultMaxParticleAmount; i++) {
-            this.particles.add(new Particle(pos.x, pos.y, this.defaultParticleSprite));
+            this.particles.add(new Particle(pos.x, pos.y, this.defaultParticleSprite, null));
         }
     }
     
@@ -65,8 +73,15 @@ public class Emitter {
         
         if(offset == null) offset = new Point(0, 0);
         
-        BufferedImage img = this.getSpriteFromParticleType(particleType);
+        BufferedImage img = null;
+        Animation anim = null;
         
+        if(particleType == ParticleType.DUST_ANIM) {
+            anim = this.dustCloudAnimation;
+        } else {
+            img = this.getSpriteFromParticleType(particleType);
+        }
+            
         for(int i = 0; i < n; i++) {
             Particle current = this.getFreeParticle();
             if(current != null) {
@@ -78,7 +93,10 @@ public class Emitter {
                 current.enable();
                 current.setPosition(this.x + offset.x, this.y + offset.y);
                 current.setAcceleration(accel);
+                
+                // set sprite and animation
                 current.setSprite(img);
+                current.setAnimation(anim);
             }
         }
     }

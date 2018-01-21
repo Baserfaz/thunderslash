@@ -38,14 +38,14 @@ public class GuiRenderer {
     private BufferedImage exitButtonSprite;
     private BufferedImage bgSprite;
     
-    private GuiElementManager guiManager;
+    private GuiElementManager guiElementManager;
     
     private DecimalFormat df;
     private SpriteCreator sc;
     
     public GuiRenderer() {
     
-        this.guiManager = Game.instance.getGuiElementManager();
+        this.guiElementManager = Game.instance.getGuiElementManager();
         this.sc = Game.instance.getSpriteCreator();
         
         this.df = new DecimalFormat();
@@ -71,6 +71,7 @@ public class GuiRenderer {
         this.createMainmenuElements();
         this.createLoadingElements();
         this.createPauseMenuElements();
+        this.createGameOverElements();
     }
     
     private void createPauseMenuElements() {
@@ -82,15 +83,28 @@ public class GuiRenderer {
         int xpos = (Game.CAMERA_WIDTH / 2) - width / 2;
         
         Button resumeButton = new Button(xpos, starty, width, height, "Resume", Color.black, Color.white, 40, ButtonAction.RESUME);
-        Button exitButton = new Button(xpos, starty + height + margin, width, height, "Exit", Color.black, Color.white, 40, ButtonAction.EXIT);
+        Button exitButton = new Button(xpos, starty + height + margin, width, height, "Exit", Color.black, Color.white, 40, ButtonAction.EXIT_TO_OS);
         
-        this.guiManager.addElementToPauseMenu(resumeButton);
-        this.guiManager.addElementToPauseMenu(exitButton);
+        this.guiElementManager.addElementToPauseMenu(resumeButton);
+        this.guiElementManager.addElementToPauseMenu(exitButton);
         
     }
     
+    private void createGameOverElements() {
+        
+        int width = 350;
+        int height = 75;
+        int margin = 10;
+        int starty = 400;
+        int xpos = (Game.CAMERA_WIDTH / 2) - width / 2;
+        
+        Button exitButton = new Button(xpos, starty, width, height, "Exit", Color.black, Color.white, 40, ButtonAction.EXIT_TO_MENU);
+        
+        this.guiElementManager.addElementToGameOver(exitButton);
+    }
+    
     private void createLoadingElements() {
-        this.guiManager.addMultipleElementsToLoading(this.createScrollingBackground(GuiAnimationType.SCROLL_DOWN));
+        this.guiElementManager.addMultipleElementsToLoading(this.createScrollingBackground(GuiAnimationType.SCROLL_DOWN));
     }
     
     private void createMainmenuElements() {
@@ -99,12 +113,12 @@ public class GuiRenderer {
         int xpos = Game.CAMERA_WIDTH / 2 - 175;
         
         Button playButton = new Button(xpos, starty, this.playButtonSprite, ButtonAction.PLAY);
-        Button exitButton = new Button(xpos, starty + this.exitButtonSprite.getHeight() + margin, this.exitButtonSprite, ButtonAction.EXIT);
+        Button exitButton = new Button(xpos, starty + this.exitButtonSprite.getHeight() + margin, this.exitButtonSprite, ButtonAction.EXIT_TO_OS);
         
         // add elements to list
-        this.guiManager.addElementToMainmenu(playButton);
-        this.guiManager.addElementToMainmenu(exitButton);
-        this.guiManager.addMultipleElementsToMainmenu(this.createScrollingBackground(GuiAnimationType.SCROLL_DOWN));
+        this.guiElementManager.addElementToMainmenu(playButton);
+        this.guiElementManager.addElementToMainmenu(exitButton);
+        this.guiElementManager.addMultipleElementsToMainmenu(this.createScrollingBackground(GuiAnimationType.SCROLL_DOWN));
     }
     
     private List<GuiElement> createScrollingBackground(GuiAnimationType animType) {
@@ -115,7 +129,6 @@ public class GuiRenderer {
         int yamount = Game.CAMERA_HEIGHT / bgSprite.getHeight() + 3;
                 
         BufferedImage tiledImg = sc.createTiledSprite(this.bgSprite, xamount, yamount);
-        //BufferedImage tiledImg2 = sc.createTiledSprite(sc.CreateSprite(SpriteType.DAGGER_BACKGROUND), xamount, yamount);
         
         // minimum of two images are needed to create a scroll effect.
         GuiImage gimg = new GuiImage(0, 0, tiledImg, DepthLevel.BACKGROUND, animType);
@@ -129,21 +142,27 @@ public class GuiRenderer {
     
     // ----- RENDERING -----
     public void renderLoading(Graphics g) {
-        this.guiManager.render(g, GameState.LOADING);
+        this.guiElementManager.render(g, GameState.LOADING);
         this.renderString("Loading", Game.CAMERA_WIDTH - 20, Game.CAMERA_HEIGHT, Color.white, 50f, ElementAlign.LEFT, g);
     }
     
     public void renderMenu(Graphics g) {
         int centerx = Game.CAMERA_WIDTH / 2;
         
-        this.guiManager.render(g, GameState.MAINMENU);
+        this.guiElementManager.render(g, GameState.MAINMENU);
         this.renderString(Game.TITLE, centerx, 200, Color.white, 60, ElementAlign.CENTER, g);
         this.renderString(Game.VERSION, centerx, 700, Color.white, 30, ElementAlign.CENTER, g);
     }
     
+    public void renderGameOver(Graphics g) {
+        int centerx = Game.CAMERA_WIDTH / 2;
+        this.renderString("Game over", centerx, 200, Color.white, 60f, ElementAlign.CENTER, g);
+        this.guiElementManager.render(g, GameState.GAME_OVER);
+    }
+    
     public void renderPauseMenu(Graphics g) {
         this.renderString("Paused", Game.CAMERA_WIDTH / 2, 100, Color.white, 60f, ElementAlign.CENTER, g);
-        this.guiManager.render(g, GameState.PAUSEMENU);
+        this.guiElementManager.render(g, GameState.PAUSEMENU);
     }
     
     public void renderIngame(Graphics g) {
@@ -169,7 +188,7 @@ public class GuiRenderer {
         this.renderString(Game.instance.getSession().getScore() + "",
                 r.x + r.width - 20, r.y + 70, Color.white, 50f, ElementAlign.LEFT, g);
         
-        this.guiManager.render(g, GameState.INGAME);
+        this.guiElementManager.render(g, GameState.INGAME);
         
         // render debugging information
         this.renderDebugInfo(g);
@@ -189,13 +208,18 @@ public class GuiRenderer {
             int x = r.x + 20;
             int y = r.y + 150;
             
+            double playerx = player.getWorldPosition().getX();
+            double playery = player.getWorldPosition().getY();
+            Rectangle camRect = Game.instance.getCamera().getCameraBounds();
+            
             // create info strings
             String info = "---- SYSTEM ----\n";
             info += "frame time: " + this.df.format(Game.instance.getTimeBetweenFrames()) + "\n"; 
             info += "fps: " + Game.FPS + "\n";
             info += "version: " + Game.VERSION + "\n";
             info += "---- PLAYER ----\n";
-            info += "pos: " + player.getWorldPosition().toString() + "\n";
+            info += "pos: " + playerx + ", " + playery + "\n";
+            info += "cam pos: " + camRect.x + ", " + camRect.y + "\n";
             info += "input: " + player.getDirection().toString()+ "\n";
             info += "acceleration: " + player.getAcceleration().toString() + "\n";
             info += "velocity: " + player.getVelocity().toString() + "\n";

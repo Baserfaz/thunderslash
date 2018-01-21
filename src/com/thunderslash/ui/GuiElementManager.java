@@ -13,12 +13,14 @@ public class GuiElementManager {
     private List<GuiElement> loadingElements;
     private List<GuiElement> ingameElements;
     private List<GuiElement> pausemenuElements;
+    private List<GuiElement> gameOverElements;
     
     public GuiElementManager() {
         this.mainmenuElements = new ArrayList<GuiElement>();
         this.loadingElements = new ArrayList<GuiElement>();
         this.ingameElements = new ArrayList<GuiElement>();
         this.pausemenuElements = new ArrayList<GuiElement>();
+        this.gameOverElements = new ArrayList<GuiElement>();
     }
 
     public void render(Graphics g, GameState state) {
@@ -27,7 +29,13 @@ public class GuiElementManager {
         List<GuiElement> imagesBackground = new ArrayList<GuiElement>();
         List<GuiElement> imagesForeground = new ArrayList<GuiElement>();
                 
-        for(GuiElement e : this.getGuiElementList(state)) {
+        List<GuiElement> elems = this.getGuiElementList(state);
+        
+        if(elems.isEmpty()) {
+            return;
+        }
+        
+        for(GuiElement e : elems) {
             if(e instanceof Button) buttons.add(e);
             else if(e instanceof GuiImage) {
                 
@@ -38,10 +46,13 @@ public class GuiElementManager {
                 } else if(img.getDeptLevel() == DepthLevel.FOREGROUND) {
                     imagesForeground.add(e);
                 }
+                
+            } else {
+                System.out.println("GuiElementManager::render: unsupported GuiElement type: " + e.getClass().getTypeName());
             }
         }
         
-        // render in queue
+        // render in back to front order
         for(GuiElement e : imagesBackground) e.render(g);
         for(GuiElement e : imagesForeground) e.render(g);
         for(GuiElement e : buttons) e.render(g);
@@ -85,6 +96,9 @@ public class GuiElementManager {
         case PAUSEMENU:
             selectedList = this.pausemenuElements;
             break;
+        case GAME_OVER:
+            selectedList = this.gameOverElements;
+            break;
         default:
             System.out.println("GuiElementManager::render: Gamestate not supported!");
             break;
@@ -110,5 +124,7 @@ public class GuiElementManager {
     public List<GuiElement> getPausemenuElements() { return this.pausemenuElements; }
     public void addMultipleElementsToPausemenu(List<GuiElement> elements) { this.pausemenuElements.addAll(elements); }
     
-    
+    public void addElementToGameOver(GuiElement element) { this.gameOverElements.add(element); }
+    public List<GuiElement> getGameOverElements() { return this.gameOverElements; }
+    public void addMultipleElementsToGameOver(List<GuiElement> elements) { this.gameOverElements.addAll(elements); }
 }

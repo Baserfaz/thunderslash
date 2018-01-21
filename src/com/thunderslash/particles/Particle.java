@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import com.thunderslash.data.Animation;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.gameobjects.Block;
@@ -18,16 +19,31 @@ public class Particle {
     
     private Rectangle collider = new Rectangle();
     
+    private Animation animation;
     private BufferedImage sprite;
+    
+    private BufferedImage frame;
+    
+    private double frameTime = 50.0;
+    private double currentFrameTime = 0.0;
+    private int frameIndex = 0;
+    
     private double currentLifeTime = 0.0;
     private double maxLifeTime = 10000.0;
     
     private boolean enabled = false;
     
-    public Particle(int x, int y, BufferedImage img) {
+    public Particle(int x, int y, BufferedImage img, Animation animation) {
         this.position.x = x;
         this.position.y = y;
-        this.sprite = img;
+        
+        if(img != null) {
+            this.sprite = img;
+            this.frame = this.sprite;
+        } else if(animation != null) {
+            this.animation = animation;
+            this.frame = this.animation.getFrame(0);
+        } else System.out.println("Particle::Constructor: no image or animation!");
     }
 
     public void enable() {
@@ -41,20 +57,44 @@ public class Particle {
     
     public void tick() {
         if(this.enabled) {
-            if(this.currentLifeTime < maxLifeTime) {
+            
+            if(this.sprite != null) {
+                if(this.currentLifeTime < maxLifeTime) {
+                    
+                    this.currentLifeTime += Game.instance.getTimeBetweenFrames();
+                    this.move();
+                    this.checkCollisions();
+                    
+                } else {
+                    this.enabled = false;
+                }
                 
-                this.currentLifeTime += Game.instance.getTimeBetweenFrames();
+            } else if(this.animation != null) {
+                
                 this.move();
-                this.checkCollisions();
+                //this.checkCollisions();
                 
-            } else {
-                this.enabled = false;
+                if(this.currentFrameTime > this.frameTime) {
+                    this.currentFrameTime = 0.0;
+                    this.frameIndex += 1;
+                    
+                    if(frameIndex == this.animation.getAnimationLength()) {
+                        this.enabled = false;
+                        this.frameIndex = 0;
+                    } else {
+                        this.frame = this.animation.getFrame(this.frameIndex);
+                    }
+                    
+                } else {
+                    this.currentFrameTime += Game.instance.getTimeBetweenFrames();
+                }
+                
             }
         }
     }
     
     public void render(Graphics g) {
-        if(this.enabled) g.drawImage(this.sprite, this.position.x, this.position.y, null);       
+        if(this.enabled) g.drawImage(this.frame, this.position.x, this.position.y, null);       
     }
     
     private void checkCollisions() {
@@ -93,6 +133,8 @@ public class Particle {
     public void setX(int x) { this.position.x = x; }
     public int getY() { return this.position.y; }
     public void setY(int y) { this.position.y = y; }
+    public void setAnimation(Animation anim) { this.animation = anim; }
+    public Animation getAnimation() { return this.animation; }
     public BufferedImage getSprite() { return sprite; }
     public void setSprite(BufferedImage sprite) { this.sprite = sprite; }
     public Vector2 getAcceleration() { return acceleration; }

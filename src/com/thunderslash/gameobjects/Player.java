@@ -11,6 +11,8 @@ import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.AnimationType;
 import com.thunderslash.enumerations.Direction;
+import com.thunderslash.enumerations.GameState;
+import com.thunderslash.enumerations.ParticleType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.AnimationCreator;
 import com.thunderslash.utilities.RenderUtils;
@@ -110,6 +112,13 @@ public class Player extends Actor {
         }
     }
 
+    public void onDeath() {
+        BufferedImage img = Game.instance.getSpriteCreator().CreateSprite(SpriteType.PLAYER_DEAD);
+        img = RenderUtils.tint(img, true, 2);
+        this.setSprite(img);
+        // Game.instance.setGamestate(GameState.GAME_OVER);
+    }
+    
     private void updateAnimationFrame() {
         
         BufferedImage frame = null;

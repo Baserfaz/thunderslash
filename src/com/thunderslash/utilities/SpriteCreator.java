@@ -274,28 +274,28 @@ public class SpriteCreator {
 
         switch(type) {
             
+            case DAGGER_BACKGROUND:
+                pos.x = 0;
+                pos.y = 10;
+                break;
+        
             case BACKGROUND_TILE_01:
-                pos.x = 2;
-                pos.y = 3;
+                pos.x = 1;
+                pos.y = 10;
                 break;
             
             case BACKGROUND_TILE_02:
-                pos.x = 3;
-                pos.y = 3;
+                pos.x = 2;
+                pos.y = 10;
                 break;
                 
             case BACKGROUND_TILE_03:
-                pos.x = 4;
-                pos.y = 3;
+                pos.x = 3;
+                pos.y = 10;
                 break;
                 
             case BACKGROUND_TILE_04:
-                pos.x = 5;
-                pos.y = 3;
-                break;
-                
-            case DAGGER_BACKGROUND:
-                pos.x = 0;
+                pos.x = 4;
                 pos.y = 10;
                 break;
                 
@@ -374,14 +374,19 @@ public class SpriteCreator {
                 pos.y = 4;
                 break;
                 
+            case WALL_FOUR_CORNER:
+                pos.x = 2;
+                pos.y = 3;
+                break;
+                
             case GATE_CLOSED:
                 pos.x = 3;
-                pos.y = 4;
+                pos.y = 3;
                 break;
                 
             case GATE_OPEN:
                 pos.x = 4;
-                pos.y = 4;
+                pos.y = 3;
                 break;
                 
             case SPIKES:

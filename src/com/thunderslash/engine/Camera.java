@@ -33,15 +33,13 @@ public class Camera {
           
             // calculate new camera position
             // centers cam pos to the target.
-            Point target = Util.calculateCameraPos();
+            Point target = Util.calculateCameraPos(this.followTarget);
             
             // apply camera smoothing
             camX -= (target.x + camX) * Game.CAMERA_SMOOTH_MULT;
             camY -= (target.y + camY) * Game.CAMERA_SMOOTH_MULT * 2;
           
-            // on first pass instantly 
-            // focus on player, after that
-            // use smoothing.
+            // on first pass instantly focus on target, after that use smoothing.
             if(this.firstPass) {
                 firstPass = false;
                 this.Update(-target.x, -target.y);

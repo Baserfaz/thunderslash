@@ -3,6 +3,7 @@ package com.thunderslash.utilities;
 import com.thunderslash.engine.Camera;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.Direction;
+import com.thunderslash.gameobjects.GameObject;
 
 import java.lang.Math;
 import java.awt.Color;
@@ -66,7 +67,7 @@ public class Util {
         return a + b;
     }
 
-    public static Point calculateCameraPos() {
+    public static Point calculateCameraPos(GameObject target) {
 
         int spriteSize = Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT;
 
@@ -78,9 +79,9 @@ public class Util {
             return null;
         }
 
-        if(cam.getFollowTarget() != null) {
-            x = (-cam.getFollowTarget().getWorldPosition().x - spriteSize / 2) + Game.CAMERA_WIDTH / 2;
-            y = (-cam.getFollowTarget().getWorldPosition().y - spriteSize / 2) + Game.CAMERA_HEIGHT / 2;
+        if(target != null) {
+            x = (-target.getWorldPosition().x - spriteSize / 2) + Game.CAMERA_WIDTH / 2;
+            y = (-target.getWorldPosition().y - spriteSize / 2) + Game.CAMERA_HEIGHT / 2;
         }
 
         return new Point(x, y);

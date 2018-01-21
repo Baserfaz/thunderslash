@@ -47,10 +47,6 @@ public class Animation {
         this.y = y;
     }
     
-    public int getAnimationLength() {
-        return this.frames.length;
-    }
-    
     public void tick() {
         
         this.currentFrame = this.getFrame(this.currentAnimIndex);
@@ -66,52 +62,27 @@ public class Animation {
         }
         
         this.currentFrameTime += dt;
-        
     }
     
     public BufferedImage getFrame(int index) {
-        
         BufferedImage img = null;
-        
         try {
             img = this.frames[index];
         } catch(ArrayIndexOutOfBoundsException e) {
             img = this.frames[0];
         }
-        
         return img;
     }
     
-    public BufferedImage[] getFrames() {
-        return frames;
-    }
-
-    public BufferedImage getCurrentFrame() {
-        return currentFrame;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public boolean getHasFinished() {
-        return this.hasFinished;
-    }
-
-    public void setHasFinished(boolean hasFinished) {
-        this.hasFinished = hasFinished;
-    }
+    // ---- GETTERS & SETTERS ----
+    public int getAnimationLength() { return this.frames.length; }
+    public BufferedImage[] getFrames() { return frames; }
+    public BufferedImage getCurrentFrame() { return currentFrame; }
+    public int getX() { return x; }
+    public void setX(int x) { this.x = x; }
+    public int getY() { return y; }
+    public void setY(int y) { this.y = y; }
+    public boolean getHasFinished() { return this.hasFinished; }
+    public void setHasFinished(boolean hasFinished) { this.hasFinished = hasFinished; }
     
 }

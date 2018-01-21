@@ -31,7 +31,7 @@ public class Game extends Canvas implements Runnable {
     public static final int HEIGHT                 = 720;
 
     public static final String TITLE               = "Project Thunderslash";
-    public static final String VERSION             = "v. 0.1a";
+    public static final String VERSION             = "v. 0.1b";
 
     public static final int CAMERA_WIDTH           = Game.WIDTH;
     public static final int CAMERA_HEIGHT          = Game.HEIGHT;
@@ -228,7 +228,7 @@ public class Game extends Canvas implements Runnable {
 
         Graphics g = bs.getDrawGraphics();
 
-        // draws all graphics
+        // render pipeline starts here.
         this.renderer.preRender(g);
 
         g.dispose();
@@ -237,7 +237,7 @@ public class Game extends Canvas implements Runnable {
 
     private void tick() { 
         
-        // handle gamestate change.
+        // handle game state change.
         if(this.lastGameState != this.gamestate) this.onGameStateChange();
         
         if(this.gamestate == GameState.INGAME) {
@@ -245,17 +245,14 @@ public class Game extends Canvas implements Runnable {
                 handler.tickGameObjects(); 
                 handler.tickAnimations();
                 handler.tickEmitters();
-                this.camera.tick();
-                this.guiElementManager.tick(GameState.INGAME);
             }
-        } else if(this.gamestate == GameState.MAINMENU) {
-            this.guiElementManager.tick(GameState.MAINMENU);
-        } else if(this.gamestate == GameState.LOADING) {
-            this.guiElementManager.tick(GameState.LOADING);
-        } else if(this.gamestate == GameState.PAUSEMENU) {
-            this.guiElementManager.tick(GameState.PAUSEMENU);
         }
         
+        // always tick
+        this.guiElementManager.tick(this.gamestate);
+        this.camera.tick();
+        
+        // cache last frame's state
         this.lastGameState = this.gamestate;
     }
     
