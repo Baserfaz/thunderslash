@@ -19,10 +19,12 @@ This game mechanic is inspired by F2P MMORPG Dofus' Iop class spells: Intimidati
 Perhaps the main character could throw ranged, horizontal lightning hammers or something similar.  
 
 ## Features
-The game uses custom iteratively developed 2D-engine and this project presents multiple new features to it.
-The new features are so far (11.01.2018):
+The game uses custom, iteratively developed 2D-engine.
 * tile based sprite system
-* engine creates automatically hitboxes for different sized sprites
+* animation support
+* rendering and updating gameobjects
+* mouse and keyboard input support
+* automatic hitbox generation
 * Physics: simple physics (e.g. gravity)
 * collision detection with static environment
 * camera: smooth follow and optimized rendering
@@ -32,11 +34,15 @@ The new features are so far (11.01.2018):
 
 ## TODO
 The **major** features are:
-* Actor collisions with physics objects
-* implementing support for fore- and background sprites 
+* new gameplay enablers: jump pads, water for swimming, lava, sticky walls etc.
+* More levels + level changing
 * diverse enemies: hopping slimes, walking skeletons, charging tanks, ranged enemies etc.
 * tweaking gameplay feeling: screenshake, precise animations, tight controls, persistent objects etc.
-* actions correspond the animation frame (e.g. jump and attack only on a certain frame of the animation)
+* implement a main gameplay mechanic, which for now is unknown??.
+* respawning enemies?
+* ~~sound system~~
+* ~~implementing support for fore- and background sprites ~~
+* ~~actions correspond the animation frame (e.g. jump and attack only on a certain frame of the animation)~~
 * ~~GUI-elements: images, buttons, strings~~
 * ~~main game mechanics: attacking and pushing~~
 * ~~enemies: Basic enemy with basic AI~~
@@ -46,24 +52,29 @@ The **major** features are:
 * ~~enemy spawnpoint support in level editor~~
 
 minor features:
-* tileset support (changeable tilesets between levels)
+* Actor collisions with physics objects (other actors, items, etc.)
+* tileset support (changeable tilesets between level types)
 * graphics (pixel art, 32x32 sprites): multiple tilesets, background, parallax effect
 * pickupable items: coins, health, powerups etc.
-* particle effect support: emitters/particles
 * controller support
+* ~~particle effect support: emitters/particles~~
 * ~~mouse and keyboard support~~
 * ~~rebindable keys support~~
-* ~~level hazard support (traps, spikes etc.)~~
+* ~~level hazards (traps, spikes etc.)~~
 * ~~animation support~~
 * ~~sprite animations for the player: walk, fall, attack, cast, idle~~
-* ~~GUI: hp/score~~
+* ~~GUI: hp + energy + score~~
 * ~~usable items: crystal~~
 
 low priority features:
 * friendly NPCs
 * text dialogs: conversations + help signs
 * resizeable window: currently 720p to ease the development
-* ~~simple mainmenu~~
+* ~~scolling background gui effect~~
+* ~~simple mainmenu, pause menu and loading screen~~
+
+## Used libraries
+* [TinySound](https://github.com/finnkuusisto/TinySound)
 
 ## Contribution
 Heikki Heiskanen - design & implementation
