@@ -64,7 +64,7 @@ public class AnimationCreator {
                 break;
                 
             case LIGHTNING_STRIKE:
-                System.out.println("Lightning strike animation not yet implemented!");
+                System.out.println("AnimationCreator::createAnimation: Lightning strike animation not yet implemented!");
                 break;
                 
             case TORCH:

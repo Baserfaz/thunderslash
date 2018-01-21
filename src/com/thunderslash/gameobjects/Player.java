@@ -11,8 +11,7 @@ import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.AnimationType;
 import com.thunderslash.enumerations.Direction;
-import com.thunderslash.enumerations.GameState;
-import com.thunderslash.enumerations.ParticleType;
+import com.thunderslash.enumerations.SoundEffect;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.AnimationCreator;
 import com.thunderslash.utilities.RenderUtils;
@@ -274,6 +273,9 @@ public class Player extends Actor {
         if(this.canAttack) {
             this.attackTimer = 0.0;
             this.actorState = ActorState.ATTACKING;
+            
+            Game.instance.getSoundManager().playSound(SoundEffect.PLAYER_ATTACK);
+            
         }
     }
     
@@ -299,6 +301,8 @@ public class Player extends Actor {
                     
                     // add score
                     if(enemy.getHP().isDead()) Game.instance.getSession().addScore(enemy.getKillScore());
+                    
+                    Game.instance.getSoundManager().playSound(SoundEffect.ATTACK_HIT);
                     
                     // if cleave attacks are allowed then we are going to hit
                     // all our hit objects.

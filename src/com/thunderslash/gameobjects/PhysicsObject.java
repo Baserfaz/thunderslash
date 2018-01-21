@@ -10,6 +10,7 @@ import java.util.List;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.Direction;
+import com.thunderslash.enumerations.SoundEffect;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.Mathf;
 import com.thunderslash.utilities.Vector2;
@@ -114,6 +115,13 @@ public abstract class PhysicsObject extends GameObject {
                     this.acceleration.y = this.jumpForce;
                     this.isGrounded = false;
                     this.direction.y = 0f;
+                    
+                    if(this instanceof Player) {
+                        Game.instance.getSoundManager().playSound(SoundEffect.PLAYER_JUMP);
+                    } else if(this instanceof Enemy) {
+                        Game.instance.getSoundManager().playSound(SoundEffect.SLIME_JUMP);
+                    }
+                    
                 }
                 
                 // drop down

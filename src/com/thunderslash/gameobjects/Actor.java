@@ -11,6 +11,7 @@ import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.ActorState;
 import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.ParticleType;
+import com.thunderslash.enumerations.SoundEffect;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.particles.Emitter;
 import com.thunderslash.utilities.Mathf;
@@ -62,9 +63,13 @@ public class Actor extends PhysicsObject {
     }
     
     public void onLanding() {
+        
         // on landing create dust particles.
         Point offset = new Point(0, this.hitbox.height / 2);
         this.particleEmitter.emit((int) Mathf.randomRange(2, 5), offset, ParticleType.DUST_ANIM);
+        
+        // play sound effect
+        Game.instance.getSoundManager().playSound(SoundEffect.LAND);
     }
     
     public void onDeath() {}

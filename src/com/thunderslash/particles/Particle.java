@@ -72,7 +72,6 @@ public class Particle {
             } else if(this.animation != null) {
                 
                 this.move();
-                //this.checkCollisions();
                 
                 if(this.currentFrameTime > this.frameTime) {
                     this.currentFrameTime = 0.0;
