@@ -15,6 +15,7 @@ import com.thunderslash.data.World;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.Direction;
+import com.thunderslash.enumerations.EnemyType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
@@ -178,7 +179,7 @@ public class LevelCreator {
         
         // red = enemy spawn
         if(red == 255 && green == 0 && blue == 0 && alpha == 255) {
-            actor = Game.instance.getActorManager().createEnemyInstance("Slime", pos, SpriteType.ENEMY_SLIME, 1);
+            actor = Game.instance.getActorManager().createEnemyInstance("Slime", pos, EnemyType.SLIME, SpriteType.ENEMY_SLIME, 1);
         }
         
         return actor;

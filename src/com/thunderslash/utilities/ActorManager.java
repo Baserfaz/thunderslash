@@ -7,11 +7,13 @@ import java.util.List;
 import com.thunderslash.data.World;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.BlockType;
+import com.thunderslash.enumerations.EnemyType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
 import com.thunderslash.gameobjects.Enemy;
 import com.thunderslash.gameobjects.Player;
+import com.thunderslash.gameobjects.Slime;
 
 public class ActorManager {
 
@@ -23,8 +25,19 @@ public class ActorManager {
         setPlayerInstance(null);
     }
 
-    public Enemy createEnemyInstance(String name, Point pos, SpriteType spriteType, int health) {
-        Enemy enemy = new Enemy(name, pos, spriteType, health);
+    public Enemy createEnemyInstance(String name, Point pos, EnemyType enemyType, SpriteType spriteType, int health) {
+        
+        Enemy enemy = null;
+        
+        switch(enemyType) {
+        case SLIME:
+            enemy = new Slime(name, pos, spriteType, health);
+            break;
+        default:
+            System.out.println("ActorManager::createEnemyInstance: unsupported enemy type: " + enemyType);
+            break;
+        }
+        
         this.actorInstances.add(enemy);
         return enemy;
     }

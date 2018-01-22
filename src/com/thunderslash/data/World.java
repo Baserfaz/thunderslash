@@ -28,8 +28,8 @@ public class World {
         for(int i = 0; i < Game.WORLD_ROOM_COUNT; i++) {
             
             String path = "";
-            if(i == 0) path = lvl0;
-            else if(i == 1) path = lvl1;
+            if(i == 0) path = lvl1;
+            else if(i == 1) path = lvl0;
             
             LevelData data = LevelCreator.createLevel(path);
             Room room = new Room(i, data);
