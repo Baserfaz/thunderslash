@@ -1,6 +1,8 @@
 package com.thunderslash.engine;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.thunderslash.enumerations.SoundEffect;
 
@@ -8,59 +10,28 @@ import kuusisto.tinysound.Sound;
 import kuusisto.tinysound.TinySound;
 
 public class SoundManager {
-
-      private Sound hover  = null;
-      private Sound select = null;
-      private Sound jump   = null;
-      private Sound land   = null;
-      private Sound slime_jump = null;  
-      private Sound player_attack = null;
-      private Sound attack_hit = null;
+      
+      private Map<SoundEffect, Sound> sounds;
       
       public SoundManager() {
           TinySound.init();
           TinySound.setGlobalVolume(0.1f);
+          this.sounds = new HashMap<SoundEffect, Sound>();
           this.loadSounds();
       }
     
-    
       private void loadSounds() {
-          
           int soundCount = 0;
           int errorCount = 0;
           
           for(SoundEffect effect : SoundEffect.values()) {
-              
               String path = this.getPath(effect);
               URL soundURL = this.getClass().getResource(path);
+              Sound sound = TinySound.loadSound(soundURL);
               
-              switch(effect) {
-              case HOVER:
-                  this.hover = TinySound.loadSound(soundURL);
-                  break;
-              case SELECT:
-                  this.select = TinySound.loadSound(soundURL);
-                  break;
-              case PLAYER_JUMP:
-                  this.jump = TinySound.loadSound(soundURL);
-                  break;
-              case LAND:
-                  this.land = TinySound.loadSound(soundURL);
-                  break;
-              case SLIME_JUMP:
-                  this.slime_jump = TinySound.loadSound(soundURL);
-                  break;
-              case PLAYER_ATTACK:
-                  this.player_attack = TinySound.loadSound(soundURL);
-                  break;
-              case ATTACK_HIT:
-                  this.attack_hit = TinySound.loadSound(soundURL);
-                  break;
-              default:
-                  System.out.println("SoundManager::loadSounds: soundeffect not supported: " + effect);
-                  errorCount += 1;
-                  break;
-              }
+              if(sound != null) this.sounds.put(effect, sound);
+              else errorCount += 1;
+              
               soundCount += 1;
           }
           
@@ -68,34 +39,7 @@ public class SoundManager {
       }
       
       public void playSound(SoundEffect effect) {
-          
-        switch(effect) {
-        case HOVER:
-            this.hover.play();
-            break;
-        case SELECT:
-            this.select.play();
-            break;
-        case PLAYER_JUMP:
-            this.jump.play();
-            break;
-        case LAND:
-            this.land.play();
-            break;
-        case SLIME_JUMP:
-            this.slime_jump.play();
-            break;
-        case PLAYER_ATTACK:
-            this.player_attack.play();
-            break;
-        case ATTACK_HIT:
-            this.attack_hit.play();
-            break;
-        default:
-            System.out.println("SoundManager::playSound: soundeffect not supported: " + effect);
-            break;
-          }
-          
+          this.sounds.get(effect).play();
       }
       
     private String getPath(SoundEffect effect) {
