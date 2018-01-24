@@ -46,7 +46,7 @@ public abstract class GameObject {
                 Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT);
         
         // create sprite
-        this.defaultStaticSprite = Game.instance.getSpriteCreator().CreateSprite(type);
+        this.defaultStaticSprite = Game.instance.getSpriteStorage().getSprite(type);
         
         // add to handler
         Game.instance.getHandler().AddObject(this);

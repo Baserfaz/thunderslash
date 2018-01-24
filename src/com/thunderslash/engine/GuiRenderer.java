@@ -37,6 +37,7 @@ public class GuiRenderer {
     private BufferedImage playButtonSprite;
     private BufferedImage exitButtonSprite;
     private BufferedImage bgSprite;
+    private BufferedImage logo;
     
     private GuiElementManager guiElementManager;
     
@@ -62,6 +63,9 @@ public class GuiRenderer {
         this.playButtonSprite = sc.CreateCustomSizeSprite(0, 9 * 32 + 22, 64, 10, Game.SPRITESIZEMULT);
         this.exitButtonSprite = sc.CreateCustomSizeSprite(0, 9 * 32 + 11, 64, 10, Game.SPRITESIZEMULT);
         this.bgSprite = RenderUtils.tint(sc.CreateSprite(SpriteType.BACKGROUND_TILE_04), false, 1);
+        
+        // load logo file
+        this.logo = sc.createImageFromFile(Game.LOGOFILENAME, 2);
         
         this.createGuiElements();
     }
@@ -150,7 +154,7 @@ public class GuiRenderer {
         int centerx = Game.CAMERA_WIDTH / 2;
         
         this.guiElementManager.render(g, GameState.MAINMENU);
-        this.renderString(Game.TITLE, centerx, 200, Color.white, 60, ElementAlign.CENTER, g);
+        g.drawImage(this.logo, centerx - this.logo.getWidth() / 2, 50, null);
         this.renderString(Game.VERSION, centerx, 700, Color.white, 30, ElementAlign.CENTER, g);
     }
     

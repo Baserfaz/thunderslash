@@ -5,9 +5,9 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.data.Animation;
+import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.AnimationType;
 import com.thunderslash.enumerations.SpriteType;
-import com.thunderslash.utilities.AnimationCreator;
 
 public class Torch extends VanityObject {
 
@@ -16,7 +16,7 @@ public class Torch extends VanityObject {
     
     public Torch(Point worldPos) {
         super(worldPos, SpriteType.TORCH);
-        this.torchFlicked = AnimationCreator.createAnimation(AnimationType.TORCH);
+        this.torchFlicked = Game.instance.getSpriteStorage().getAnimation(AnimationType.TORCH);
     }
     
     public void tick() {

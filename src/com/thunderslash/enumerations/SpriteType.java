@@ -20,6 +20,6 @@ public enum SpriteType {
     
     DAGGER_BACKGROUND, 
     
-    LIGHTNING_BOLT, 
+    LIGHTNING_BOLT
    
 }

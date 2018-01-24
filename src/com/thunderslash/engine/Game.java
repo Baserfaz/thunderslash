@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.image.BufferStrategy;
 
 import com.thunderslash.data.Session;
+import com.thunderslash.data.SpriteStorage;
 import com.thunderslash.data.World;
 import com.thunderslash.engine.Camera;
 import com.thunderslash.engine.Renderer;
@@ -42,6 +43,8 @@ public class Game extends Canvas implements Runnable {
     public static final String SPRITESHEETNAME     = "/images/spritesheet.png";           
     public static final String FRAMICONPATH        = "/images/icon.png";      
     public static final String LEVELFOLDER         = "/levels/";
+    
+    public static final String LOGOFILENAME        = "/images/logo.png";
     
     public static final int SPRITEGRIDSIZE         = 32;
     public static final int SPRITESIZEMULT         = 5;
@@ -91,6 +94,8 @@ public class Game extends Canvas implements Runnable {
     private Thread thread;
     private Window window;
     
+    private SpriteStorage spriteStorage;
+    
     private Font customFont;
     private Camera camera;
     private SpriteCreator spriteCreator;
@@ -132,16 +137,23 @@ public class Game extends Canvas implements Runnable {
 
         this.window = new Window(Game.WIDTH, Game.HEIGHT, Game.TITLE, this);
         this.spriteCreator = new SpriteCreator(Game.SPRITESHEETNAME);
+        
         this.guiElementManager = new GuiElementManager();
         this.emitterManager = new EmitterManager();
-        
         this.soundManager = new SoundManager();
         
         this.guiRenderer = new GuiRenderer();
         this.actorManager = new ActorManager();
+        
         this.camera = new Camera();
         this.animator = new Animator();
         this.renderer = new Renderer();
+        
+        this.spriteStorage = new SpriteStorage();
+        
+        // load all sprites and animations to memory
+        this.spriteStorage.loadSprites();
+        this.spriteStorage.loadAnimations();        
         
         this.gamestate = GameState.MAINMENU;
         this.lastGameState = this.gamestate;
@@ -320,4 +332,12 @@ public class Game extends Canvas implements Runnable {
     public void setSession(Session session) { this.session = session; }
     public SoundManager getSoundManager() { return soundManager; }
     public void setSoundManager(SoundManager soundManager) { this.soundManager = soundManager; }
+
+    public SpriteStorage getSpriteStorage() {
+        return spriteStorage;
+    }
+
+    public void setSpriteStorage(SpriteStorage spriteStorage) {
+        this.spriteStorage = spriteStorage;
+    }
 }

@@ -64,6 +64,29 @@ public class SpriteCreator {
         return retimage;
     }
 
+    public BufferedImage createImageFromFile(String path, int sizeMult) {
+        
+        BufferedImage image = null;
+        
+        // get the sprite sheet
+        try { image = ImageIO.read(getClass().getResourceAsStream(path)); }
+        catch (IOException e) { e.printStackTrace(); }
+
+        if(image == null) {
+            System.out.println("SpriteCreator::createImageFromFile: No image found!");
+        } else {
+            System.out.println("Image \'" + path + "\' loaded succesfully!");
+        }
+        
+        AffineTransform tx = new AffineTransform();
+        tx.scale(sizeMult, sizeMult);
+
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        image = op.filter(image, null);
+        
+        return image;
+    }
+    
     // uses the same spritesheet
     public BufferedImage CreateCustomSizeSprite(int startx, int starty, 
             int spriteWidth, int spriteHeight, double sizeMult) {
