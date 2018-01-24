@@ -6,8 +6,9 @@ import java.awt.image.BufferedImage;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.DepthLevel;
 import com.thunderslash.enumerations.GuiAnimationType;
+import com.thunderslash.enumerations.InteractAction;
 
-public class GuiImage extends GuiElement {
+public class GuiImage extends InteractableGuiElement {
 
     private BufferedImage img;
     private DepthLevel deptLevel;
@@ -15,18 +16,32 @@ public class GuiImage extends GuiElement {
     
     private float speed = 2f;
     
-    public GuiImage(int x, int y, BufferedImage img, DepthLevel deptLevel, GuiAnimationType animType) {
-        super(x, y, img.getWidth(), img.getHeight());
+    public GuiImage(int x, int y, BufferedImage img, boolean isEnabled, 
+            DepthLevel deptLevel, GuiAnimationType animType,
+            InteractAction onClickAction, InteractAction onHoverAction) {
+        super(x, y, img.getWidth(), img.getHeight(), onClickAction, onHoverAction);
         this.img = img;
         this.deptLevel = deptLevel;
         this.guiAnimType = animType;
-        this.isEnabled = false;
+        this.isEnabled = isEnabled;
+        this.isMuted = true;
+    }
+    
+    // a shorthand constructor.
+    public GuiImage(int x, int y, BufferedImage img, boolean isEnabled,
+            InteractAction onClickAction, InteractAction onHoverAction) {
+        super(x, y, img.getWidth(), img.getHeight(), onClickAction, onHoverAction);
+        this.img = img;
+        this.deptLevel = DepthLevel.FOREGROUND;
+        this.guiAnimType = GuiAnimationType.NONE;
+        this.isEnabled = isEnabled;
+        this.isMuted = true;
     }
 
     public void render(Graphics g) {
         if(this.isVisible) g.drawImage(this.img, (int)this.x, (int)this.y, null);
     }
-
+    
     public void tick() {
         
         if(this.guiAnimType == GuiAnimationType.SCROLL_DOWN) this.scrollDown();
@@ -43,9 +58,6 @@ public class GuiImage extends GuiElement {
         this.y += speed;
         if(this.y > Game.HEIGHT) this.y += -this.img.getHeight() * 2;
     }
-    
-    public void onClick() { if(this.isEnabled) {} }
-    public void onHover() { if(this.isEnabled) {} }
 
     // ----- GETTERS & SETTERS -----
     public BufferedImage getImg() { return img; }

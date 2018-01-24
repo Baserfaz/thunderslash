@@ -12,7 +12,7 @@ import java.util.List;
 
 import com.thunderslash.data.Health;
 import com.thunderslash.data.Power;
-import com.thunderslash.enumerations.ButtonAction;
+import com.thunderslash.enumerations.InteractAction;
 import com.thunderslash.enumerations.DepthLevel;
 import com.thunderslash.enumerations.ElementAlign;
 import com.thunderslash.enumerations.GameState;
@@ -86,8 +86,10 @@ public class GuiRenderer {
         int starty = 400;
         int xpos = (Game.CAMERA_WIDTH / 2) - width / 2;
         
-        Button resumeButton = new Button(xpos, starty, width, height, "Resume", Color.black, Color.white, 40, ButtonAction.RESUME);
-        Button exitButton = new Button(xpos, starty + height + margin, width, height, "Exit", Color.black, Color.white, 40, ButtonAction.EXIT_TO_OS);
+        Button resumeButton = new Button(xpos, starty, width, height,
+                "Resume", Color.black, Color.white, 40, InteractAction.RESUME, InteractAction.NONE);
+        Button exitButton = new Button(xpos, starty + height + margin, width, height,
+                "Exit", Color.black, Color.white, 40, InteractAction.EXIT_TO_OS, InteractAction.NONE);
         
         this.guiElementManager.addElementToPauseMenu(resumeButton);
         this.guiElementManager.addElementToPauseMenu(exitButton);
@@ -98,11 +100,11 @@ public class GuiRenderer {
         
         int width = 350;
         int height = 75;
-        int margin = 10;
         int starty = 400;
         int xpos = (Game.CAMERA_WIDTH / 2) - width / 2;
         
-        Button exitButton = new Button(xpos, starty, width, height, "Exit", Color.black, Color.white, 40, ButtonAction.EXIT_TO_MENU);
+        Button exitButton = new Button(xpos, starty, width, height,
+                "Exit", Color.black, Color.white, 40, InteractAction.EXIT_TO_MENU, InteractAction.NONE);
         
         this.guiElementManager.addElementToGameOver(exitButton);
     }
@@ -112,16 +114,23 @@ public class GuiRenderer {
     }
     
     private void createMainmenuElements() {
+        
         int margin = 10;
         int starty = 400;
         int xpos = Game.CAMERA_WIDTH / 2 - 175;
         
-        Button playButton = new Button(xpos, starty, this.playButtonSprite, ButtonAction.PLAY);
-        Button exitButton = new Button(xpos, starty + this.exitButtonSprite.getHeight() + margin, this.exitButtonSprite, ButtonAction.EXIT_TO_OS);
+        Button playButton = new Button(xpos, starty, this.playButtonSprite, InteractAction.PLAY, InteractAction.NONE);
+        Button exitButton = new Button(xpos, starty + this.exitButtonSprite.getHeight() + margin,
+                this.exitButtonSprite, InteractAction.EXIT_TO_OS, InteractAction.NONE);
+        
+        GuiImage logo = new GuiImage(Game.CAMERA_WIDTH / 2 - this.logo.getWidth() / 2, 50,
+                this.logo, true, DepthLevel.FOREGROUND, GuiAnimationType.NONE,
+                InteractAction.NONE, InteractAction.NONE);
         
         // add elements to list
         this.guiElementManager.addElementToMainmenu(playButton);
         this.guiElementManager.addElementToMainmenu(exitButton);
+        this.guiElementManager.addElementToMainmenu(logo);        
         this.guiElementManager.addMultipleElementsToMainmenu(this.createScrollingBackground(GuiAnimationType.SCROLL_DOWN));
     }
     
@@ -135,8 +144,10 @@ public class GuiRenderer {
         BufferedImage tiledImg = sc.createTiledSprite(this.bgSprite, xamount, yamount);
         
         // minimum of two images are needed to create a scroll effect.
-        GuiImage gimg = new GuiImage(0, 0, tiledImg, DepthLevel.BACKGROUND, animType);
-        GuiImage gimg2 = new GuiImage(0, -tiledImg.getHeight(), tiledImg, DepthLevel.BACKGROUND, animType);    
+        GuiImage gimg = new GuiImage(0, 0, tiledImg, false,
+                DepthLevel.BACKGROUND, animType, InteractAction.NONE, InteractAction.NONE);
+        GuiImage gimg2 = new GuiImage(0, -tiledImg.getHeight(), tiledImg, false,
+                DepthLevel.BACKGROUND, animType, InteractAction.NONE, InteractAction.NONE);    
         
         elems.add(gimg);
         elems.add(gimg2);
@@ -154,7 +165,6 @@ public class GuiRenderer {
         int centerx = Game.CAMERA_WIDTH / 2;
         
         this.guiElementManager.render(g, GameState.MAINMENU);
-        g.drawImage(this.logo, centerx - this.logo.getWidth() / 2, 50, null);
         this.renderString(Game.VERSION, centerx, 700, Color.white, 30, ElementAlign.CENTER, g);
     }
     

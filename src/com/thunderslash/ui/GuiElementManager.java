@@ -28,6 +28,7 @@ public class GuiElementManager {
         List<GuiElement> buttons = new ArrayList<GuiElement>();
         List<GuiElement> imagesBackground = new ArrayList<GuiElement>();
         List<GuiElement> imagesForeground = new ArrayList<GuiElement>();
+        List<GuiElement> imagesMiddleground = new ArrayList<GuiElement>();
                 
         List<GuiElement> elems = this.getGuiElementList(state);
         
@@ -45,6 +46,10 @@ public class GuiElementManager {
                     imagesBackground.add(e);
                 } else if(img.getDeptLevel() == DepthLevel.FOREGROUND) {
                     imagesForeground.add(e);
+                } else if(img.getDeptLevel() == DepthLevel.MIDDLEGROUND) {
+                    imagesMiddleground.add(e);
+                } else {
+                    System.out.println("GuiElementManager::render: no depthlevel set for guiImage: " + e.toString());
                 }
                 
             } else {
@@ -54,6 +59,7 @@ public class GuiElementManager {
         
         // render in back to front order
         for(GuiElement e : imagesBackground) e.render(g);
+        for(GuiElement e : imagesMiddleground) e.render(g);        
         for(GuiElement e : imagesForeground) e.render(g);
         for(GuiElement e : buttons) e.render(g);
     }

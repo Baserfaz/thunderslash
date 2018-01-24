@@ -10,6 +10,7 @@ public abstract class GuiElement {
     protected int width = 0;
     protected int height = 0;
     
+    protected boolean isMuted = false;
     protected boolean isHovering = false;
     protected boolean isEnabled = true;
     protected boolean isVisible = true;
@@ -40,6 +41,7 @@ public abstract class GuiElement {
     public void setWidth(int width) { this.width = width; }
     public int getHeight() { return height; }
     public void setHeight(int height) { this.height = height; }
-    public void setIsHovering(boolean b) { this.isHovering = b; }
-    public boolean getIsHovering() { return this.isHovering; }
+    public void setHovering(boolean b) { this.isHovering = b; }
+    public boolean isHovering() { return this.isHovering; }
+    public boolean isMuted() { return this.isMuted; }
 }

@@ -28,7 +28,9 @@ public class MouseInput implements MouseMotionListener, MouseListener {
         for(GuiElement element : elements) {
             if(element.isEnabled()) {
                 if(element.getBounds().contains(mousePos)) {
-                    if(Game.isMuted == false) Game.instance.getSoundManager().playSound(SoundEffect.SELECT);
+                    if(Game.isMuted == false && element.isMuted() == false) {
+                        Game.instance.getSoundManager().playSound(SoundEffect.SELECT);
+                    }
                     element.onClick();
                     break;
                 }
@@ -62,15 +64,16 @@ public class MouseInput implements MouseMotionListener, MouseListener {
         
         for(GuiElement element : elements) {
             if(element.isEnabled()) {
-                element.setIsHovering(false);
+                element.setHovering(false);
                 
                 if(element.getBounds().contains(e.getPoint())) {
                     hoveredOnSomething = true;
                     
-                    if(this.lastElementHovered != element && Game.isMuted == false) {
+                    if(this.lastElementHovered != element && Game.isMuted == false && element.isMuted() == false) {
                         Game.instance.getSoundManager().playSound(SoundEffect.HOVER);
                     }
                     
+                    element.setHovering(true);
                     element.onHover();
                     this.lastElementHovered = element;
                     break;

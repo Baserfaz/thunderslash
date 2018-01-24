@@ -7,35 +7,33 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
-import com.thunderslash.enumerations.ButtonAction;
-import com.thunderslash.enumerations.GameState;
+import com.thunderslash.enumerations.InteractAction;
 import com.thunderslash.utilities.RenderUtils;
 
-public class Button extends GuiElement {
+public class Button extends InteractableGuiElement {
 
     private Color fontColor;
     private Color bgColor;
     private int fontSize;
     private BufferedImage img;
     private String txt;
-    private ButtonAction action;
     
     public Button(int x, int y, int width, int height, 
-            String txt, Color fontColor, Color bgColor, int fontSize, ButtonAction action) {
+            String txt, Color fontColor, Color bgColor, int fontSize,
+            InteractAction onClickAction, InteractAction onHoverAction) {
         
-        super(x, y, width, height);
+        super(x, y, width, height, onClickAction, onHoverAction);
         this.fontColor = fontColor;
         this.bgColor = bgColor;
         this.fontSize = fontSize;
         this.txt = txt;
-        this.action = action;
         
     }
     
-    public Button(int x, int y, BufferedImage img, ButtonAction action) {
-        super(x, y, img.getWidth(), img.getHeight());
+    public Button(int x, int y, BufferedImage img, 
+            InteractAction onClickAction, InteractAction onHoverAction) {
+        super(x, y, img.getWidth(), img.getHeight(), onClickAction, onHoverAction);
         this.img = img;
-        this.action = action;
     }
     
     public void render(Graphics g) {
@@ -73,35 +71,12 @@ public class Button extends GuiElement {
     }
 
     public void tick() { if(this.isEnabled()) {} }
-
-    public void onClick() {
-        if(this.isEnabled) {
-            switch(this.action) {
-                case EXIT_TO_OS:
-                    System.exit(0);
-                    break;
-                case PLAY:
-                    Game.instance.startNewGame();
-                    break;
-                case RESUME:
-                    Game.instance.setGamestate(GameState.INGAME);
-                    Game.isPaused = false;
-                    break;
-                default:
-                    System.out.println("Not supported action: " + this.action);
-                    break;
-            }
-        }
-    }
     
     // ------- GETTERS & SETTERS --------
-    public void onHover() { this.isHovering = true; }
     public Color getFontColor() { return fontColor; }
     public void setFontColor(Color fontColor) { this.fontColor = fontColor; }
     public int getFontSize() { return fontSize; }
     public void setFontSize(int fontSize) { this.fontSize = fontSize; }
     public Color getBgColor() { return bgColor; }
     public void setBgColor(Color bgColor) { this.bgColor = bgColor; }
-    public ButtonAction getAction() { return action; }
-    public void setAction(ButtonAction action) { this.action = action; }
 }
