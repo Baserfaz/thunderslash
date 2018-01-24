@@ -14,7 +14,7 @@ public class GuiImage extends InteractableGuiElement {
     private DepthLevel deptLevel;
     private GuiAnimationType guiAnimType;
     
-    private float speed = 2f;
+    private float speed = 1f;
     
     public GuiImage(int x, int y, BufferedImage img, boolean isEnabled, 
             DepthLevel deptLevel, GuiAnimationType animType,

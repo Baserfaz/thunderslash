@@ -65,7 +65,7 @@ public class GuiRenderer {
         this.bgSprite = RenderUtils.tint(sc.CreateSprite(SpriteType.BACKGROUND_TILE_04), false, 1);
         
         // load logo file
-        this.logo = sc.createImageFromFile(Game.LOGOFILENAME, 2);
+        this.logo = sc.createImageFromFile(Game.LOGOFILENAME, 3);
         
         this.createGuiElements();
     }
@@ -116,7 +116,7 @@ public class GuiRenderer {
     private void createMainmenuElements() {
         
         int margin = 10;
-        int starty = 400;
+        int starty = 450;
         int xpos = Game.CAMERA_WIDTH / 2 - 175;
         
         Button playButton = new Button(xpos, starty, this.playButtonSprite, InteractAction.PLAY, InteractAction.NONE);
