@@ -32,7 +32,7 @@ public class Game extends Canvas implements Runnable {
     public static final int HEIGHT                 = 720;
 
     public static final String TITLE               = "Project Thunderslash";
-    public static final String VERSION             = "v. 0.1b";
+    public static final String VERSION             = "v. 0.1c";
 
     public static final int CAMERA_WIDTH           = Game.WIDTH;
     public static final int CAMERA_HEIGHT          = Game.HEIGHT;
@@ -46,18 +46,17 @@ public class Game extends Canvas implements Runnable {
     
     public static final String LOGOFILENAME        = "/images/logo.png";
     
+    public static final String CUSTOMFONTNAME      = "coders_crux";                    
+    public static final String CUSTOMFONTEXTENSION = ".ttf";                           
+    public static final String CUSTOMFONTFOLDER    = "coders_crux";     
+    
     public static final int SPRITEGRIDSIZE         = 32;
     public static final int SPRITESIZEMULT         = 5;
-
-    public static final String CUSTOMFONTNAME      = "coders_crux";		               
-    public static final String CUSTOMFONTEXTENSION = ".ttf";			               
-    public static final String CUSTOMFONTFOLDER    = "coders_crux";		               
     
     public static final int TEXT_LINEHEIGHT		   = 2;						           
-
     public static final int WORLD_ROOM_COUNT       = 2;
-    
     public static final float GRAVITY              = 0.015f * Game.SPRITESIZEMULT;
+    public static final double ENEMY_ACTIVATION_RANGE = 670.0;
     
     // ------------------------------
     // DEBUG
@@ -89,7 +88,9 @@ public class Game extends Canvas implements Runnable {
     public static boolean isMuted = false;
     
     private int currentRoomIndex = 0;
-    private double timeBetweenFrames = 0.0;
+    
+    // this is used as deltaTime.
+    private double timeBetweenFrames = 0.0; 
     
     private Thread thread;
     private Window window;

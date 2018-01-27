@@ -119,7 +119,7 @@ public abstract class PhysicsObject extends GameObject {
                     if(this instanceof Player) {
                         Game.instance.getSoundManager().playSound(SoundEffect.PLAYER_JUMP);
                     } else if(this instanceof Enemy) {
-                        Game.instance.getSoundManager().playSound(SoundEffect.SLIME_JUMP);
+                        Game.instance.getSoundManager().playSoundWithPan(SoundEffect.SLIME_JUMP, this);
                     }
                     
                 }

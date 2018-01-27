@@ -1,10 +1,13 @@
 package com.thunderslash.engine;
 
+import java.awt.Point;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.thunderslash.enumerations.SoundEffect;
+import com.thunderslash.gameobjects.GameObject;
+import com.thunderslash.utilities.Mathf;
 
 import kuusisto.tinysound.Sound;
 import kuusisto.tinysound.TinySound;
@@ -13,9 +16,11 @@ public class SoundManager {
       
       private Map<SoundEffect, Sound> sounds;
       
+      private float soundVolume = 0.1f;
+      
       public SoundManager() {
           TinySound.init();
-          TinySound.setGlobalVolume(0.1f);
+          TinySound.setGlobalVolume(this.soundVolume);
           this.sounds = new HashMap<SoundEffect, Sound>();
           this.loadSounds();
       }
@@ -42,7 +47,35 @@ public class SoundManager {
           this.sounds.get(effect).play();
       }
       
-    private String getPath(SoundEffect effect) {
+      public void playSoundWithPan(SoundEffect effect, GameObject target) {
+          
+          // 1. calculate if the target is in range.
+          // 2. calculate the position of the target (right/left) from the player
+          // 3. calculate the volume of the sound effect using distance.
+          
+          Point playerPos = Game.instance.getActorManager().getPlayerInstance().getHitboxCenter();
+          Point targetPos = target.getHitboxCenter();
+          
+          double distance = playerPos.distance(targetPos.x, targetPos.y);
+          double pan = 0.0;
+          
+          if(distance < Game.ENEMY_ACTIVATION_RANGE) {
+          
+              // right or left
+              pan = (targetPos.x > playerPos.x) ? 1 : -1;
+              
+              // Convert scale to 0.0 to 1.0
+              // https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
+              double output = 0.0 + ((1.0 - 0.0) / (Game.ENEMY_ACTIVATION_RANGE - 0.0)) * (distance - 0.0);
+              output = Mathf.round(1.0 - output, 2);
+              
+              // the closer the target is to player
+              // the higher the volume and nearer the sound.
+              this.sounds.get(effect).play(1.0 * output, pan * output);
+          }
+      }
+      
+      private String getPath(SoundEffect effect) {
         
         String path = "";
         
@@ -74,5 +107,5 @@ public class SoundManager {
         }
         
         return path;
-    }
+      }
 }

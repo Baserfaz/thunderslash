@@ -69,7 +69,11 @@ public class Actor extends PhysicsObject {
         this.particleEmitter.emit((int) Mathf.randomRange(2, 5), offset, ParticleType.DUST_ANIM);
         
         // play sound effect
-        Game.instance.getSoundManager().playSound(SoundEffect.LAND);
+        if(this instanceof Player) {
+            Game.instance.getSoundManager().playSound(SoundEffect.LAND);
+        } else {
+            Game.instance.getSoundManager().playSoundWithPan(SoundEffect.LAND, this);
+        }
     }
     
     public void onDeath() {}

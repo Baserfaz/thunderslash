@@ -10,7 +10,6 @@ public abstract class Enemy extends Actor {
     
     protected double tickTimer = 0.0;
     protected double tickCooldown = 200.0;
-    protected double activationRange = 670.0;
     
     protected int killScore = 100;
     

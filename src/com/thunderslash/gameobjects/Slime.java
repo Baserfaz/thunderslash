@@ -35,7 +35,7 @@ public class Slime extends Enemy {
         Player player = Game.instance.getActorManager().getPlayerInstance();
         Point p = player.getHitboxCenter();
         
-        if(p.distance(this.hitboxCenter) < this.activationRange) {
+        if(p.distance(this.hitboxCenter) < Game.ENEMY_ACTIVATION_RANGE) {
             
             // x position
             if(p.x < this.hitboxCenter.x) this.direction.x = -1;
