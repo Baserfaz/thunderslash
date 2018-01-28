@@ -65,7 +65,7 @@ public class GuiRenderer {
         this.bgSprite = RenderUtils.tint(sc.CreateSprite(SpriteType.BACKGROUND_TILE_04), false, 1);
         
         // load logo file
-        this.logo = sc.createImageFromFile(Game.LOGOFILENAME, 3);
+        this.logo = sc.createImageFromFile(Game.LOGOFILENAME, 2);
         
         this.createGuiElements();
     }

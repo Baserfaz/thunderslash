@@ -79,7 +79,7 @@ public class Renderer {
         Rectangle r = cam.getCameraBounds();
         
         // set background
-        this.fillScreen(g, new Color(40, 27, 91, 255));
+        this.fillScreen(g, Color.BLACK);
         
         // set zoom level
         g2d.scale(1, 1);

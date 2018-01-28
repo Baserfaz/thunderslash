@@ -2,10 +2,7 @@ package com.thunderslash.enumerations;
 
 public enum SoundEffect {
     SELECT, HOVER, LAND,
-    
-    SLIME_JUMP, 
-    
-    
+    SLIME_JUMP,
     PLAYER_JUMP, PLAYER_ATTACK, 
-    ATTACK_HIT
+    ATTACK_HIT, PLAYER_HURT
 }

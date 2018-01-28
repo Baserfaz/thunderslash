@@ -308,7 +308,9 @@ public abstract class PhysicsObject extends GameObject {
                                 ((Actor)this).getHP().takeDamage(trap.getDamage());
                                 
                                 if(this instanceof Player) {
-                                    System.out.println("HIT A TRAP! OUCH");
+                                    Game.instance.getSoundManager().playSound(SoundEffect.PLAYER_HURT);
+                                } else if(this instanceof Enemy) {
+                                    Game.instance.getSoundManager().playSoundWithPan(SoundEffect.ATTACK_HIT, this);
                                 }
                                 
                             }

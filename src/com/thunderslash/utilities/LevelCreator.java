@@ -159,16 +159,41 @@ public class LevelCreator {
     }
 
     public static List<Block> createBackground(Room room) {
+        
         List<Block> blocks = new ArrayList<Block>();
         SpriteType spriteType = SpriteType.BACKGROUND_TILE_01;
+        
         for(Block block : room.getData().getBlocks()) {
-            if(block.getBlocktype() != BlockType.NOT_ASSIGNED) {
-                if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BACKGROUND_TILE_02;
-                else if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BACKGROUND_TILE_03;
-                else spriteType = SpriteType.BACKGROUND_TILE_01;
+            
+            if(block.getBlocktype() != BlockType.SOLID) {
+                
+                NeighborData data = room.getNeighbors(block, true);
+                
+                Block n = data.getNeighbors().get(Direction.NORTH);
+                Block s = data.getNeighbors().get(Direction.SOUTH);
+                
+                if(n != null && s != null && 
+                        n.getBlocktype() == BlockType.SOLID &&
+                        s.getBlocktype() == BlockType.SOLID) {
+                    spriteType = SpriteType.BRICK_BG_TOP_BOTTOM;
+                } else if(s != null && s.getBlocktype() == BlockType.SOLID) {
+                    spriteType = SpriteType.BRICK_BG_BOTTOM;
+                } else if(n != null && n.getBlocktype() == BlockType.SOLID) { 
+                    spriteType = SpriteType.BRICK_BG_TOP;
+                } else {
+                    
+                    if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BRICK_BG_MAIN_01;
+                    else if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BRICK_BG_MAIN_02;
+                    else spriteType = SpriteType.BRICK_BG_MAIN_03;
+                    
+                }
+                
                 blocks.add(new Block(block.getWorldPosition(), block.getGridPosition(), BlockType.BACKGROUND, spriteType));
             }
         }
+        
+        System.out.println("Background tile count: " + blocks.size());
+        
         return blocks;
     }
     
@@ -222,10 +247,9 @@ public class LevelCreator {
         return objs;
     }
     
-    public static List<Block> calculateSprites(List<Block> blocks) {
+    public static List<Block> calculateSprites(Room room) {
         
-        List<Block> calcBlocks = new ArrayList<Block>(blocks);
-        World world = Game.instance.getWorld();
+        List<Block> calcBlocks = new ArrayList<Block>(room.getData().getBlocks());
         SpriteCreator spriteCreator = Game.instance.getSpriteCreator();
         
         // get neighbors and decide sprite
@@ -238,7 +262,7 @@ public class LevelCreator {
             
             // -------------------------------------------------
             
-            NeighborData data = world.getNeighbors(block);
+            NeighborData data = room.getNeighbors(block, false);
             
             boolean n = data.getNeighbors().containsKey(Direction.NORTH);
             boolean s = data.getNeighbors().containsKey(Direction.SOUTH);
@@ -252,7 +276,9 @@ public class LevelCreator {
             
             if(n && s && w && e) {
                 block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_SINGLE));
-            } else if(w && n && e) {
+            } 
+            
+            else if(w && n && e) {
                 block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_THREE_SIDED));
             } else if(n && e && s) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
@@ -263,7 +289,39 @@ public class LevelCreator {
             } else if(w && n && s) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_THREE_SIDED), 3));
-            } else if(n && e) {
+            } 
+            
+            else if(s && w && ne) { 
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE_CORNER), 3));
+            } else if(w && n && se) { 
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE_CORNER));
+            } else if(n && e && sw) { 
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE_CORNER), 1));
+            } else if(s && e && nw) { 
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE_CORNER), 2));
+            } 
+            
+            else if(sw && se && nw && ne && !n && !s && !w && !e) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_FOUR_CORNER));
+            } 
+            
+            else if(nw && ne && sw && !n && !s && !e && !w) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_THREE_CORNER), 3));
+            } else if(nw && sw && se && !n && !s && !e && !w) { 
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_THREE_CORNER), 2));
+            } else if(nw && ne && se && !n && !s && !e && !w) { 
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_THREE_CORNER));
+            } else if(ne && sw && se && !n && !s && !e && !w) { 
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_THREE_CORNER), 1));
+            } 
+            
+            else if(n && e) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE), 1));
             } else if(n && w) {
@@ -274,11 +332,59 @@ public class LevelCreator {
             } else if(s && w) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_90_DEGREE), 3));
-            } else if(n && s) {
+            } 
+            
+            else if(n && s) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_TWO_SIDED), 1));
             } else if(w && e) {
-                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_TWO_SIDED));  
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_TWO_SIDED));
+                
+            } else if(w && ne && se && !n && !e && !s) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_TWO_CORNER), 3));
+            } else if(n && sw && se && !w && !e && !s) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_TWO_CORNER));
+            } else if(e && nw && sw && !w && !s && !n) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_TWO_CORNER), 1));
+            } else if(s && nw && ne && !w && !e && !n) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_TWO_CORNER), 2));
+            }
+                
+            else if(nw && e && !n && !s && !w) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_ONE_CORNER), 1));
+            } else if(ne && s && !w && !e && !n) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_ONE_CORNER), 2));
+            } else if(w && se && !n && !s && !e) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_ONE_CORNER), 3));
+            } else if(n && sw && !w && !e && !s) {
+                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_ONE_CORNER));
+                
+                
+            } else if(w && ne && !n && !s && !e) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        RenderUtils.flipSpriteHorizontally(
+                                spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_ONE_CORNER)
+                                ), 3));
+            } else if(n && se && !w && !s && !e) {
+                block.setSprite(RenderUtils.flipSpriteHorizontally(
+                        spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_ONE_CORNER)));
+            } else if(e && sw && !n && !s && !w) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        RenderUtils.flipSpriteHorizontally(
+                                spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_ONE_CORNER)
+                                ), 1));
+            } else if(s && nw && !w && !n && !e) {
+                block.setSprite(RenderUtils.rotateImageClockwise(
+                        RenderUtils.flipSpriteHorizontally(
+                                spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED_ONE_CORNER)
+                                ), 2));
+            
             } else if(n) {
                 block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED));
             } else if(s) {
@@ -290,9 +396,9 @@ public class LevelCreator {
             } else if(e) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_ONE_SIDED), 1));
-            } else if(sw && se && nw && ne) {
-                block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_FOUR_CORNER));
-            } else if(nw && ne) {
+            }
+            
+            else if(nw && ne) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_TWO_CORNER), 3));
             } else if(ne && se) {
@@ -303,7 +409,9 @@ public class LevelCreator {
             } else if(sw && nw) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_TWO_CORNER), 2));
-            } else if(nw) {
+            } 
+            
+            else if(nw) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_CORNER), 2));
             } else if(ne) {
@@ -314,7 +422,9 @@ public class LevelCreator {
             } else if(sw) {
                 block.setSprite(RenderUtils.rotateImageClockwise(
                         spriteCreator.CreateSprite(SpriteType.WALL_CORNER), 1));
-            } else {
+            } 
+            
+            else {
                 block.setSprite(spriteCreator.CreateSprite(SpriteType.WALL_FULL));
             }
             

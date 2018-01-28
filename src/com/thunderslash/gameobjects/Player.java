@@ -115,6 +115,7 @@ public class Player extends Actor {
         BufferedImage img = Game.instance.getSpriteCreator().CreateSprite(SpriteType.PLAYER_DEAD);
         img = RenderUtils.tint(img, true, 2);
         this.setSprite(img);
+        this.direction = new Vector2();
         // Game.instance.setGamestate(GameState.GAME_OVER);
     }
     
@@ -214,24 +215,29 @@ public class Player extends Actor {
                 } else if(go instanceof Enemy) {
                     
                     if(this.isInvulnerable) {
+                        
                         if(this.invulnerabilityTimer < this.invulnerableTime) {
                             this.invulnerabilityTimer += Game.instance.getTimeBetweenFrames();
                         } else {
                             this.isInvulnerable = false;
                             this.invulnerabilityTimer = 0.0;
                         }
+                        
                     } else {
+                        
                         Enemy enemy = (Enemy) go;    
                         if(enemy.getHP().isDead() == false && this.hitbox.intersects(go.getHitbox())) {
                             this.isInvulnerable = true;
                             this.HP.takeDamage(1);
                             
-                            System.out.println("HIT AN ENEMY! OUCH");
+                            Game.instance.getSoundManager().playSound(SoundEffect.PLAYER_HURT);
                             
                         }
+                        
                     }
                 }
             }
+            
         } else {
             this.currentCollisionPollingTimer += Game.instance.getTimeBetweenFrames();
         }

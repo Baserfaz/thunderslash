@@ -322,6 +322,36 @@ public class SpriteCreator {
                 pos.y = 10;
                 break;
                 
+            case BRICK_BG_MAIN_01:
+                pos.x = 0;
+                pos.y = 12;
+                break;
+                
+            case BRICK_BG_MAIN_02:
+                pos.x = 1;
+                pos.y = 12;
+                break;
+                
+            case BRICK_BG_MAIN_03:
+                pos.x = 2;
+                pos.y = 12;
+                break;
+                
+            case BRICK_BG_TOP_BOTTOM:
+                pos.x = 0;
+                pos.y = 11;
+                break;
+                
+            case BRICK_BG_BOTTOM:
+                pos.x = 0;
+                pos.y = 13;
+                break;
+                
+            case BRICK_BG_TOP:
+                pos.x = 1;
+                pos.y = 13;
+                break;
+                
             case LIGHTNING_BOLT:
                 pos.x = 1;
                 pos.y = 6;
@@ -357,6 +387,11 @@ public class SpriteCreator {
                 pos.y = 2;
                 break;
                 
+            case WALL_90_DEGREE_CORNER:
+                pos.x = 2;
+                pos.y = 4;
+                break;
+                
             case WALL_SINGLE:
                 pos.x = 1;
                 pos.y = 2;
@@ -370,6 +405,16 @@ public class SpriteCreator {
             case WALL_ONE_SIDED:
                 pos.x = 0;
                 pos.y = 3;
+                break;
+                
+            case WALL_ONE_SIDED_TWO_CORNER:
+                pos.x = 4;
+                pos.y = 4;
+                break;
+                
+            case WALL_ONE_SIDED_ONE_CORNER:
+                pos.x = 5;
+                pos.y = 4;
                 break;
                 
             case WALL_TWO_SIDED:
@@ -387,6 +432,11 @@ public class SpriteCreator {
                 pos.y = 4;
                 break;
                
+            case WALL_THREE_CORNER:
+                pos.x = 3;
+                pos.y = 4;
+                break;
+                
             case WALL_CORNER:
                 pos.x = 1;
                 pos.y = 3;

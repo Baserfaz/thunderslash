@@ -54,7 +54,7 @@ public class Game extends Canvas implements Runnable {
     public static final int SPRITESIZEMULT         = 5;
     
     public static final int TEXT_LINEHEIGHT		   = 2;						           
-    public static final int WORLD_ROOM_COUNT       = 2;
+    public static final int WORLD_ROOM_COUNT       = 1;
     public static final float GRAVITY              = 0.015f * Game.SPRITESIZEMULT;
     public static final double ENEMY_ACTIVATION_RANGE = 670.0;
     
