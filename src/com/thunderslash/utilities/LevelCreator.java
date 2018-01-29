@@ -167,26 +167,26 @@ public class LevelCreator {
             
             if(block.getBlocktype() != BlockType.SOLID) {
                 
-                NeighborData data = room.getNeighbors(block, true);
-                
-                Block n = data.getNeighbors().get(Direction.NORTH);
-                Block s = data.getNeighbors().get(Direction.SOUTH);
-                
-                if(n != null && s != null && 
-                        n.getBlocktype() == BlockType.SOLID &&
-                        s.getBlocktype() == BlockType.SOLID) {
-                    spriteType = SpriteType.BRICK_BG_TOP_BOTTOM;
-                } else if(s != null && s.getBlocktype() == BlockType.SOLID) {
-                    spriteType = SpriteType.BRICK_BG_BOTTOM;
-                } else if(n != null && n.getBlocktype() == BlockType.SOLID) { 
-                    spriteType = SpriteType.BRICK_BG_TOP;
-                } else {
+//                NeighborData data = room.getNeighbors(block, true);
+//                
+//                Block n = data.getNeighbors().get(Direction.NORTH);
+//                Block s = data.getNeighbors().get(Direction.SOUTH);
+//                
+//                if(n != null && s != null && 
+//                        n.getBlocktype() == BlockType.SOLID &&
+//                        s.getBlocktype() == BlockType.SOLID) {
+//                    spriteType = SpriteType.BRICK_BG_TOP_BOTTOM;
+//                } else if(s != null && s.getBlocktype() == BlockType.SOLID) {
+//                    spriteType = SpriteType.BRICK_BG_BOTTOM;
+//                } else if(n != null && n.getBlocktype() == BlockType.SOLID) { 
+//                    spriteType = SpriteType.BRICK_BG_TOP;
+//                } else {
                     
                     if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BRICK_BG_MAIN_01;
                     else if(Mathf.randomRange(0.0, 1.0) > 0.8) spriteType = SpriteType.BRICK_BG_MAIN_02;
                     else spriteType = SpriteType.BRICK_BG_MAIN_03;
                     
-                }
+//                }
                 
                 blocks.add(new Block(block.getWorldPosition(), block.getGridPosition(), BlockType.BACKGROUND, spriteType));
             }
@@ -204,7 +204,7 @@ public class LevelCreator {
         
         // red = enemy spawn
         if(red == 255 && green == 0 && blue == 0 && alpha == 255) {
-            actor = Game.instance.getActorManager().createEnemyInstance("Slime", pos, EnemyType.SLIME, SpriteType.ENEMY_SLIME, 1);
+            actor = Game.instance.getActorManager().createEnemyInstance("Slime", pos, EnemyType.SLIME, SpriteType.ENEMY_SLIME, 3);
         }
         
         return actor;

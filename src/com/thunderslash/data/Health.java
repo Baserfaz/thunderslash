@@ -42,6 +42,11 @@ public class Health {
         
         // subtract score
         if(this.object instanceof Player) Game.instance.getSession().addScore(-amount * 10);
+        
+        if(this.object instanceof Actor) {
+            Actor actor = ((Actor)this.object);
+            if(actor.getInvulnerable() == false) actor.setInvulnerable(true);
+        }
     }
 
     public void healDamage(int amount) {

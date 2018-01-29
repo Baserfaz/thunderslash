@@ -1,5 +1,6 @@
 package com.thunderslash.gameobjects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -30,8 +31,6 @@ public class Player extends Actor {
     private Animation attackAnim;
     private Animation castAnim;
     
-    private BufferedImage frame;
-    
     private double attackTimer = Double.POSITIVE_INFINITY;
     private double castTimer = Double.POSITIVE_INFINITY;
 
@@ -43,15 +42,11 @@ public class Player extends Actor {
     
     private boolean canAttack = true;
     private boolean canCast = true;
-    private boolean allowCleaveAttacks = false;
-    
-    private boolean isInvulnerable = false;
-    
-    private double invulnerabilityTimer = 0.0;
-    private double invulnerableTime = 150.0;
     
     private double collisionPollingCooldown = 50;
     private double currentCollisionPollingTimer = 0.0;
+    
+    private boolean didAttack = false;
     
     public Player(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(name, worldPos, spriteType, hp);
@@ -85,11 +80,13 @@ public class Player extends Actor {
     
     public void tick() {
         if(this.isEnabled) {
-            this.checktCollisionsWithGameObjects();
-            this.handleAnimationSpeedChanges();
+            
+            this.checkCollisionsWithGameObjects();
             this.updateActorState();
             this.handleCooldowns();
             this.updateAnimationFrame();
+            
+            if(this.actorState != this.oldState) this.onActorStateChange();
             
             // dont allow movement while attacking/casting
             if(this.actorState == ActorState.ATTACKING ||
@@ -98,11 +95,18 @@ public class Player extends Actor {
             }
             
             super.tick();
+            
+            this.oldState = this.actorState;
         }
     }
     
     public void render(Graphics g) {
         if(this.isVisible) {
+            
+            if(this.isInvulnerable) {
+                this.frame = RenderUtils.tintWithColor(this.frame, Color.white);
+            }
+            
             if(this.facingDirection == Direction.EAST) {
                 g.drawImage(this.frame, this.worldPosition.x, this.worldPosition.y, null);
             } else if(this.facingDirection == Direction.WEST) {
@@ -154,22 +158,18 @@ public class Player extends Actor {
         this.frame = frame;
     }
     
-    private void handleAnimationSpeedChanges() {
+    private void onActorStateChange() {
         
-        // on state change:
-        if(this.actorState != this.oldState) { 
-            
-            // reset frame index when state changes.
-            this.currentAnimIndex = 0;
-            
-            // change animation speed according to the state
-            if(this.actorState == ActorState.ATTACKING) this.frameTime = this.attackFrameTime;
-            else if(this.actorState == ActorState.CASTING) this.frameTime = this.castFrameTime;
-            else this.frameTime = this.defaultFrameTime;
-        }
+        // reset frame index when state changes.
+        this.currentAnimIndex = 0;
         
-        // cache last frame's state
-        this.oldState = this.actorState;
+        // reset attack
+        this.didAttack = false;
+        
+        // change animation speed according to the state
+        if(this.actorState == ActorState.ATTACKING) this.frameTime = this.attackFrameTime;
+        else if(this.actorState == ActorState.CASTING) this.frameTime = this.castFrameTime;
+        else this.frameTime = this.defaultFrameTime;
         
     }
     
@@ -200,7 +200,7 @@ public class Player extends Actor {
                 this.acceleration.x == 0f && this.acceleration.y == 0f) this.actorState = ActorState.IDLING;
     }
     
-    private void checktCollisionsWithGameObjects() {
+    private void checkCollisionsWithGameObjects() {
         if(this.currentCollisionPollingTimer > this.collisionPollingCooldown) {
             this.focusedObject = null;
             this.currentCollisionPollingTimer = 0.0;
@@ -214,16 +214,9 @@ public class Player extends Actor {
                     if(go.hasFocus) this.focusedObject = go;
                 } else if(go instanceof Enemy) {
                     
-                    if(this.isInvulnerable) {
+                    if(this.isInvulnerable == false) {
                         
-                        if(this.invulnerabilityTimer < this.invulnerableTime) {
-                            this.invulnerabilityTimer += Game.instance.getTimeBetweenFrames();
-                        } else {
-                            this.isInvulnerable = false;
-                            this.invulnerabilityTimer = 0.0;
-                        }
-                        
-                    } else {
+                        if(this.HP.isDead()) continue;
                         
                         Enemy enemy = (Enemy) go;    
                         if(enemy.getHP().isDead() == false && this.hitbox.intersects(go.getHitbox())) {
@@ -231,13 +224,10 @@ public class Player extends Actor {
                             this.HP.takeDamage(1);
                             
                             Game.instance.getSoundManager().playSound(SoundEffect.PLAYER_HURT);
-                            
                         }
-                        
                     }
                 }
             }
-            
         } else {
             this.currentCollisionPollingTimer += Game.instance.getTimeBetweenFrames();
         }
@@ -287,6 +277,10 @@ public class Player extends Actor {
     
     private void doAttackAction() {
         
+        // attack only once per swing
+        if(this.didAttack) return;
+        this.didAttack = true;
+        
         int attWidth = 25;
         int attHeight = 30;
         int attackDist = attWidth / 2;
@@ -310,9 +304,7 @@ public class Player extends Actor {
                     
                     Game.instance.getSoundManager().playSound(SoundEffect.ATTACK_HIT);
                     
-                    // if cleave attacks are allowed then we are going to hit
-                    // all our hit objects.
-                    if(this.allowCleaveAttacks == false) break;
+                    break;
                 }
             }
         }

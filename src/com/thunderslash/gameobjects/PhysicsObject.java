@@ -74,10 +74,13 @@ public abstract class PhysicsObject extends GameObject {
             
             if(dir == Direction.WEST) d = -1; 
             else if(dir == Direction.EAST) d = 1;
-            else System.out.println("Physicsobject::knockback: unsupported direction: " + dir);
+            else System.out.println("PhysicsObject::knockback: unsupported direction: " + dir);
             
-            float xforce = 1f * d;
-            float yforce = -0.5f;
+            float xForceMult = 5f;
+            float yForceMult = -0.5f;
+            
+            float xforce = xForceMult * d;
+            float yforce = yForceMult;
             
             obj.isGrounded = false;
             

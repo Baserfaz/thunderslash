@@ -1,8 +1,10 @@
 package com.thunderslash.gameobjects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class Actor extends PhysicsObject {
     protected String name;
     protected Health HP;
     
+    protected BufferedImage frame;
+    
     protected ActorState actorState = ActorState.IDLING;
     protected Direction facingDirection = Direction.EAST;
     protected Rectangle attackBox;
@@ -33,6 +37,11 @@ public class Actor extends PhysicsObject {
     protected double stunTimer = 0.0;
     protected double defaultStunDuration = 500.0;
     
+    protected boolean isInvulnerable = false;
+    
+    protected double invulnerabilityTimer = 0.0;
+    protected double invulnerableTime = 300.0;
+    
     public Actor(String name, Point worldPos, SpriteType spriteType, int hp) {
         super(worldPos, spriteType);
         
@@ -42,6 +51,8 @@ public class Actor extends PhysicsObject {
     
     public void tick() {
         if(this.isEnabled) {
+            
+            this.handleInvulnerableTimer();
             this.handleStunState();
             
             // change facing direction
@@ -54,11 +65,29 @@ public class Actor extends PhysicsObject {
     
     public void render(Graphics g) {
         if(this.isVisible) {
+            
+            BufferedImage img = this.defaultStaticSprite;
+            
+            if(this.isInvulnerable) {
+                img = RenderUtils.tintWithColor(img, Color.red);
+            }
+            
             if(this.facingDirection == Direction.EAST) {
-                g.drawImage(this.defaultStaticSprite, this.worldPosition.x, this.worldPosition.y, null);
+                g.drawImage(img, this.worldPosition.x, this.worldPosition.y, null);
             } else if(this.facingDirection == Direction.WEST) {
-                RenderUtils.renderSpriteFlippedHorizontally(defaultStaticSprite, this.worldPosition, g);
+                RenderUtils.renderSpriteFlippedHorizontally(img, this.worldPosition, g);
             } 
+        }
+    }
+    
+    private void handleInvulnerableTimer() {
+        if(this.isInvulnerable) {
+            if(this.invulnerabilityTimer < this.invulnerableTime) {
+                this.invulnerabilityTimer += Game.instance.getTimeBetweenFrames();
+            } else {
+                this.isInvulnerable = false;
+                this.invulnerabilityTimer = 0.0;
+            }
         }
     }
     
@@ -132,4 +161,6 @@ public class Actor extends PhysicsObject {
     public Rectangle getAttackBox() { return attackBox; }
     public void setAttackBox(Rectangle attackBox) { this.attackBox = attackBox; }
     public Emitter getParticleEmitter() { return this.particleEmitter; }
+    public void setInvulnerable(boolean b) { this.isInvulnerable = b; }
+    public boolean getInvulnerable() { return this.isInvulnerable; }
 }
