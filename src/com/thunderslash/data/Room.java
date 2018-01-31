@@ -68,7 +68,6 @@ public class Room {
         for(Block b : this.data.getBlocks()) { if(b != null) b.activate(); }
         for(Block b : this.data.getBackground()) { if(b != null) b.activate(); }
         for(VanityObject v : this.data.getVanityObjects()) { if(v != null) v.activate(); }
-        for(Actor a : this.data.getActors()) { if(a != null) a.activate(); }
         for(GameObject i : this.data.getItems()) { if(i != null) i.activate(); }
     }
     

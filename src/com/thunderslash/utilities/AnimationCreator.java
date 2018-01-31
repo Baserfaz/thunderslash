@@ -63,10 +63,6 @@ public class AnimationCreator {
                 animation = new Animation(spriteCreator.createMultipleSprites(8, 8, 4));
                 break;
                 
-            case LIGHTNING_STRIKE:
-                System.out.println("AnimationCreator::createAnimation: Lightning strike animation not yet implemented!");
-                break;
-                
             case TORCH:
                 animation = new Animation(spriteCreator.createMultipleSprites(8, 9, 3));
                 break;

@@ -10,6 +10,9 @@ import com.thunderslash.utilities.RenderUtils;
 
 public class Roller extends Enemy {
     
+    // simple enemy type
+    // moves horizontally and when hits an obstacle turns around.
+    
     public Roller(String name, Point worldPos, int hp) {
         super(name, worldPos, SpriteType.ENEMY_ROLLER, true, hp);
         
@@ -26,10 +29,7 @@ public class Roller extends Enemy {
     }
     
     public void doBehaviour() {
-        if(this.isInvulnerable) {
-            this.acceleration.x = 0f;
-        }
-        
+        if(this.isInvulnerable) this.acceleration.x = 0f;
         if(this.facingDirection == Direction.EAST) this.direction.x = 1f;
         else this.direction.x = -1f;
     }

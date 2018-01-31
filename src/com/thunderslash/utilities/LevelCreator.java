@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
 import com.thunderslash.data.LevelData;
 import com.thunderslash.data.NeighborData;
 import com.thunderslash.data.Room;
-import com.thunderslash.data.World;
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.BlockType;
 import com.thunderslash.enumerations.Direction;
@@ -203,8 +202,6 @@ public class LevelCreator {
             // actor = Game.instance.getActorManager().createEnemyInstance("Slime", pos, EnemyType.SLIME, 3);
             actor = Game.instance.getActorManager().createEnemyInstance("Roller", pos, EnemyType.ROLLER, 3);
         }
-        
-        if(actor != null) actor.deactivate();
         
         return actor;
     }
