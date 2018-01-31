@@ -35,7 +35,11 @@ public class SpriteStorage {
     
     // ---- SETTERS & GETTERS ----
     public void addSprite(SpriteType type, BufferedImage img) { this.sprites.put(type, img); }
-    public BufferedImage getSprite(SpriteType type) { return this.sprites.get(type); }
+    public BufferedImage getSprite(SpriteType type) { 
+        BufferedImage img = this.sprites.get(type);
+        if(img == null) System.out.println("SpriteStorage::getSprite: no sprite found for spritetype: " + type);
+        return img;
+    }
     public void addAnimation(AnimationType type, Animation anim) { this.animations.put(type, anim); }
     public Animation getAnimation(AnimationType type) { return this.animations.get(type); }
 }

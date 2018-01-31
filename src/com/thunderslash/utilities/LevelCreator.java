@@ -197,10 +197,11 @@ public class LevelCreator {
         Actor actor = null;
         Point pos = new Point(x, y);
         
-        // red = enemy spawn
+        // red = roller
         if(red == 255 && green == 0 && blue == 0 && alpha == 255) {
-            // actor = Game.instance.getActorManager().createEnemyInstance("Slime", pos, EnemyType.SLIME, 3);
             actor = Game.instance.getActorManager().createEnemyInstance("Roller", pos, EnemyType.ROLLER, 3);
+        } else if(red == 142 && green == 24 && blue == 61 && alpha == 255) {
+          actor = Game.instance.getActorManager().createEnemyInstance("Slime", pos, EnemyType.SLIME, 3);
         }
         
         return actor;

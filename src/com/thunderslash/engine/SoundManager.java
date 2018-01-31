@@ -81,7 +81,8 @@ public class SoundManager {
               // right or left
               pan = (targetPos.x > playerPos.x) ? 1 : -1;
               
-              // Convert scale to 0.0 to 1.0
+              // Convert 0.0 to enemy_activ_range -> 0.0 to 1.0
+              // distance is a point on this range.
               // https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
               double output = 0.0 + ((1.0 - 0.0) / (Game.ENEMY_ACTIVATION_RANGE - 0.0)) * (distance - 0.0);
               output = Mathf.round(1.0 - output, 2);
@@ -120,6 +121,9 @@ public class SoundManager {
               break;
           case ATTACK_HIT:
               path = "/sounds/attack_hit.wav";
+              break;
+          case THUD:
+              path = "/sounds/thud.wav";
               break;
           default:
               System.out.println("SoundManager:: play: unsupported sound effect!");

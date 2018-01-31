@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
 import com.thunderslash.enumerations.Direction;
+import com.thunderslash.enumerations.SoundEffect;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.RenderUtils;
 
@@ -35,11 +36,17 @@ public class Roller extends Enemy {
     }
     
     protected void onCollision(Direction dir) {
+        
+        if(facingDirection == dir) Game.instance.getSoundManager().playSoundWithPan(SoundEffect.THUD, this);
+        
         if(dir == Direction.EAST) {
             this.facingDirection = Direction.WEST;
         } else if(dir == Direction.WEST) {
             this.facingDirection = Direction.EAST;
         }
+        
+        
+        
     }
 
 }

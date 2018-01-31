@@ -11,7 +11,7 @@ import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.particles.Emitter;
 import com.thunderslash.utilities.SpriteCreator;
 
-public class Chest extends GameObject {
+public class Chest extends PhysicsObject {
 
     private int openingScore;
     
@@ -30,7 +30,7 @@ public class Chest extends GameObject {
         // cache sprites
         SpriteCreator sc = Game.instance.getSpriteCreator();
         this.questionMark = sc.CreateCustomSizeSprite(0, 6 * 32 + 16, 10, 16, 2);
-        this.openSprite = sc.CreateSprite(SpriteType.CHEST_OPEN);
+        this.openSprite = Game.instance.getSpriteStorage().getSprite(SpriteType.CHEST_OPEN);
         
         this.particleEmitter = Game.instance.getEmitterManager().createEmitter(this);
     }
@@ -39,6 +39,7 @@ public class Chest extends GameObject {
     
     public void render(Graphics g) {
         if(this.isVisible) {
+            
             if(this.isOpen) {
                 g.drawImage(this.openSprite, worldPosition.x, worldPosition.y, null);
             } else {
@@ -54,6 +55,7 @@ public class Chest extends GameObject {
         
     }
 
+    public void onCollision(Direction dir) {}
     public void onLanding() {}
     
     public void open() {
