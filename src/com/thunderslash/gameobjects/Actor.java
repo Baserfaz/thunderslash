@@ -20,7 +20,7 @@ import com.thunderslash.utilities.Mathf;
 import com.thunderslash.utilities.RenderUtils;
 import com.thunderslash.utilities.Vector2;
 
-public class Actor extends PhysicsObject {
+public abstract class Actor extends PhysicsObject {
     
     protected String name;
     protected Health HP;
@@ -104,8 +104,6 @@ public class Actor extends PhysicsObject {
             Game.instance.getSoundManager().playSoundWithPan(SoundEffect.LAND, this);
         }
     }
-    
-    public void onDeath() {}
     
     protected void handleStunState() {
         if(this.isStunned) {

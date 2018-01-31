@@ -326,8 +326,7 @@ public abstract class PhysicsObject extends GameObject {
                 
             } else {
                 
-                // this block is executed when the actor is grounded,
-                // to check if the player is still on ground.
+                // this block is executed when the actor is grounded
                 
                 if(block == this.lastBlock) {
                     
@@ -359,18 +358,23 @@ public abstract class PhysicsObject extends GameObject {
             if(block.getBlocktype() != BlockType.PLATFORM) {
                 if(blockHitbox.contains(lc) || blockHitbox.contains(lt) || blockHitbox.contains(lb)) {
                     this.collisionLeft = true;
+                    this.onCollision(Direction.WEST);
                 }
                 
                 if(blockHitbox.contains(rc) || blockHitbox.contains(rt) || blockHitbox.contains(rb)) {
                     this.collisionRight = true;
+                    this.onCollision(Direction.EAST);
                 }
                 
                 if(blockHitbox.contains(tc) || blockHitbox.contains(tl) || blockHitbox.contains(tr)) {
                     this.collisionTop = true;
+                    this.onCollision(Direction.NORTH);
                 }
             }
         }
     }
+    
+    protected abstract void onCollision(Direction dir);
     
     protected List<Block> getNearbyBlocks(float colDist) {
         List<Block> allBlocks = new ArrayList<Block>();

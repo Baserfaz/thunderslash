@@ -1,5 +1,5 @@
 package com.thunderslash.enumerations;
 
 public enum EnemyType {
-    SLIME
+    SLIME, ROLLER, CLIMBER
 }

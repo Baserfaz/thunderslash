@@ -1,13 +1,10 @@
 package com.thunderslash.data;
 
 import com.thunderslash.engine.Game;
-import com.thunderslash.enumerations.GameState;
-import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Enemy;
 import com.thunderslash.gameobjects.GameObject;
 import com.thunderslash.gameobjects.Player;
-import com.thunderslash.utilities.SpriteCreator;
 
 public class Health {
 
@@ -40,12 +37,11 @@ public class Health {
         this.currentHP -= amount;
         if(currentHP <= 0) { this.die(); }
         
-        // subtract score
-        if(this.object instanceof Player) Game.instance.getSession().addScore(-amount * 10);
-        
         if(this.object instanceof Actor) {
             Actor actor = ((Actor)this.object);
             if(actor.getInvulnerable() == false) actor.setInvulnerable(true);
+            
+            if(this.object instanceof Player) Game.instance.getSession().addScore(-amount * 10);
         }
     }
 

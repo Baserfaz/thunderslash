@@ -232,6 +232,8 @@ public class Player extends Actor {
             this.currentCollisionPollingTimer += Game.instance.getTimeBetweenFrames();
         }
     }
+ 
+    protected void onCollision(Direction dir) {}
     
     // ---- PLAYER ACTIONS ----
     public void jump() { this.setDirection(new Vector2(this.direction.x, 1f)); }

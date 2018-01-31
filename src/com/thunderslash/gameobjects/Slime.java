@@ -4,13 +4,14 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
+import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.utilities.RenderUtils;
 
 public class Slime extends Enemy {
 
-    public Slime(String name, Point worldPos, SpriteType spriteType, int hp) {
-        super(name, worldPos, spriteType, hp);
+    public Slime(String name, Point worldPos, int hp) {
+        super(name, worldPos, SpriteType.ENEMY_SLIME, false, hp);
         
         // set enemy movement settings  
         this.maxHorizontalAccel = 5f;
@@ -25,6 +26,8 @@ public class Slime extends Enemy {
         
     }
 
+    protected void onCollision(Direction dir) {}
+    
     public void onDeath() {
         BufferedImage img = Game.instance.getSpriteCreator().CreateSprite(SpriteType.ENEMY_SLIME_DEAD);
         img = RenderUtils.tint(img, true, 2);

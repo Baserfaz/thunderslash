@@ -327,16 +327,6 @@ public class SpriteCreator {
                 pos.y = 12;
                 break;
                 
-            case BRICK_BG_MAIN_02:
-                pos.x = 1;
-                pos.y = 12;
-                break;
-                
-            case BRICK_BG_MAIN_03:
-                pos.x = 2;
-                pos.y = 12;
-                break;
-                
             case BRICK_BG_TOP_BOTTOM:
                 pos.x = 0;
                 pos.y = 11;
@@ -489,6 +479,26 @@ public class SpriteCreator {
                 
             case ENEMY_SLIME_DEAD:
                 pos.x = 1;
+                pos.y = 8;
+                break;
+                
+            case ENEMY_CLIMBER:
+                pos.x = 2;
+                pos.y = 7;
+                break;
+                
+            case ENEMY_CLIMBER_DEAD:
+                pos.x = 2;
+                pos.y = 8;
+                break;
+                
+            case ENEMY_ROLLER:
+                pos.x = 3;
+                pos.y = 7;
+                break;
+                
+            case ENEMY_ROLLER_DEAD:
+                pos.x = 3;
                 pos.y = 8;
                 break;
                 

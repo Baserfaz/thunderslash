@@ -5,12 +5,13 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import com.thunderslash.engine.Game;
+import com.thunderslash.enumerations.Direction;
 import com.thunderslash.enumerations.ParticleType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.particles.Emitter;
 import com.thunderslash.utilities.SpriteCreator;
 
-public class Chest extends PhysicsObject {
+public class Chest extends GameObject {
 
     private int openingScore;
     
@@ -34,6 +35,8 @@ public class Chest extends PhysicsObject {
         this.particleEmitter = Game.instance.getEmitterManager().createEmitter(this);
     }
 
+    public void tick() {}
+    
     public void render(Graphics g) {
         if(this.isVisible) {
             if(this.isOpen) {
@@ -62,6 +65,7 @@ public class Chest extends PhysicsObject {
         }
     }
     
+    // ---- GETTERS & SETTERS ----
     public boolean isOpen() { return isOpen; }
     public void setOpen(boolean isOpen) { this.isOpen = isOpen; }
     public int getOpeningScore() { return openingScore; }

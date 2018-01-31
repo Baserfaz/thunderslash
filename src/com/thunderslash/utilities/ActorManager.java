@@ -11,8 +11,10 @@ import com.thunderslash.enumerations.EnemyType;
 import com.thunderslash.enumerations.SpriteType;
 import com.thunderslash.gameobjects.Actor;
 import com.thunderslash.gameobjects.Block;
+import com.thunderslash.gameobjects.Climber;
 import com.thunderslash.gameobjects.Enemy;
 import com.thunderslash.gameobjects.Player;
+import com.thunderslash.gameobjects.Roller;
 import com.thunderslash.gameobjects.Slime;
 
 public class ActorManager {
@@ -25,13 +27,19 @@ public class ActorManager {
         setPlayerInstance(null);
     }
 
-    public Enemy createEnemyInstance(String name, Point pos, EnemyType enemyType, SpriteType spriteType, int health) {
+    public Enemy createEnemyInstance(String name, Point pos, EnemyType enemyType, int health) {
         
         Enemy enemy = null;
         
         switch(enemyType) {
         case SLIME:
-            enemy = new Slime(name, pos, spriteType, health);
+            enemy = new Slime(name, pos, health);
+            break;
+        case ROLLER:
+            enemy = new Roller(name, pos, health);
+            break;
+        case CLIMBER:
+            enemy = new Climber(name, pos, health);
             break;
         default:
             System.out.println("ActorManager::createEnemyInstance: unsupported enemy type: " + enemyType);

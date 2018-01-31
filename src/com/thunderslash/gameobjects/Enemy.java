@@ -10,29 +10,30 @@ public abstract class Enemy extends Actor {
     
     protected double tickTimer = 0.0;
     protected double tickCooldown = 200.0;
-    
     protected int killScore = 100;
+    protected boolean isContinuous;
     
-    public Enemy(String name, Point worldPos, SpriteType spriteType, int hp) {
+    public Enemy(String name, Point worldPos, SpriteType spriteType, boolean isContinuous, int hp) {
         super(name, worldPos, spriteType, hp);
         
         // randomize tick cooldown for all enemies.
-        this.tickCooldown += Mathf.randomRange(0.0, 300.0);
+        this.tickCooldown += Mathf.randomRange(150.0, 300.0);
+        this.isContinuous = isContinuous;
+        this.invulnerableTime = 500;
     }
 
     public void tick() {
          if(this.isEnabled) {
-             if(this.HP.isDead()) {
-                 this.resetInputs();
-             } else {
-                
-                 if(this.tickTimer > this.tickCooldown) {
+             if(this.HP.isDead() == false) {
+                 if(this.tickTimer > this.tickCooldown || this.isContinuous) {
                      this.tickTimer = 0.0;
                      this.doBehaviour();
                  } else {
                      this.resetInputs();
                      this.tickTimer += Game.instance.getTimeBetweenFrames();
                  }
+             } else {
+                 this.resetInputs();
              }
             
              // always tick physics
