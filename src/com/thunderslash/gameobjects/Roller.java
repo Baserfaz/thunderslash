@@ -26,7 +26,9 @@ public class Roller extends Enemy {
     }
     
     public void doBehaviour() {
-        if(this.isInvulnerable) this.acceleration.x = 0f;
+        if(this.isInvulnerable) {
+            this.acceleration.x = 0f;
+        }
         
         if(this.facingDirection == Direction.EAST) this.direction.x = 1f;
         else this.direction.x = -1f;

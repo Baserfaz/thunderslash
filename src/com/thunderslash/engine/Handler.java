@@ -99,7 +99,7 @@ public class Handler {
             if(go == null) continue;
             if(camView.contains(go.getHitboxCenter())) {
                 objInView.add(go);
-                go.activate();
+                if(go.getIsEnabled() == false) go.activate();
             } else {
                 // go.deactivate();
             }

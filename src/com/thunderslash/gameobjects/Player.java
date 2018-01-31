@@ -53,6 +53,8 @@ public class Player extends Actor {
     
         this.power = new Power();
         
+        this.invulnerableTime = 500.0;
+        
         // set animations
         this.idleAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_IDLE);
         this.walkAnim   = AnimationCreator.createAnimation(AnimationType.PLAYER_WALK);

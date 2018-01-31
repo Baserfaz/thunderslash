@@ -189,16 +189,13 @@ public abstract class PhysicsObject extends GameObject {
         if(isGrounded) {
             this.velocity.y = 0f;
             this.acceleration.y = 0f;
-        
-            // our position needs to be set so
-            // that we are just a tiny bit inside
-            // of the "lastBlock" because otherwise
-            // the actor would not be on ground anymore.
+            
             if(this.lastBlock != null) {
                 this.setWorldPosition(
                     this.worldPosition.x,
                     this.lastBlock.getHitbox().y - (Game.SPRITEGRIDSIZE * Game.SPRITESIZEMULT) + 1);
             }
+            
         }
     }
     
@@ -223,7 +220,7 @@ public abstract class PhysicsObject extends GameObject {
     private List<Point> createCollisionPoints() {
         
         int margin = 3 * Game.SPRITESIZEMULT;
-        int bottomMargin = 1 * Game.SPRITESIZEMULT;
+        int bottomMargin = 2 * Game.SPRITESIZEMULT;
         
         // y-axis
         int top    = this.hitbox.y;

@@ -138,20 +138,18 @@ public class Renderer {
             }
         }
         
-        // action area
         if(Game.drawActorCollisionPoints) {
+            
+            // draw the action area around player
             float dist = player.getCollisionDistance();
             g.setColor(Game.actorCollisionPointColor);
             g.drawOval((int)(playerCenterHitbox.x - dist / 2),
                     (int)(playerCenterHitbox.y - dist / 2),
                     (int)dist, (int)dist);
-        }
-        
-        if(Game.drawActorCollisionPoints) {
+            
+            // draw collision points
             for(Actor actor : Game.instance.getActorManager().getActorInstances()) {
-                
                 if(actor.getCollisionPoints() == null || actor.getCollisionPoints().isEmpty()) continue;
-                
                 for(Point p : actor.getCollisionPoints()) {
                     g.setColor(Game.actorCollisionPointColor);
                     g.drawOval(p.x, p.y, 2, 2);

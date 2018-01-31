@@ -103,6 +103,7 @@ public abstract class Actor extends PhysicsObject {
         } else {
             Game.instance.getSoundManager().playSoundWithPan(SoundEffect.LAND, this);
         }
+        
     }
     
     protected void handleStunState() {
